@@ -1,0 +1,37 @@
+/* Community UI: kept separate from the comic strip so images remain flush. */
+.community-account,.community-panel{--community-border:rgba(255,255,255,.18)}
+.community-panel{max-width:800px;margin:2.5rem auto 0;border-top:1px solid var(--line);padding-top:2rem}
+.community-panel h2,.community-account h2{margin:.1rem 0 .65rem;font-size:clamp(1.3rem,4vw,1.8rem)}
+.community-panel h3,.moderation-panel h3{margin:1.6rem 0 .8rem;font-size:1.15rem}
+.community-box{border:1px solid var(--community-border);background:var(--panel);border-radius:14px;padding:1.4rem;margin:1rem 0}
+.account-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;align-items:start}
+.account-grid .community-box{margin:0;min-width:0}
+.community-form{display:flex;flex-direction:column;gap:.65rem;margin:1rem 0}
+.community-form label{font-weight:700;font-size:.92rem}
+.community-form input,.community-form textarea{width:100%;min-width:0;max-width:100%;font:inherit;padding:.7rem .85rem;background:var(--bg);color:var(--text);border:1px solid var(--community-border);border-radius:8px}
+.community-form textarea{resize:vertical;min-height:110px}
+.community-form input:focus-visible,.community-form textarea:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+.community-form .action{border:0;font:inherit;font-weight:750;cursor:pointer;align-self:flex-start}
+.community-form .action:disabled,.community-vote:disabled,.community-link:disabled,.community-action:disabled{opacity:.55;cursor:not-allowed}
+.community-notice{color:var(--cyan);margin:1rem 0;overflow-wrap:anywhere}
+.community-notice.error{color:#ff9aa0}.community-notice:empty{display:none}
+.community-hint{color:var(--muted);font-size:.92rem}
+.community-link{color:var(--cyan);border:0;background:transparent;padding:.5rem 0;cursor:pointer;font:inherit;font-weight:700;text-align:left}
+.community-link:hover{text-decoration:underline}
+.reset-form p{font-size:.85rem;color:var(--muted)}
+.community-votes{display:flex;gap:.75rem;flex-wrap:wrap;margin:1.1rem 0}
+.community-vote{min-height:44px;padding:.65rem 1rem;border:1px solid var(--community-border);border-radius:9px;background:var(--panel2);color:var(--text);font:inherit;font-weight:700;cursor:pointer}
+.community-vote[aria-pressed="true"]{border-color:var(--cyan);background:#163042;color:#fff}
+.comment-list{list-style:none;padding:0;margin:1rem 0;display:grid;gap:.75rem}
+.comment-item{background:var(--panel);border:1px solid var(--community-border);border-radius:11px;padding:1rem;overflow-wrap:anywhere}
+.comment-header{display:flex;align-items:baseline;gap:.7rem;flex-wrap:wrap;margin-bottom:.4rem}
+.comment-header strong{color:var(--cyan)}.comment-header time,.comment-meta{color:var(--muted);font-size:.82rem}
+.comment-body{white-space:pre-wrap;margin:.3rem 0 0;overflow-wrap:anywhere}
+.community-actions{display:flex;flex-wrap:wrap;gap:.45rem;margin:.65rem 0 0}
+.community-action{padding:.45rem .7rem;background:var(--panel2);color:var(--text);border:1px solid var(--community-border);border-radius:7px;font:inherit;cursor:pointer}
+.community-action:hover{border-color:var(--cyan)}
+.community-action.danger{border-color:rgba(230,57,70,.55)}
+.community-more{min-height:44px;background:var(--panel2);color:var(--text);border:1px solid var(--community-border);border-radius:8px;padding:.6rem 1rem;font:inherit;cursor:pointer}
+.community-panel a,.community-account a{color:var(--cyan)}
+[hidden]{display:none!important}
+@media(max-width:680px){.account-grid{grid-template-columns:1fr}.community-box{padding:1rem}.community-vote{flex:1}.community-form .action{align-self:stretch}}
