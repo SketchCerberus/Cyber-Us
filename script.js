@@ -24,12 +24,4 @@ document.getElementById("languageBtn").addEventListener("click", () => {
 
 document.getElementById("year").textContent = new Date().getFullYear();
 
-/*
-  IMPORTANT:
-  Replace the "#" below with your actual Ko-fi page.
-  Example:
-  document.getElementById("kofiLink").href = "https://ko-fi.com/SEUNOME";
-*/
-document.getElementById("kofiLink").href = "#";
-
 applyLanguage();
