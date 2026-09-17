@@ -24,4 +24,8 @@ document.getElementById("languageBtn").addEventListener("click", () => {
 
 document.getElementById("year").textContent = new Date().getFullYear();
 
+/* Keep the homepage layout intact; route its existing Comic / Read buttons to our official reader. */
+document.querySelector('.site-header nav a[href="#comic"]')?.setAttribute('href', 'catalogo.html');
+document.querySelector('.hero-buttons a[href="#comic"]')?.setAttribute('href', 'catalogo.html');
+
 applyLanguage();
