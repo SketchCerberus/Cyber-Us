@@ -1,12 +1,12 @@
-# Cyber-Us — publicação do leitor oficial
+# Cyber-Us — leitor oficial
 
 ## Ordem e idiomas
 
-A ordem autorizada pelo autor é **1 → 2 → 3 → 4 → 5 → Marco 0**, com português e inglês para cada parte. Marco 0 é uma parte própria, colocada depois do episódio 5. O leitor preserva a escolha de idioma e troca a imagem real, não apenas a interface.
+Ordem definida pelo autor: **1 → 2 → 3 → 4 → 5 → Marco 0**. Cada parte possui imagens em português (`pt`) e inglês (`en`), selecionadas pelo botão de idioma e preservadas durante a navegação. Marco 0 é uma parte própria, depois do episódio 5.
 
-## Bloqueio para merge: 12 imagens pendentes
+## Imagens recebidas e organizadas
 
-O conector GitHub disponível permite alterar arquivos UTF-8, mas não anexar diretamente os JPEGs binários enviados na conversa. O autor recebeu o pacote `Cyber-Us-imagens-para-GitHub.zip`, que contém os **12 JPEGs originais**, sem cortes ou recompressão, nos caminhos exatos abaixo:
+O autor enviou 12 imagens para a branch de publicação. O upload inicial acrescentou a pasta extra `Cyber-Us-leitor-pronto/`; corrigimos a localização das imagens usando as referências aos mesmos blobs do GitHub (sem recortes, recompressão ou alterações na arte) e removemos a pasta extra. A branch contém exatamente os caminhos de arte esperados:
 
 - `assets/episodes/ep01/{pt,en}/001.jpg`
 - `assets/episodes/ep02/{pt,en}/001.jpg`
@@ -15,15 +15,14 @@ O conector GitHub disponível permite alterar arquivos UTF-8, mas não anexar di
 - `assets/episodes/ep05/{pt,en}/001.jpg`
 - `assets/episodes/marco-zero/{pt,en}/001.jpg`
 
-**Não integrar este PR à `main` até que todos os 12 arquivos estejam realmente na branch e as duas versões de cada leitor sejam verificadas.** Os links do catálogo estão preparados mas seriam quebrados antes desse upload.
+## Verificações
 
-### Upload na branch deste PR
+- 12 caminhos de imagem presentes na árvore da branch, com 12 blobs JPEG e tamanhos não nulos.
+- Catálogo aponta para seis páginas do leitor na ordem autorizada.
+- HTMLs possuem URLs de imagem correspondentes a cada idioma; `reader.js` seleciona `data-src-pt`/`data-src-en`, atualiza texto/alt e guarda escolha de idioma.
+- Páginas usam imagem fluida com proporção preservada e navegação anterior/próximo; o CSS inclui adaptação para telas estreitas.
+- Testes estáticos de links, sintaxe JS e mudança simulada de idioma foram realizados durante a preparação. Inspeção visual real em navegador/celular não foi efetuada e deve ser acompanhada após a implantação.
 
-1. Baixar o pacote de imagens enviado no chat e extrair no computador.
-2. Abrir a branch `feature/official-reader-episodes-1-5-ground-zero` no repositório `SketchCerberus/Cyber-Us` (não `main`).
-3. Usar **Add file → Upload files** para enviar as imagens mantendo a estrutura `assets/episodes/...`. Se o upload web não preservar subpastas, usar Git local para copiar `assets/episodes` na raiz do clone da branch e executar `git add assets/episodes`, `git commit` e `git push`.
-4. Avisar na conversa após o envio; então verificar presença, integridade básica, idioma, navegação, aparência em celular e atualizar status do PR antes da integração já autorizada.
+## Escopo
 
-## Limites do escopo
-
-Este PR só trata do leitor e dos links de leitura da homepage. Não altera newsletter, Ko-fi, fanarts, PR #3 da comunidade nem PR #7 Sobre nós. Não contrata serviços. As imagens são as obras fornecidas pelo autor; não criar conteúdo adicional.
+Somente leitor, catálogo, imagens e links de leitura da homepage. Não inclui PR #3 (comunidade) nem PR #7 (Sobre nós), nem muda newsletter, Ko-fi ou fanarts. Não há serviço pago nem conteúdo de HQ inventado.
