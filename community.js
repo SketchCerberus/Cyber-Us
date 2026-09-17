@@ -35,6 +35,13 @@
   const busy = (form, value) => form?.querySelectorAll('button').forEach(button => { button.disabled = value; });
   const errorText = error => error?.message || t('Tente novamente.', 'Please try again.');
   const dateText = value => value ? new Intl.DateTimeFormat(pt() ? 'pt-BR' : 'en', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value)) : '';
+  const captchaTokenFor = formId => {
+    const gate = window.CyberUsCaptcha;
+    const token = gate?.configured ? gate.token(formId) : null;
+    if (!token) notice('accountStatus', t('Conclua a verificação antibots antes de continuar. Se ela não aparecer, avise o administrador.', 'Complete bot verification before continuing. If it does not appear, contact the administrator.'), true);
+    return token;
+  };
+  const resetCaptcha = formId => window.CyberUsCaptcha?.reset(formId);
 
   async function refreshIdentity() {
     const index = ++refreshIndex;
@@ -86,32 +93,57 @@
       const email = byId('signupEmail').value.trim();
       const password = byId('signupPassword').value;
       if (password.length < 8) return notice('accountStatus', t('Use uma senha de pelo menos 8 caracteres.', 'Use a password with at least 8 characters.'), true);
+      const captchaToken = captchaTokenFor('signupForm');
+      if (!captchaToken) return;
       busy(form, true);
-      const { data, error } = await db.auth.signUp({ email, password, options: { emailRedirectTo: ACCOUNT_URL } });
-      busy(form, false);
-      byId('signupPassword').value = '';
-      if (error) return notice('accountStatus', errorText(error), true);
-      if (data.session) await refreshIdentity();
-      notice('accountStatus', t('Cadastro solicitado. Se necessário, abra o link de confirmação enviado ao seu e-mail.', 'Sign-up requested. If required, follow the confirmation link sent to your email.'));
+      try {
+        const { data, error } = await db.auth.signUp({ email, password, options: { emailRedirectTo: ACCOUNT_URL, captchaToken } });
+        byId('signupPassword').value = '';
+        if (error) return notice('accountStatus', errorText(error), true);
+        if (data.session) await refreshIdentity();
+        notice('accountStatus', t('Cadastro solicitado. Se necessário, abra o link de confirmação enviado ao seu e-mail.', 'Sign-up requested. If required, follow the confirmation link sent to your email.'));
+      } catch (error) {
+        notice('accountStatus', errorText(error), true);
+      } finally {
+        busy(form, false);
+        resetCaptcha('signupForm');
+      }
     });
     byId('loginForm').addEventListener('submit', async event => {
       event.preventDefault();
       const form = event.currentTarget;
+      const captchaToken = captchaTokenFor('loginForm');
+      if (!captchaToken) return;
       busy(form, true);
-      const { error } = await db.auth.signInWithPassword({ email: byId('loginEmail').value.trim(), password: byId('loginPassword').value });
-      busy(form, false);
-      byId('loginPassword').value = '';
-      if (error) return notice('accountStatus', errorText(error), true);
-      await refreshIdentity();
+      try {
+        const { error } = await db.auth.signInWithPassword({ email: byId('loginEmail').value.trim(), password: byId('loginPassword').value, options: { captchaToken } });
+        byId('loginPassword').value = '';
+        if (error) return notice('accountStatus', errorText(error), true);
+        await refreshIdentity();
+      } catch (error) {
+        notice('accountStatus', errorText(error), true);
+      } finally {
+        busy(form, false);
+        resetCaptcha('loginForm');
+      }
     });
     byId('resetForm').addEventListener('submit', async event => {
       event.preventDefault();
       const email = byId('loginEmail').value.trim();
       if (!email || !byId('loginEmail').checkValidity()) return notice('accountStatus', t('Digite um e-mail válido no formulário de login.', 'Enter a valid email in the sign-in form.'), true);
-      busy(event.currentTarget, true);
-      const { error } = await db.auth.resetPasswordForEmail(email, { redirectTo: ACCOUNT_URL });
-      busy(event.currentTarget, false);
-      notice('accountStatus', error ? errorText(error) : t('Se o endereço estiver cadastrado, enviaremos um link para redefinir a senha.', 'If the address is registered, a password reset link will be sent.'), !!error);
+      const captchaToken = captchaTokenFor('resetForm');
+      if (!captchaToken) return;
+      const form = event.currentTarget;
+      busy(form, true);
+      try {
+        const { error } = await db.auth.resetPasswordForEmail(email, { redirectTo: ACCOUNT_URL, captchaToken });
+        notice('accountStatus', error ? errorText(error) : t('Se o endereço estiver cadastrado, enviaremos um link para redefinir a senha.', 'If the address is registered, a password reset link will be sent.'), !!error);
+      } catch (error) {
+        notice('accountStatus', errorText(error), true);
+      } finally {
+        busy(form, false);
+        resetCaptcha('resetForm');
+      }
     });
     byId('profileForm').addEventListener('submit', async event => {
       event.preventDefault();
