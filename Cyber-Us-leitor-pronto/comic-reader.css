@@ -1,0 +1,7 @@
+/* Small reader-specific enhancements; keep reader.css from main intact. */
+.reader-page .comic-strip{overflow:hidden;max-width:800px}
+.reader-page .comic-strip img{display:block;width:100%;height:auto;max-width:100%;margin:0;padding:0;vertical-align:top}
+.reader-status{max-width:800px;margin:1.25rem auto;color:var(--muted);font-size:.91rem;line-height:1.55}
+.reader-status a{color:var(--cyan);text-decoration:underline;text-underline-offset:.2em}
+.episode-navigation .pending{align-self:center}
+@media(max-width:650px){.reader-page{padding-left:0;padding-right:0}.reader-header,.reader-status,.episode-navigation{margin-left:4vw;margin-right:4vw}.reader-page .comic-strip{width:100%}}
