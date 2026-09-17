@@ -45,6 +45,7 @@
         const widgetId = window.turnstile.render(element, {
           sitekey: key,
           theme: 'dark',
+          size: window.matchMedia('(max-width: 680px)').matches ? 'compact' : 'flexible',
           callback: token => { tokens.set(formId, token); },
           'expired-callback': () => { tokens.delete(formId); },
           'timeout-callback': () => { tokens.delete(formId); },
