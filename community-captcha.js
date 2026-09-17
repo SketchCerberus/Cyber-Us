@@ -1,6 +1,5 @@
-/* Cloudflare Turnstile for Cyber-Us authentication. Only the PUBLIC site key is read
-   from comunidade.html. Secret validation happens in Supabase Auth after the owner
-   configures CAPTCHA there. Never place the Turnstile secret in this repository. */
+/* Cyber-Us Turnstile. The public site key lives in comunidade.html. Supabase Auth
+   must validate the token with a PRIVATE secret configured in its dashboard. */
 (() => {
   'use strict';
   if (document.body.dataset.communityPage !== 'account') return;
@@ -17,29 +16,28 @@
     status.dataset.en = en;
   };
   const failClosed = (pt, en) => {
-    ids.forEach(id => {
-      document.getElementById(id)?.querySelectorAll('button[type="submit"]').forEach(button => { button.disabled = true; });
-    });
+    ids.forEach(id => document.getElementById(id)?.querySelectorAll('button[type="submit"]')
+      .forEach(button => { button.disabled = true; }));
     setStatus(pt, en);
   };
   window.CyberUsCaptcha = {
+    configured: false,
     token(formId) { return tokens.get(formId) || null; },
     reset(formId) {
       tokens.delete(formId);
       const widget = widgets.get(formId);
       if (widget !== undefined && window.turnstile) window.turnstile.reset(widget);
-    },
-    configured: false
+    }
   };
   if (!key || !/^[a-zA-Z0-9_-]{10,100}$/.test(key)) {
     failClosed('Cadastro e login indisponíveis até a configuração do CAPTCHA pelo administrador.', 'Sign-up and sign-in are unavailable until the administrator configures CAPTCHA.');
     return;
   }
   if (!window.turnstile) {
-    failClosed('Não foi possível carregar a verificação antibots. Atualize a página ou tente outro navegador.', 'Bot verification could not load. Refresh the page or try a different browser.');
+    failClosed('Não foi possível carregar a verificação antibots. Atualize a página ou tente outro navegador.', 'Bot verification could not load. Refresh the page or try another browser.');
     return;
   }
-  window.turnstile.ready(() => {
+  const mountWidgets = () => {
     try {
       ids.forEach(formId => {
         const element = document.getElementById(formId + 'Captcha');
@@ -59,5 +57,17 @@
     } catch (error) {
       failClosed('Erro ao inicializar a verificação antibots. Tente novamente mais tarde.', 'Could not initialize bot verification. Try again later.');
     }
+  };
+  window.turnstile.ready(() => {
+    const guest = document.getElementById('guestAccount');
+    if (!guest?.hidden) return mountWidgets();
+    // The account page reveals these forms only after checking the current session.
+    // Rendering Turnstile into a display:none ancestor may fail on mobile browsers.
+    const observer = new MutationObserver(() => {
+      if (guest.hidden) return;
+      observer.disconnect();
+      mountWidgets();
+    });
+    observer.observe(guest, { attributes: true, attributeFilter: ['hidden'] });
   });
 })();
