@@ -15,14 +15,14 @@
 .fanarts-showcase-artist{color:var(--showcase-neon,#7dd3fc);font-size:clamp(.95rem,2vw,1.2rem);font-weight:900;overflow-wrap:anywhere}
 .fanarts-showcase-region{color:#e4eaf5;font-size:.75rem;overflow-wrap:anywhere}
 .fanarts-showcase.is-changing .fanarts-showcase-current{opacity:.12;transform:translateX(-50%) scale(.96)}
-/* O controle permanece acessível, mas não ocupa a faixa de créditos nem aparece o tempo todo no desktop. */
+/* Desktop: hover pausa automaticamente, sem botão visível; foco pelo teclado revela o controle. */
 .fanarts-showcase-pause{position:absolute;z-index:4;right:.45rem;top:.45rem;display:grid;place-items:center;width:44px;height:44px;padding:0;border:1px solid rgba(125,211,252,.35);border-radius:10px;background:rgba(9,13,21,.85);color:#e4eaf5;font:inherit;font-size:0;cursor:pointer;opacity:0;pointer-events:none;transform:translateY(-3px);transition:opacity .18s ease,transform .18s ease}
 .fanarts-showcase-pause::before{content:'Ⅱ';font-size:1.1rem;font-weight:900;line-height:1}
 .fanarts-showcase-pause[aria-pressed="true"]::before{content:'▶';font-size:1rem}
-.fanarts-showcase:hover .fanarts-showcase-pause,.fanarts-showcase:focus-within .fanarts-showcase-pause,.fanarts-showcase-pause:focus-visible{opacity:.92;pointer-events:auto;transform:none}
+.fanarts-showcase:focus-within .fanarts-showcase-pause,.fanarts-showcase-pause:focus-visible{opacity:.92;pointer-events:auto;transform:none}
 .fanarts-showcase-pause:focus-visible{outline:3px solid #7dd3fc;outline-offset:2px}
-/* Sem hover, mostrar somente o ícone pequeno: toque e teclado continuam capazes de pausar. */
-@media(hover:none){.fanarts-showcase-pause{opacity:.55;pointer-events:auto;transform:none}}
+/* Mobile/touch: ícone discreto e tocável; sinalizar quando a vitrine está pausada. */
+@media(hover:none){.fanarts-showcase-pause{opacity:.55;pointer-events:auto;transform:none}.fanarts-showcase-pause[aria-pressed="true"]{opacity:.92}}
 /* Galeria coerente com a vitrine: apenas obras aprovadas, sem recortar imagens. */
 .fanarts-approved-gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,225px),1fr));gap:1.5rem;margin:1.5rem 0}
 .fanarts-gallery-work{display:flex;flex-direction:column;min-width:0;margin:0;overflow:hidden;border:1px solid var(--showcase-neon,#7dd3fc);border-radius:15px;background:#0c1119}
