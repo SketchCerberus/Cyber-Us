@@ -18,6 +18,8 @@
 .community-hint{color:var(--muted);font-size:.92rem}
 .community-link{color:var(--cyan);border:0;background:transparent;padding:.5rem 0;cursor:pointer;font:inherit;font-weight:700;text-align:left}
 .community-link:hover{text-decoration:underline}
+.community-form .password-toggle{align-self:flex-start;min-height:44px;padding:.35rem .5rem;margin-top:-.5rem;font-size:.85rem}
+.password-toggle:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
 .reset-form p{font-size:.85rem;color:var(--muted)}
 .community-votes{display:flex;gap:.75rem;flex-wrap:wrap;margin:1.1rem 0}
 .community-vote{min-height:44px;padding:.65rem 1rem;border:1px solid var(--community-border);border-radius:9px;background:var(--panel2);color:var(--text);font:inherit;font-weight:700;cursor:pointer}

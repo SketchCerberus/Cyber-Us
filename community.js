@@ -87,25 +87,72 @@
     if (state.moderator) await loadModeration();
   }
 
+  function installPasswordToggle(input) {
+    const button = node('button', 'community-link password-toggle');
+    button.type = 'button';
+    button.setAttribute('aria-controls', input.id);
+    const render = () => {
+      const visible = input.type === 'text';
+      button.textContent = visible ? t('Ocultar senha', 'Hide password') : t('Mostrar senha', 'Show password');
+      button.setAttribute('aria-pressed', String(visible));
+    };
+    button.addEventListener('click', () => {
+      input.type = input.type === 'password' ? 'text' : 'password';
+      render();
+    });
+    input.insertAdjacentElement('afterend', button);
+    byId('languageBtn')?.addEventListener('click', render);
+    render();
+    return () => { input.value = ''; input.type = 'password'; render(); };
+  }
+
+  function installPasswordConfirmation(password, confirmation) {
+    const message = () => password.value !== confirmation.value ? t('As senhas não coincidem. Digite a mesma senha nos dois campos.', 'Passwords do not match. Enter the same password in both fields.') : '';
+    const validate = () => confirmation.setCustomValidity(message());
+    password.addEventListener('input', validate);
+    confirmation.addEventListener('input', validate);
+    byId('languageBtn')?.addEventListener('click', validate);
+    return () => {
+      validate();
+      if (password.value.length < 8) {
+        notice('accountStatus', t('Use uma senha de pelo menos 8 caracteres.', 'Use a password with at least 8 characters.'), true);
+        password.focus();
+        return false;
+      }
+      if (message()) {
+        notice('accountStatus', message(), true);
+        confirmation.reportValidity();
+        return false;
+      }
+      return true;
+    };
+  }
+
   function installAccountForms() {
+    const clearLoginPassword = installPasswordToggle(byId('loginPassword'));
+    const clearSignupPassword = installPasswordToggle(byId('signupPassword'));
+    const clearSignupConfirmation = installPasswordToggle(byId('signupPasswordConfirm'));
+    const validateSignup = installPasswordConfirmation(byId('signupPassword'), byId('signupPasswordConfirm'));
     byId('signupForm').addEventListener('submit', async event => {
       event.preventDefault();
       const form = event.currentTarget;
       const email = byId('signupEmail').value.trim();
       const password = byId('signupPassword').value;
-      if (password.length < 8) return notice('accountStatus', t('Use uma senha de pelo menos 8 caracteres.', 'Use a password with at least 8 characters.'), true);
+      if (!validateSignup()) return;
       const captchaToken = captchaTokenFor('signupForm');
       if (!captchaToken) return;
       busy(form, true);
       try {
         const { data, error } = await db.auth.signUp({ email, password, options: { emailRedirectTo: ACCOUNT_URL, captchaToken } });
-        byId('signupPassword').value = '';
         if (error) return notice('accountStatus', errorText(error), true);
         if (data.session) await refreshIdentity();
         notice('accountStatus', t('Cadastro solicitado. Se necessário, abra o link de confirmação enviado ao seu e-mail.', 'Sign-up requested. If required, follow the confirmation link sent to your email.'));
       } catch (error) {
         notice('accountStatus', errorText(error), true);
       } finally {
+        clearSignupPassword();
+        clearSignupConfirmation();
+        byId('signupPasswordConfirm').setCustomValidity('');
         busy(form, false);
         resetCaptcha('signupForm');
       }
@@ -118,12 +165,12 @@
       busy(form, true);
       try {
         const { error } = await db.auth.signInWithPassword({ email: byId('loginEmail').value.trim(), password: byId('loginPassword').value, options: { captchaToken } });
-        byId('loginPassword').value = '';
         if (error) return notice('accountStatus', errorText(error), true);
         await refreshIdentity();
       } catch (error) {
         notice('accountStatus', errorText(error), true);
       } finally {
+        clearLoginPassword();
         busy(form, false);
         resetCaptcha('loginForm');
       }
@@ -174,22 +221,42 @@
     passwordInput.autocomplete = 'new-password';
     passwordInput.minLength = 8;
     passwordInput.required = true;
+    const confirmationLabel = node('label', '', t('Repita a nova senha', 'Repeat new password'));
+    confirmationLabel.htmlFor = 'newPasswordConfirm';
+    const confirmationInput = node('input');
+    confirmationInput.id = 'newPasswordConfirm';
+    confirmationInput.type = 'password';
+    confirmationInput.autocomplete = 'new-password';
+    confirmationInput.minLength = 8;
+    confirmationInput.required = true;
     const passwordButton = node('button', 'action', t('Alterar senha', 'Change password'));
     passwordButton.type = 'submit';
-    passwordForm.append(passwordLabel, passwordInput, passwordButton);
+    passwordForm.append(passwordLabel, passwordInput, confirmationLabel, confirmationInput, passwordButton);
     byId('memberAccount').insertBefore(passwordForm, byId('logoutBtn'));
+    const clearNewPassword = installPasswordToggle(passwordInput);
+    const clearNewConfirmation = installPasswordToggle(confirmationInput);
+    const validateNewPassword = installPasswordConfirmation(passwordInput, confirmationInput);
     passwordForm.addEventListener('submit', async event => {
       event.preventDefault();
       if (!state.user) return;
+      if (!validateNewPassword()) return;
       busy(passwordForm, true);
-      const { error } = await db.auth.updateUser({ password: passwordInput.value });
-      busy(passwordForm, false);
-      passwordInput.value = '';
-      notice('accountStatus', error ? errorText(error) : t('Senha atualizada.', 'Password updated.'), !!error);
+      try {
+        const { error } = await db.auth.updateUser({ password: passwordInput.value });
+        notice('accountStatus', error ? errorText(error) : t('Senha atualizada.', 'Password updated.'), !!error);
+      } catch (error) {
+        notice('accountStatus', errorText(error), true);
+      } finally {
+        clearNewPassword();
+        clearNewConfirmation();
+        confirmationInput.setCustomValidity('');
+        busy(passwordForm, false);
+      }
     });
     byId('reloadModeration').addEventListener('click', loadModeration);
     byId('languageBtn')?.addEventListener('click', () => {
       passwordLabel.textContent = t('Nova senha (mínimo 8 caracteres)', 'New password (at least 8 characters)');
+      confirmationLabel.textContent = t('Repita a nova senha', 'Repeat new password');
       passwordButton.textContent = t('Alterar senha', 'Change password');
       refreshIdentity();
     });
