@@ -20,7 +20,7 @@
     nav.insertBefore(account, languagePicker);
   }
 
-  // O menu compacto preserva TODOS os links no celular: a home antes ocultava seus links.
+  // O menu compacto preserva TODOS os links no celular e em telas estreitas.
   if (!nav.id) nav.id = 'site-primary-navigation';
   const menuButton = document.createElement('button');
   menuButton.type = 'button';
@@ -109,7 +109,7 @@
     else if (scrollingDown) conceal();
   }, { passive: true });
   window.addEventListener('resize', () => {
-    if (window.innerWidth > 800 && menuOpen) closeMenu();
+    if (window.innerWidth > 1100 && menuOpen) closeMenu();
   });
   new MutationObserver(syncMenu).observe(document.documentElement, {
     attributes: true, attributeFilter: ['lang']
