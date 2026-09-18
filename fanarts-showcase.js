@@ -62,6 +62,55 @@
   style.href = 'fanarts-showcase.css';
   document.head.appendChild(style);
 
+  function bilingual(element, pt, en) {
+    if (!element) return;
+    element.dataset.pt = pt;
+    element.dataset.en = en;
+    element.textContent = document.documentElement.lang === 'en' ? en : pt;
+  }
+  const gallery = document.querySelector('.fanarts-gallery');
+  const galleryImages = [];
+  if (gallery) {
+    const grid = document.createElement('div');
+    grid.className = 'fanarts-approved-gallery';
+    for (const work of works) {
+      const figure = document.createElement('figure');
+      figure.className = 'fanarts-gallery-work';
+      figure.dataset.accent = work.accent;
+      const image = document.createElement('img');
+      image.loading = 'lazy';
+      image.decoding = 'async';
+      image.src = work.image;
+      image.alt = '';
+      image.addEventListener('error', () => figure.remove());
+      const caption = document.createElement('figcaption');
+      const name = document.createElement('strong');
+      name.textContent = work.artist;
+      caption.appendChild(name);
+      if (work.region) {
+        const region = document.createElement('span');
+        region.textContent = work.region;
+        caption.appendChild(region);
+      }
+      figure.append(image, caption);
+      grid.appendChild(figure);
+      galleryImages.push({ image, artist: work.artist });
+    }
+    const empty = gallery.querySelector('.fanarts-empty');
+    if (empty) empty.hidden = true;
+    bilingual(gallery.querySelector('#gallery-title'), 'Artes da comunidade.', 'Art from the community.');
+    bilingual(gallery.querySelector('.fanarts-section-heading > p'),
+      'Obras aprovadas, com crédito e região apenas quando autorizada pelo artista.',
+      'Approved works, with credit and region only when authorized by the artist.');
+    bilingual(document.querySelector('.fanarts-kicker'),
+      'Confira as artes publicadas · Envios ainda não estão abertos',
+      'Explore published art · Submissions are not open yet');
+    bilingual(document.querySelector('.site-footer span[data-pt]'),
+      'Galeria de fanarts · Envios em preparação',
+      'Fanart gallery · Submissions in development');
+    gallery.appendChild(grid);
+  }
+
   const originalOrbit = signal.querySelector('.fanarts-signal-orbit');
   const originalBottom = signal.querySelector('.fanarts-signal-bottom');
   const stage = document.createElement('div');
@@ -79,7 +128,7 @@
     image.decoding = 'async';
     image.alt = '';
     image.addEventListener('error', () => {
-      // Uma referência inválida nunca deve deixar uma imagem quebrada visível.
+      // Uma referência inválida nunca deve deixar uma imagem quebrada visível na vitrine.
       clearTimeout(timer);
       clearTimeout(transitionTimer);
       stage.remove();
@@ -130,6 +179,7 @@
     pause.setAttribute('aria-label', manuallyPaused ? (pt ? 'Continuar a vitrine de fanarts' : 'Resume fanart showcase') : (pt ? 'Pausar a vitrine de fanarts' : 'Pause fanart showcase'));
     const current = cards.current;
     current.image.alt = pt ? `Fanart de ${current.artist.textContent}` : `Fanart by ${current.artist.textContent}`;
+    galleryImages.forEach(entry => { entry.image.alt = pt ? `Fanart de ${entry.artist}` : `Fanart by ${entry.artist}`; });
   }
   pause.addEventListener('click', () => {
     manuallyPaused = !manuallyPaused;
