@@ -4,6 +4,86 @@ const translations = {
 };
 
 let language = localStorage.getItem("cyber-us-language") || "en";
+if (language !== 'pt' && language !== 'en') language = 'en';
+
+// Keep the menu labels bilingual without changing navigation destinations.
+for (const [href, pt, en] of [
+  ['#comic', 'Quadrinho', 'Comic'],
+  ['#about', 'Sobre a HQ', 'About the comic'],
+  ['#newsletter', 'Newsletter', 'Newsletter'],
+  ['#support', 'Apoio', 'Fund Cyber-Us']
+]) {
+  const link = document.querySelector(`.site-header nav a[href="${href}"]`);
+  if (link) {
+    link.setAttribute('data-pt', pt);
+    link.setAttribute('data-en', en);
+  }
+}
+
+// The trigger displays the ACTIVE language; clicking opens two choices below it.
+function makeLanguagePicker(trigger, getLanguage, setLanguage) {
+  const wrapper = document.createElement('span');
+  wrapper.className = 'language-picker';
+  wrapper.style.cssText = 'position:relative;display:inline-block;flex:0 0 auto';
+  trigger.parentNode.insertBefore(wrapper, trigger);
+  wrapper.appendChild(trigger);
+  trigger.type = 'button';
+  trigger.setAttribute('aria-haspopup', 'true');
+  trigger.setAttribute('aria-expanded', 'false');
+  trigger.setAttribute('aria-controls', 'languageChoices');
+  const panel = document.createElement('div');
+  panel.id = 'languageChoices';
+  panel.setAttribute('role', 'group');
+  panel.setAttribute('aria-label', 'Idioma / Language');
+  panel.style.cssText = 'position:absolute;right:0;top:calc(100% + 8px);z-index:50;min-width:172px;padding:6px;background:var(--panel,#11151d);border:1px solid var(--line,rgba(255,255,255,.15));border-radius:10px;box-shadow:0 12px 30px rgba(0,0,0,.35)';
+  panel.hidden = true;
+  panel.style.display = 'none';
+  const options = {};
+  for (const [code, label] of [['pt', 'Português'], ['en', 'English']]) {
+    const choice = document.createElement('button');
+    choice.type = 'button';
+    choice.className = trigger.className;
+    choice.textContent = label;
+    choice.style.cssText = 'display:block;width:100%;margin:0;border:0;text-align:left;white-space:nowrap';
+    choice.addEventListener('click', () => {
+      setLanguage(code);
+      close();
+      trigger.focus();
+    });
+    panel.appendChild(choice);
+    options[code] = choice;
+  }
+  wrapper.appendChild(panel);
+  function close() {
+    panel.hidden = true;
+    panel.style.display = 'none';
+    trigger.setAttribute('aria-expanded', 'false');
+  }
+  trigger.addEventListener('click', () => {
+    const open = panel.hidden;
+    panel.hidden = !open;
+    panel.style.display = open ? 'block' : 'none';
+    trigger.setAttribute('aria-expanded', String(open));
+    if (open) options[getLanguage()].focus();
+  });
+  document.addEventListener('click', event => { if (!wrapper.contains(event.target)) close(); });
+  wrapper.addEventListener('keydown', event => {
+    if (event.key === 'Escape') { close(); trigger.focus(); }
+  });
+  return {
+    sync(code) {
+      trigger.textContent = code === 'pt' ? 'Português ▾' : 'English ▾';
+      trigger.setAttribute('aria-label', code === 'pt' ? 'Idioma atual: português. Escolher idioma' : 'Current language: English. Choose language');
+      options.pt.setAttribute('aria-pressed', String(code === 'pt'));
+      options.en.setAttribute('aria-pressed', String(code === 'en'));
+    }
+  };
+}
+
+const picker = makeLanguagePicker(document.getElementById('languageBtn'), () => language, code => {
+  language = code;
+  applyLanguage();
+});
 
 function applyLanguage() {
   const target = language === "pt" ? "data-pt" : "data-en";
@@ -26,14 +106,9 @@ function applyLanguage() {
   }
 
   document.documentElement.lang = language === "pt" ? "pt-BR" : "en";
-  document.getElementById("languageBtn").textContent = language === "pt" ? "EN" : "PT-BR";
+  picker.sync(language);
   localStorage.setItem("cyber-us-language", language);
 }
-
-document.getElementById("languageBtn").addEventListener("click", () => {
-  language = language === "en" ? "pt" : "en";
-  applyLanguage();
-});
 
 document.getElementById("year").textContent = new Date().getFullYear();
 
