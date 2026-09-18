@@ -1,0 +1,35 @@
+/* Vitrine opcional: só aparece se houver fanarts aprovadas em fanarts-showcase.js. */
+.fanarts-signal.has-showcase{background:radial-gradient(ellipse at center,rgba(125,211,252,.08),transparent 75%),repeating-linear-gradient(0deg,transparent 0 33px,rgba(125,211,252,.045) 34px 35px),var(--panel)}
+.fanarts-signal.has-showcase .fanarts-signal-orbit,.fanarts-signal.has-showcase .fanarts-signal-bottom{display:none}
+.fanarts-showcase{position:relative;isolation:isolate;width:100%;height:clamp(255px,30vw,335px);min-height:0;margin:auto;overflow:hidden;border-radius:17px}
+.fanarts-showcase-card{position:absolute;inset:0 auto 0 50%;width:78%;height:100%;margin:0;display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--showcase-neon,#7dd3fc);border-radius:15px;background:#0c1119;box-shadow:0 0 24px color-mix(in srgb,var(--showcase-neon,#7dd3fc) 17%,transparent);transition:opacity .4s ease,transform .4s ease,filter .4s ease}
+.fanarts-showcase-card[hidden]{display:none}
+.fanarts-showcase-card[data-accent="blue"],.fanarts-gallery-work[data-accent="blue"]{--showcase-neon:#72e5ff}
+.fanarts-showcase-card[data-accent="red"],.fanarts-gallery-work[data-accent="red"]{--showcase-neon:#ff647d}
+.fanarts-showcase-card[data-accent="green"],.fanarts-gallery-work[data-accent="green"]{--showcase-neon:#79f7ab}
+.fanarts-showcase-card img{display:block;flex:1 1 auto;width:100%;min-height:0;object-fit:contain;object-position:center;background:#0a0e14}
+.fanarts-showcase-current{z-index:3;transform:translateX(-50%);opacity:1}
+.fanarts-showcase-previous{z-index:1;transform:translateX(-50%) translateX(-42%) scale(.8);opacity:.28;filter:blur(2px);pointer-events:none}
+.fanarts-showcase-next{z-index:2;transform:translateX(-50%) translateX(42%) scale(.8);opacity:.35;filter:blur(2px);pointer-events:none}
+.fanarts-showcase-card figcaption{display:flex;flex-direction:column;justify-content:center;gap:.18rem;min-height:58px;padding:.45rem .8rem;border-top:2px solid var(--showcase-neon,#7dd3fc);background:#090d15;text-align:center;line-height:1.2}
+.fanarts-showcase-artist{color:var(--showcase-neon,#7dd3fc);font-size:clamp(.95rem,2vw,1.2rem);font-weight:900;overflow-wrap:anywhere}
+.fanarts-showcase-region{color:#e4eaf5;font-size:.75rem;overflow-wrap:anywhere}
+.fanarts-showcase.is-changing .fanarts-showcase-current{opacity:.12;transform:translateX(-50%) scale(.96)}
+/* Desktop: hover pausa automaticamente, sem botão visível; foco pelo teclado revela o controle. */
+.fanarts-showcase-pause{position:absolute;z-index:4;right:.45rem;top:.45rem;display:grid;place-items:center;width:44px;height:44px;padding:0;border:1px solid rgba(125,211,252,.35);border-radius:10px;background:rgba(9,13,21,.85);color:#e4eaf5;font:inherit;font-size:0;cursor:pointer;opacity:0;pointer-events:none;transform:translateY(-3px);transition:opacity .18s ease,transform .18s ease}
+.fanarts-showcase-pause::before{content:'Ⅱ';font-size:1.1rem;font-weight:900;line-height:1}
+.fanarts-showcase-pause[aria-pressed="true"]::before{content:'▶';font-size:1rem}
+.fanarts-showcase:focus-within .fanarts-showcase-pause,.fanarts-showcase-pause:focus-visible{opacity:.92;pointer-events:auto;transform:none}
+.fanarts-showcase-pause:focus-visible{outline:3px solid #7dd3fc;outline-offset:2px}
+/* Mobile/touch: ícone discreto e tocável; sinalizar quando a vitrine está pausada. */
+@media(hover:none){.fanarts-showcase-pause{opacity:.55;pointer-events:auto;transform:none}.fanarts-showcase-pause[aria-pressed="true"]{opacity:.92}}
+/* Galeria coerente com a vitrine: apenas obras aprovadas, sem recortar imagens. */
+.fanarts-approved-gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,225px),1fr));gap:1.5rem;margin:1.5rem 0}
+.fanarts-gallery-work{display:flex;flex-direction:column;min-width:0;margin:0;overflow:hidden;border:1px solid var(--showcase-neon,#7dd3fc);border-radius:15px;background:#0c1119}
+.fanarts-gallery-work img{display:block;width:100%;height:clamp(200px,25vw,340px);object-fit:contain;background:#090d15}
+.fanarts-gallery-work figcaption{display:flex;flex-direction:column;gap:.2rem;min-height:62px;padding:.75rem 1rem;border-top:2px solid var(--showcase-neon,#7dd3fc)}
+.fanarts-gallery-work figcaption strong{color:var(--showcase-neon,#7dd3fc);overflow-wrap:anywhere}
+.fanarts-gallery-work figcaption span{color:#e4eaf5;font-size:.85rem;overflow-wrap:anywhere}
+@media(max-width:780px){.fanarts-showcase{height:clamp(250px,70vw,335px)}.fanarts-showcase-card{width:76%}}
+@media(max-width:390px){.fanarts-showcase-card{width:82%}}
+@media(prefers-reduced-motion:reduce){.fanarts-showcase-card,.fanarts-showcase-pause{transition:none}.fanarts-showcase.is-changing .fanarts-showcase-current{opacity:1;transform:translateX(-50%)}}

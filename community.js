@@ -102,7 +102,7 @@
       render();
     });
     input.insertAdjacentElement('afterend', button);
-    byId('languageBtn')?.addEventListener('click', render);
+    byId('languageChoices')?.addEventListener('click', render);
     render();
     return () => { input.value = ''; input.type = 'password'; render(); };
   }
@@ -113,7 +113,7 @@
     const validate = () => confirmation.setCustomValidity(message());
     password.addEventListener('input', validate);
     confirmation.addEventListener('input', validate);
-    byId('languageBtn')?.addEventListener('click', validate);
+    byId('languageChoices')?.addEventListener('click', validate);
     return () => {
       validate();
       if (password.value.length < 8) {
@@ -257,7 +257,7 @@
       }
     });
     byId('reloadModeration').addEventListener('click', loadModeration);
-    byId('languageBtn')?.addEventListener('click', () => {
+    byId('languageChoices')?.addEventListener('click', () => {
       passwordLabel.textContent = t('Nova senha (mínimo 8 caracteres)', 'New password (at least 8 characters)');
       confirmationLabel.textContent = t('Repita a nova senha', 'Repeat new password');
       passwordButton.textContent = t('Alterar senha', 'Change password');
@@ -435,7 +435,7 @@
       await loadComments(false);
     });
     byId('moreComments').addEventListener('click', () => loadComments(true));
-    byId('languageBtn')?.addEventListener('click', () => refreshIdentity());
+    byId('languageChoices')?.addEventListener('click', () => refreshIdentity());
   }
 
   if (account) installAccountForms();

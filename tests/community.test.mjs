@@ -92,12 +92,13 @@ test('Reader switches the real episode images without a community service', () =
     const imageTag = html.match(/<img data-src-pt=[^>]+>/)[0];
     const attributes = Object.fromEntries([...imageTag.matchAll(/([\w-]+)="([^"]*)"/g)].map(m=>[m[1],m[2]]));
     const image = {getAttribute:key=>attributes[key],setAttribute:(key,value)=>attributes[key]=value};
-    let click;
-    const button = {addEventListener:(_,fn)=>click=fn,setAttribute(){}};
-    const document = {getElementById:()=>button,documentElement:{},querySelectorAll:selector=>selector.startsWith('img[')?[image]:[]};
+    const created=[];
+    const make=()=>({style:{},children:[],events:{},setAttribute(){},focus(){},addEventListener(event,fn){this.events[event]=fn;},appendChild(child){this.children.push(child);},insertBefore(){},contains(){return false;}});
+    const button=make(); button.parentNode=make();
+    const document = {getElementById:()=>button,documentElement:{},createElement(){const el=make();created.push(el);return el;},addEventListener(){},querySelector:()=>null,querySelectorAll:selector=>selector.startsWith('img[')?[image]:[]};
     vm.runInNewContext(reader,{document,URLSearchParams,window:{location:{search:'?lang=pt'}},localStorage:{getItem:()=>null,setItem(){}}});
     assert.equal(attributes.src,attributes['data-src-pt']);
-    click();
+    created.find(el=>el.textContent==='English').events.click();
     assert.equal(document.documentElement.lang,'en');
     assert.equal(attributes.src,attributes['data-src-en']);
     assert.ok(readFileSync(new URL('../episodios/'+attributes.src,import.meta.url)).length>0);

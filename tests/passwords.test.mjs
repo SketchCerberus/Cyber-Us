@@ -82,7 +82,7 @@ test('Visibility controls are independent, do not submit and track PT/EN',async(
   }
   await s.byId('signupPassword').toggle.fire('click');
   assert.equal(s.byId('signupPasswordConfirm').type,'password');
-  s.setEnglish(); await s.byId('languageBtn').fire('click');
+  s.setEnglish(); await s.byId('languageChoices').fire('click');
   assert.equal(s.byId('signupPassword').toggle.textContent,'Hide password');
   assert.equal(s.byId('signupPasswordConfirm').toggle.textContent,'Show password');
   assert.equal(s.calls.length,0);
