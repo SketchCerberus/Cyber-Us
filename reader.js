@@ -93,6 +93,12 @@
     if (newsletterSignal) {
       newsletterSignal.querySelector('small').textContent = lang === 'pt' ? 'TRANSMISSÃO PENDENTE' : 'TRANSMISSION PENDING';
     }
+    const aboutHero = document.querySelector('.about-us-hero');
+    if (aboutHero) {
+      aboutHero.querySelector('.eyebrow').textContent = lang === 'pt' ? 'CYBER-US // SOBRE NÓS' : 'CYBER-US // ABOUT';
+      aboutHero.querySelector('.about-us-art small:first-child').textContent = lang === 'pt' ? 'CYBER-US / SINAL DO CRIADOR' : 'CYBER-US / CREATOR SIGNAL';
+      aboutHero.querySelector('.about-us-art small:last-child').textContent = lang === 'pt' ? 'HISTÓRIA EM ANDAMENTO · · ·' : 'STORY IN PROGRESS · · ·';
+    }
     if (picker) picker.sync(lang);
     try { localStorage.setItem('cyber-us-language', lang); } catch (_) { /* private mode */ }
   }
