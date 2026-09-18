@@ -7,7 +7,10 @@
   <title>Cyber-Us — Inicializando</title>
   <link rel="stylesheet" href="../reader.css">
   <link rel="stylesheet" href="../comic-reader.css">
+  <link rel="stylesheet" href="../community.css">
   <script defer src="../reader.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
+  <script defer src="../community.js"></script>
 </head>
 <body>
   <a class="skip" href="#main" data-pt="Pular para o conteúdo" data-en="Skip to content">Pular para o conteúdo</a>
@@ -15,6 +18,7 @@
     <a class="logo" href="../index.html" aria-label="Cyber-Us — início">CYBER <span>US</span></a>
     <nav aria-label="Navegação principal">
       <a href="../catalogo.html" data-pt="Catálogo" data-en="Catalog">Catálogo</a>
+      <a href="../comunidade.html" data-pt="Minha conta" data-en="My account">Minha conta</a>
       <button id="languageBtn" class="lang-btn" type="button" aria-label="Switch to English">EN</button>
     </nav>
   </header>
@@ -33,6 +37,16 @@
       <span class="pending" aria-disabled="true" data-pt="← Início da história" data-en="← Start of the story">← Início da história</span>
       <a href="episodio-02.html" data-pt="Processando →" data-en="Processing →">Processando →</a>
     </nav>
+    <section class="community-panel" data-community-episode="episodio-01" aria-labelledby="communityHeading">
+      <h2 id="communityHeading" data-pt="Converse sobre este episódio" data-en="Discuss this episode">Converse sobre este episódio</h2>
+      <p class="community-hint" data-pt="Comentários e votos são compartilhados entre as versões em português e inglês. A leitura não exige conta." data-en="Comments and votes are shared by the Portuguese and English versions. Reading does not require an account.">Comentários e votos são compartilhados entre as versões em português e inglês. A leitura não exige conta.</p>
+      <p id="communityStatus" class="community-notice" role="status" aria-live="polite" data-pt="Carregando a comunidade…" data-en="Loading the community…">Carregando a comunidade…</p>
+      <div class="community-votes" role="group" aria-label="Reações ao episódio"><button id="voteLike" class="community-vote" type="button" aria-pressed="false" disabled><span aria-hidden="true">👍</span> <span data-pt="Gostei" data-en="Like">Gostei</span> <span id="likeCount" aria-live="polite">—</span></button><button id="voteDislike" class="community-vote" type="button" aria-pressed="false" disabled><span aria-hidden="true">👎</span> <span data-pt="Não gostei" data-en="Dislike">Não gostei</span> <span id="dislikeCount" aria-live="polite">—</span></button></div>
+      <p id="joinCommunity" class="community-hint"><a href="../comunidade.html" data-pt="Entre na sua conta para votar e comentar." data-en="Sign in to vote and comment.">Entre na sua conta para votar e comentar.</a></p>
+      <h3 data-pt="Comentários" data-en="Comments">Comentários</h3>
+      <form id="commentForm" class="community-form" hidden><label for="commentBody" data-pt="Seu comentário (até 2.000 caracteres)" data-en="Your comment (up to 2,000 characters)">Seu comentário (até 2.000 caracteres)</label><textarea id="commentBody" maxlength="2000" minlength="1" rows="4" required></textarea><button type="submit" class="action" data-pt="Publicar comentário" data-en="Post comment">Publicar comentário</button></form>
+      <ol id="commentList" class="comment-list" aria-live="polite"></ol><button id="moreComments" class="community-more" type="button" hidden data-pt="Carregar mais comentários" data-en="Load more comments">Carregar mais comentários</button>
+    </section>
   </main>
   <footer class="site-footer">CYBER-US · <a href="../catalogo.html" data-pt="Voltar ao catálogo" data-en="Back to catalog">Voltar ao catálogo</a></footer>
 </body>

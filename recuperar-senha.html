@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Contas de leitores e comunidade oficial da Cyber-Us.">
+  <meta name="cyber-us-turnstile-site-key" content="0x4AAAAAAE7INaNZZLC7NqAN">
+  <title>Cyber-Us — Recuperar senha</title>
+  <link rel="stylesheet" href="reader.css">
+  <link rel="stylesheet" href="community.css">
+  <script defer src="reader.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
+  <script defer src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"></script>
+  <script defer src="community-captcha.js"></script>
+  <script defer src="community.js"></script>
+</head>
+<body data-community-page="account">
+  <a class="skip" href="#main" data-pt="Pular para o conteúdo" data-en="Skip to content">Pular para o conteúdo</a>
+  <header class="site-header"><a class="logo" href="index.html" aria-label="Cyber-Us — início">CYBER <span>US</span></a><nav aria-label="Navegação principal"><a href="catalogo.html" data-pt="Episódios" data-en="Episodes">Episódios</a><button id="languageBtn" class="lang-btn" type="button" aria-label="Switch to English">EN</button></nav></header>
+  <main id="main" class="wrap community-account">
+    <p class="eyebrow" data-pt="COMUNIDADE OFICIAL" data-en="OFFICIAL COMMUNITY">COMUNIDADE OFICIAL</p>
+    <h1 data-pt="Sua conta Cyber-Us" data-en="Your Cyber-Us account">Sua conta Cyber-Us</h1>
+    <p class="intro" data-pt="Crie sua conta para conversar sobre os episódios e votar. A leitura da HQ continua livre, mesmo sem conta." data-en="Create an account to discuss episodes and vote. Reading the comic remains free without an account.">Crie sua conta para conversar sobre os episódios e votar. A leitura da HQ continua livre, mesmo sem conta.</p>
+    <p id="accountStatus" class="community-notice" role="status" aria-live="polite" data-pt="Carregando a comunidade…" data-en="Loading the community…">Carregando a comunidade…</p>
+    <p id="captchaSetupStatus" class="community-notice error" role="status" aria-live="polite" hidden></p>
+    <div id="guestAccount" class="account-grid" hidden>
+      <section class="community-box" aria-labelledby="authHeading">
+        <h2 id="authHeading" data-pt="Recuperar senha" data-en="Reset password">Recuperar senha</h2>
+<form id="resetForm" class="community-form">
+          <p data-pt="Enviaremos um link para você escolher uma nova senha." data-en="We will email you a link to choose a new password.">Enviaremos um link para você escolher uma nova senha.</p>
+          <label for="resetEmail" data-pt="E-mail" data-en="Email">E-mail</label><input id="resetEmail" type="email" name="email" autocomplete="email" maxlength="254" required>
+          <div id="resetFormCaptcha" class="community-captcha" aria-label="Verificação antibots"></div>
+          <button type="submit" class="action" data-pt="Enviar link de recuperação" data-en="Send recovery link">Enviar link de recuperação</button>
+        </form>
+        <nav class="account-links" aria-label="Conta"><a href="comunidade.html" data-pt="Voltar para entrar" data-en="Back to sign in">Voltar para entrar</a></nav>
+      </section>
+    </div>
+    <section id="memberAccount" class="community-box" aria-labelledby="memberHeading" hidden><h2 id="memberHeading" data-pt="Seu perfil" data-en="Your profile">Seu perfil</h2><p id="memberEmail"></p><p id="banStatus" class="community-notice" hidden></p><form id="profileForm" class="community-form"><label for="profileName" data-pt="Nome público" data-en="Public name">Nome público</label><input id="profileName" name="display_name" minlength="1" maxlength="60" required><label for="profileUsername" data-pt="Usuário (3–24 letras minúsculas, números ou _)" data-en="Username (3–24 lowercase letters, numbers or _)">Usuário (3–24 letras minúsculas, números ou _)</label><input id="profileUsername" name="username" minlength="3" maxlength="24" pattern="[a-z0-9_]{3,24}" autocomplete="username"><button class="action" type="submit" data-pt="Salvar perfil" data-en="Save profile">Salvar perfil</button></form><button id="logoutBtn" class="community-link" type="button" data-pt="Sair da conta" data-en="Sign out">Sair da conta</button></section>
+    <section id="moderationPanel" class="community-box moderation-panel" aria-labelledby="moderationHeading" hidden><h2 id="moderationHeading" data-pt="Painel de moderação" data-en="Moderation panel">Painel de moderação</h2><p data-pt="Acesso exclusivo à equipe autorizada. Ações exigem motivo e são registradas." data-en="Authorized staff only. Actions require a reason and are logged.">Acesso exclusivo à equipe autorizada. Ações exigem motivo e são registradas.</p><button id="reloadModeration" class="action alt" type="button" data-pt="Atualizar moderação" data-en="Refresh moderation">Atualizar moderação</button><h3 data-pt="Comentários do episódio 1" data-en="Episode 1 comments">Comentários do episódio 1</h3><ol id="moderationComments" class="comment-list"></ol><h3 data-pt="Banimentos ativos" data-en="Active bans">Banimentos ativos</h3><ol id="activeBans" class="comment-list"></ol></section>
+    <p class="community-hint" data-pt="Nunca compartilhe sua senha. O autor pode moderar comentários e banir contas que descumprirem as regras da comunidade." data-en="Never share your password. The creator can moderate comments and ban accounts that break community rules.">Nunca compartilhe sua senha. O autor pode moderar comentários e banir contas que descumpram as regras da comunidade.</p>
+  </main>
+  <footer class="site-footer">CYBER-US · <span data-pt="Comunidade oficial" data-en="Official community">Comunidade oficial</span></footer>
+</body>
+</html>
