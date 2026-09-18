@@ -4,7 +4,7 @@
   'use strict';
   if (document.body.dataset.communityPage !== 'account') return;
   const key = document.querySelector('meta[name="cyber-us-turnstile-site-key"]')?.content.trim() || '';
-  const ids = ['loginForm', 'signupForm', 'resetForm'];
+  const ids = ['loginForm', 'signupForm', 'resetForm'].filter(id => document.getElementById(id));
   const tokens = new Map();
   const widgets = new Map();
   const status = document.getElementById('captchaSetupStatus');
@@ -45,6 +45,7 @@
         const widgetId = window.turnstile.render(element, {
           sitekey: key,
           theme: 'dark',
+          appearance: 'interaction-only',
           size: window.matchMedia('(max-width: 680px)').matches ? 'compact' : 'flexible',
           callback: token => { tokens.set(formId, token); },
           'expired-callback': () => { tokens.delete(formId); },

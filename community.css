@@ -4,7 +4,8 @@
 .community-panel h2,.community-account h2{margin:.1rem 0 .65rem;font-size:clamp(1.3rem,4vw,1.8rem)}
 .community-panel h3,.moderation-panel h3{margin:1.6rem 0 .8rem;font-size:1.15rem}
 .community-box{border:1px solid var(--community-border);background:var(--panel);border-radius:14px;padding:1.4rem;margin:1rem 0}
-.account-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;align-items:start}
+.account-grid{display:grid;grid-template-columns:minmax(0,1fr);max-width:480px;margin:1.5rem auto;gap:1rem;align-items:start}
+.account-links{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-top:1.25rem;font-size:.92rem}
 .account-grid .community-box{margin:0;min-width:0}
 .community-form{display:flex;flex-direction:column;gap:.65rem;margin:1rem 0}
 .community-form label{font-weight:700;font-size:.92rem}

@@ -88,6 +88,7 @@
   }
 
   function installPasswordToggle(input) {
+    if (!input) return () => {};
     const button = node('button', 'community-link password-toggle');
     button.type = 'button';
     button.setAttribute('aria-controls', input.id);
@@ -107,6 +108,7 @@
   }
 
   function installPasswordConfirmation(password, confirmation) {
+    if (!password || !confirmation) return () => false;
     const message = () => password.value !== confirmation.value ? t('As senhas não coincidem. Digite a mesma senha nos dois campos.', 'Passwords do not match. Enter the same password in both fields.') : '';
     const validate = () => confirmation.setCustomValidity(message());
     password.addEventListener('input', validate);
@@ -133,7 +135,7 @@
     const clearSignupPassword = installPasswordToggle(byId('signupPassword'));
     const clearSignupConfirmation = installPasswordToggle(byId('signupPasswordConfirm'));
     const validateSignup = installPasswordConfirmation(byId('signupPassword'), byId('signupPasswordConfirm'));
-    byId('signupForm').addEventListener('submit', async event => {
+    byId('signupForm')?.addEventListener('submit', async event => {
       event.preventDefault();
       const form = event.currentTarget;
       const email = byId('signupEmail').value.trim();
@@ -157,7 +159,7 @@
         resetCaptcha('signupForm');
       }
     });
-    byId('loginForm').addEventListener('submit', async event => {
+    byId('loginForm')?.addEventListener('submit', async event => {
       event.preventDefault();
       const form = event.currentTarget;
       const captchaToken = captchaTokenFor('loginForm');
@@ -175,10 +177,11 @@
         resetCaptcha('loginForm');
       }
     });
-    byId('resetForm').addEventListener('submit', async event => {
+    byId('resetForm')?.addEventListener('submit', async event => {
       event.preventDefault();
-      const email = byId('loginEmail').value.trim();
-      if (!email || !byId('loginEmail').checkValidity()) return notice('accountStatus', t('Digite um e-mail válido no formulário de login.', 'Enter a valid email in the sign-in form.'), true);
+      const emailInput = byId('resetEmail');
+      const email = emailInput.value.trim();
+      if (!email || !emailInput.checkValidity()) return notice('accountStatus', t('Digite um e-mail válido.', 'Enter a valid email.'), true);
       const captchaToken = captchaTokenFor('resetForm');
       if (!captchaToken) return;
       const form = event.currentTarget;

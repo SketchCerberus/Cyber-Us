@@ -19,8 +19,7 @@ test('Auth redirects stay on the script origin and base path, ignoring callback 
   assert.match(source, /redirectTo: ACCOUNT_URL, captchaToken/);
 });
 
-function mount({ key = 'public_site_key_12345', service = true, hidden = false } = {}) {
-  const forms = ['loginForm','signupForm','resetForm'];
+function mount({ key = 'public_site_key_12345', service = true, hidden = false, forms = ['loginForm','signupForm','resetForm'] } = {}) {
   const buttons = forms.map(() => ({disabled:false}));
   const elements = Object.fromEntries(forms.map((id,i) => [id,{querySelectorAll:()=>[buttons[i]]}]));
   for (const id of forms) elements[id+'Captcha'] = {};
@@ -67,6 +66,23 @@ test('CAPTCHA waits for visible forms and isolates, expires and resets tokens', 
   gate.reset('resetForm');
   assert.equal(gate.token('resetForm'),null);
   assert.deepEqual(state.resets,[2]);
+});
+
+test('Each auth page contains one form and mounts only its protected challenge', () => {
+  for (const [page, form] of [['comunidade.html','loginForm'],['cadastro.html','signupForm'],['recuperar-senha.html','resetForm']]) {
+    const html = readFileSync(new URL('../'+page, import.meta.url), 'utf8');
+    const authForms = [...html.matchAll(/id="(loginForm|signupForm|resetForm)"/g)].map(match=>match[1]);
+    assert.deepEqual(authForms,[form]);
+    const state = mount({forms:authForms});
+    assert.equal(state.renders.length,1);
+    assert.equal(state.renders[0].appearance,'interaction-only');
+    assert.equal(state.window.CyberUsCaptcha.token(form),null);
+    state.renders[0].callback('test-token');
+    assert.equal(state.window.CyberUsCaptcha.token(form),'test-token');
+    state.renders[0]['expired-callback']();
+    assert.equal(state.window.CyberUsCaptcha.token(form),null);
+    assert.match(html,/cyber-us-turnstile-site-key/);
+  }
 });
 
 test('Reader switches the real episode images without a community service', () => {

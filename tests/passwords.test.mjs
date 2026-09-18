@@ -13,6 +13,7 @@ function setup() {
     setAttribute(key, value) { this.attributes[key] = value; },
     setCustomValidity(value) { this.validationMessage = value; },
     reportValidity() { this.reported = true; }, focus() {},
+    checkValidity() { return this.value.includes('@'); },
     insertAdjacentElement(_, button) { this.toggle = button; },
     append(...children) { children.forEach(child => { if (child.id) elements.set(child.id, child); }); },
     insertBefore(child) { elements.set(child.id, child); },
@@ -28,6 +29,7 @@ function setup() {
     captchaTokenFor: () => 'mock-token', resetCaptcha(){}, busy(){},
     errorText: error => error.message, refreshIdentity(){}, loadModeration(){}, ACCOUNT_URL:'http://localhost:4173/Cyber-Us/comunidade.html',
     db:{auth:{
+      async resetPasswordForEmail(email, options) { calls.push(['reset',email,options]); return {error:null}; },
       async signUp(args) { calls.push(['signup',args]); if(fail)throw new Error('Network unavailable'); return {data:{},error:null}; },
       async updateUser(args) { calls.push(['update',args]); if(fail)throw new Error('Network unavailable'); return {error:null}; }
     }}
@@ -84,4 +86,16 @@ test('Visibility controls are independent, do not submit and track PT/EN',async(
   assert.equal(s.byId('signupPassword').toggle.textContent,'Hide password');
   assert.equal(s.byId('signupPasswordConfirm').toggle.textContent,'Show password');
   assert.equal(s.calls.length,0);
+});
+
+test('Recovery uses its own email field and keeps the existing callback',async()=>{
+  const s=setup();
+  s.byId('loginEmail').value='unrelated@example.test';
+  s.byId('resetEmail').value='recovery@example.test';
+  await s.byId('resetForm').fire('submit');
+  assert.equal(s.calls.length,1);
+  assert.equal(s.calls[0][0],'reset');
+  assert.equal(s.calls[0][1],'recovery@example.test');
+  assert.equal(s.calls[0][2].redirectTo,'http://localhost:4173/Cyber-Us/comunidade.html');
+  assert.equal(s.calls[0][2].captchaToken,'mock-token');
 });

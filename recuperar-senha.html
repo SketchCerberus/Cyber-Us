@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Contas de leitores e comunidade oficial da Cyber-Us.">
   <meta name="cyber-us-turnstile-site-key" content="0x4AAAAAAE7INaNZZLC7NqAN">
-  <title>Cyber-Us — Entrar</title>
+  <title>Cyber-Us — Recuperar senha</title>
   <link rel="stylesheet" href="reader.css">
   <link rel="stylesheet" href="community.css">
   <script defer src="reader.js"></script>
@@ -25,14 +25,14 @@
     <p id="captchaSetupStatus" class="community-notice error" role="status" aria-live="polite" hidden></p>
     <div id="guestAccount" class="account-grid" hidden>
       <section class="community-box" aria-labelledby="authHeading">
-        <h2 id="authHeading" data-pt="Entrar" data-en="Sign in">Entrar</h2>
-        <form id="loginForm" class="community-form">
-          <label for="loginEmail" data-pt="E-mail" data-en="Email">E-mail</label><input id="loginEmail" type="email" name="email" autocomplete="email" maxlength="254" required>
-          <label for="loginPassword" data-pt="Senha" data-en="Password">Senha</label><input id="loginPassword" type="password" name="password" autocomplete="current-password" required>
-          <div id="loginFormCaptcha" class="community-captcha" aria-label="Verificação antibots"></div>
-          <button class="action" type="submit" data-pt="Entrar" data-en="Sign in">Entrar</button>
+        <h2 id="authHeading" data-pt="Recuperar senha" data-en="Reset password">Recuperar senha</h2>
+<form id="resetForm" class="community-form">
+          <p data-pt="Enviaremos um link para você escolher uma nova senha." data-en="We will email you a link to choose a new password.">Enviaremos um link para você escolher uma nova senha.</p>
+          <label for="resetEmail" data-pt="E-mail" data-en="Email">E-mail</label><input id="resetEmail" type="email" name="email" autocomplete="email" maxlength="254" required>
+          <div id="resetFormCaptcha" class="community-captcha" aria-label="Verificação antibots"></div>
+          <button type="submit" class="action" data-pt="Enviar link de recuperação" data-en="Send recovery link">Enviar link de recuperação</button>
         </form>
-        <nav class="account-links" aria-label="Conta"><a href="recuperar-senha.html" data-pt="Esqueci minha senha" data-en="Forgot password">Esqueci minha senha</a><a href="cadastro.html" data-pt="Criar uma conta" data-en="Create an account">Criar uma conta</a></nav>
+        <nav class="account-links" aria-label="Conta"><a href="comunidade.html" data-pt="Voltar para entrar" data-en="Back to sign in">Voltar para entrar</a></nav>
       </section>
     </div>
     <section id="memberAccount" class="community-box" aria-labelledby="memberHeading" hidden><h2 id="memberHeading" data-pt="Seu perfil" data-en="Your profile">Seu perfil</h2><p id="memberEmail"></p><p id="banStatus" class="community-notice" hidden></p><form id="profileForm" class="community-form"><label for="profileName" data-pt="Nome público" data-en="Public name">Nome público</label><input id="profileName" name="display_name" minlength="1" maxlength="60" required><label for="profileUsername" data-pt="Usuário (3–24 letras minúsculas, números ou _)" data-en="Username (3–24 lowercase letters, numbers or _)">Usuário (3–24 letras minúsculas, números ou _)</label><input id="profileUsername" name="username" minlength="3" maxlength="24" pattern="[a-z0-9_]{3,24}" autocomplete="username"><button class="action" type="submit" data-pt="Salvar perfil" data-en="Save profile">Salvar perfil</button></form><button id="logoutBtn" class="community-link" type="button" data-pt="Sair da conta" data-en="Sign out">Sair da conta</button></section>
