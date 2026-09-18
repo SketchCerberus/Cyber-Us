@@ -103,4 +103,11 @@
     try { localStorage.setItem('cyber-us-language', lang); } catch (_) { /* private mode */ }
   }
   render();
+
+  // Apenas a página de fanarts carrega a vitrine. Sem obras aprovadas, o quadro atual permanece.
+  if (document.querySelector('.fanarts-signal')) {
+    const showcase = document.createElement('script');
+    showcase.src = 'fanarts-showcase.js';
+    document.head.appendChild(showcase);
+  }
 }());
