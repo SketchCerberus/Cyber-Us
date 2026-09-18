@@ -1,6 +1,6 @@
 # Cyber-Us Community — preparação para publicação
 
-Este código continua no PR #3 **em rascunho**. Não integrar à `main` nem abrir cadastros ao público antes das verificações abaixo. Nenhuma imagem da HQ foi adicionada; só a demonstração do episódio 1 tem interface de comunidade.
+Este código continua no PR #3 **em rascunho**. Não integrar à `main` nem abrir cadastros ao público antes das verificações abaixo. A branch foi sincronizada com o leitor publicado: os seis episódios bilíngues e os 12 JPEGs originais foram preservados. Só o episódio 1 tem interface de comunidade. Consulte COMMUNITY_PREVIEW.md para a prévia local gratuita.
 
 ## Implementado
 
@@ -22,15 +22,15 @@ Não habilite curingas amplos em produção. Para testes locais, inclua temporar
 
 ## 2. Finalizar Cloudflare Turnstile (obrigatório antes do lançamento)
 
-1. No painel [Cloudflare Turnstile](https://dash.cloudflare.com/?to=/:account/turnstile), crie um widget para o domínio `sketchcerberus.github.io` (o domínio, **sem** `/Cyber-Us`). Revise o plano oferecido antes de escolher qualquer opção paga.
-2. Copie somente a **Site Key pública**. Na ramificação do PR, abra `comunidade.html`, encontre `<meta name="cyber-us-turnstile-site-key" content="">` e preencha `content` com a Site Key. Esta chave é pública e pode fazer parte do HTML. Sem ela, os formulários permanecem desabilitados de propósito.
+1. No painel [Cloudflare Turnstile](https://dash.cloudflare.com/?to=/:account/turnstile), abra o widget já existente. Preserve seu hostname de produção; para a prévia local, siga COMMUNITY_PREVIEW.md.
+2. A **Site Key pública já está preenchida** no meta `cyber-us-turnstile-site-key` de `comunidade.html` e foi preservada. Não substitua por uma chave de teste.
 3. No projeto Supabase → **Authentication → Settings → Bot and Abuse Protection** (o nome do menu pode variar), habilite CAPTCHA, selecione **Cloudflare Turnstile** e informe a **Secret Key privada** diretamente no painel. **NUNCA cole a Secret Key no repositório, no HTML, em issues, em screenshots ou nesta conversa.**
 4. Garanta que a Site Key do HTML e a Secret Key do Supabase pertençam ao MESMO widget. As chamadas `signUp`, `signInWithPassword` e `resetPasswordForEmail` já recebem `captchaToken` do desafio correto. A verificação real do token ocorre no Supabase, e não pode ser substituída por uma checagem só no JavaScript.
 5. Faça testes de cadastro, login, senha incorreta, recuperação de senha e recarregamento dos desafios. Simule token ausente/expirado e confirme bloqueio. Um Turnstile de produção não funciona a partir de `file://`; use um servidor HTTP local com domínio permitido ou, após aprovação, teste na URL publicada. Se usar chaves de teste, não deixe as chaves de teste no lançamento.
 
 Documentação: https://supabase.com/docs/guides/auth/auth-captcha e https://developers.cloudflare.com/turnstile/get-started/client-side-rendering/ .
 
-**Estado atual:** o frontend está implementado, mas não há Site Key vinculada nem Secret Key configurada por esta integração. Portanto cadastro, login e recuperação ficam bloqueados; não faça merge neste estado.
+**Estado atual:** Site Key presente; 1 administrador confirmado por consulta somente leitura. O autor relatou configuração de CAPTCHA/URLs no painel, mas seus valores privados e o fluxo completo não foram verificados. Veja COMMUNITY_PREVIEW.md para verificações e pendências; não faça merge antes do aceite.
 
 ## 3. Preparar a conta proprietária e a moderação
 
@@ -42,7 +42,7 @@ values ('COLE_AQUI_O_UUID_DA_SUA_CONTA'::uuid, 'admin')
 on conflict (user_id) do update set role = excluded.role;
 ```
 
-Atribuir permissões de administrador é uma operação privilegiada: não incluir esse SQL com UUID fixo no código do site nem aceitar um `user_id` informado pelo visitante. Após atribuir, saia/entre novamente e verifique o painel. **Ainda não existe administrador atribuído.**
+Atribuir permissões de administrador é uma operação privilegiada: não incluir esse SQL com UUID fixo no código do site nem aceitar um `user_id` informado pelo visitante. Após atribuir, saia/entre novamente e verifique o painel. **Já existe 1 administrador atribuído; não repita esta operação sem necessidade.**
 
 ### Banimentos
 

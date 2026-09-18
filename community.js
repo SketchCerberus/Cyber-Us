@@ -4,7 +4,8 @@
   'use strict';
   const PROJECT_URL = 'https://znenamrszhjsiztllcit.supabase.co';
   const PUBLISHABLE_KEY = 'sb_publishable_3VRFxwtDuYq4ETHs4xof8g_Fp3GRl6c';
-  const ACCOUNT_URL = 'https://sketchcerberus.github.io/Cyber-Us/comunidade.html';
+  // Resolve against this script so previews keep their own origin and base path.
+  const ACCOUNT_URL = new URL('comunidade.html', document.currentScript.src).href;
   const account = document.body.dataset.communityPage === 'account';
   const episodeRoot = document.querySelector('[data-community-episode]');
   if (!account && !episodeRoot) return;
@@ -369,6 +370,6 @@
 
   if (account) installAccountForms();
   if (episodeRoot) installEpisodeForms();
-  db.auth.onAuthStateChange(() => { Promise.resolve().then(refreshIdentity); });
+  db.auth.onAuthStateChange(() => { setTimeout(refreshIdentity, 0); });
   refreshIdentity();
 })();

@@ -3,29 +3,40 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Cyber-Us — episódio 1: leitor oficial e comunidade.">
-  <title>Cyber-Us — Episódio 1</title>
+  <meta name="description" content="Leia Inicializando da Cyber-Us em português ou inglês, no leitor oficial.">
+  <title>Cyber-Us — Inicializando</title>
   <link rel="stylesheet" href="../reader.css">
+  <link rel="stylesheet" href="../comic-reader.css">
   <link rel="stylesheet" href="../community.css">
-  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
   <script defer src="../reader.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
   <script defer src="../community.js"></script>
 </head>
 <body>
   <a class="skip" href="#main" data-pt="Pular para o conteúdo" data-en="Skip to content">Pular para o conteúdo</a>
-  <header class="site-header"><a class="logo" href="../index.html" aria-label="Cyber-Us — início">CYBER <span>US</span></a><nav aria-label="Navegação principal"><a href="../catalogo.html" data-pt="Catálogo" data-en="Catalog">Catálogo</a><a href="../comunidade.html" data-pt="Minha conta" data-en="My account">Minha conta</a><button id="languageBtn" class="lang-btn" type="button" aria-label="Switch to English">EN</button></nav></header>
+  <header class="site-header">
+    <a class="logo" href="../index.html" aria-label="Cyber-Us — início">CYBER <span>US</span></a>
+    <nav aria-label="Navegação principal">
+      <a href="../catalogo.html" data-pt="Catálogo" data-en="Catalog">Catálogo</a>
+      <a href="../comunidade.html" data-pt="Minha conta" data-en="My account">Minha conta</a>
+      <button id="languageBtn" class="lang-btn" type="button" aria-label="Switch to English">EN</button>
+    </nav>
+  </header>
   <main id="main" class="reader-page">
-    <div class="reader-header"><a class="back" href="../catalogo.html" data-pt="← Todos os episódios" data-en="← All episodes">← Todos os episódios</a><p class="eyebrow" data-pt="CAPÍTULO 1 · EPISÓDIO 1" data-en="CHAPTER 1 · EPISODE 1">CAPÍTULO 1 · EPISÓDIO 1</p><h1 data-pt="Inicializando" data-en="Initializing">Inicializando</h1></div>
-    <section class="comic-strip" aria-label="Área de leitura vertical">
-      <!-- Quando as tiras finais forem fornecidas, inserir as imagens na sequência original:
-      <img src="../assets/episodes/ep01/pt/001.webp" alt="Descrição do segmento 1" width="800" height="1200">
-      <img src="../assets/episodes/ep01/pt/002.webp" alt="Descrição do segmento 2" width="800" height="1200">
-      As imagens são partes consecutivas da MESMA tira; CSS impede intervalos e cortes.
-      Para idiomas diferentes, substituir/selecionar o conjunto de imagens correto, nunca repetir arte PT para EN.
-      -->
-      <div class="empty-reader" role="status"><span class="empty-icon" aria-hidden="true">◈</span><h2 data-pt="Leitor em preparação" data-en="Reader in progress">Leitor em preparação</h2><p data-pt="Esta é a estrutura de teste do leitor oficial. As imagens da tira ainda não foram adicionadas e serão exibidas aqui quando estiverem prontas." data-en="This is the official reader's demo layout. The comic strip images have not been added yet; they will appear here when ready.">Esta é a estrutura de teste do leitor oficial. As imagens da tira ainda não foram adicionadas e serão exibidas aqui quando estiverem prontas.</p></div>
+    <div class="reader-header">
+      <a class="back" href="../catalogo.html" data-pt="← Todos os episódios" data-en="← All episodes">← Todos os episódios</a>
+      <p class="eyebrow" data-pt="CAPÍTULO 1 · EPISÓDIO 1" data-en="CHAPTER 1 · EPISODE 1">CAPÍTULO 1 · EPISÓDIO 1</p>
+      <h1 data-pt="Inicializando" data-en="Initializing">Inicializando</h1>
+    </div>
+    <section class="comic-strip" aria-label="Página da HQ / Comic page">
+      <img data-src-pt="../assets/episodes/ep01/pt/001.jpg" data-src-en="../assets/episodes/ep01/en/001.jpg" data-alt-pt="Inicializando — página completa de Cyber-Us, com diálogos em português." data-alt-en="Initializing — complete Cyber-Us comic page, with English dialogue." width="1280" height="2048" loading="eager" decoding="async" fetchpriority="high">
+      <noscript><img src="../assets/episodes/ep01/pt/001.jpg" alt="Inicializando — página completa de Cyber-Us, com diálogos em português." width="1280" height="2048"></noscript>
     </section>
-    <nav class="episode-navigation" aria-label="Navegação entre episódios"><span class="pending" aria-disabled="true" data-pt="← Início da história" data-en="← Start of the story">← Início da história</span><a href="../catalogo.html#episodio-02" data-pt="Episódio 2: ver no catálogo →" data-en="Episode 2: view in catalog →">Episódio 2: ver no catálogo →</a></nav>
+    <p class="reader-status" data-pt="Página original em português. Use EN no topo para ler a versão inglesa. Os diálogos estão nas imagens." data-en="Original English-language page. Use PT-BR at the top for Portuguese. Dialogue is embedded in the images.">Página original em português. Use EN no topo para ler a versão inglesa. Os diálogos estão nas imagens.</p>
+    <nav class="episode-navigation" aria-label="Navegação entre episódios">
+      <span class="pending" aria-disabled="true" data-pt="← Início da história" data-en="← Start of the story">← Início da história</span>
+      <a href="episodio-02.html" data-pt="Processando →" data-en="Processing →">Processando →</a>
+    </nav>
     <section class="community-panel" data-community-episode="episodio-01" aria-labelledby="communityHeading">
       <h2 id="communityHeading" data-pt="Converse sobre este episódio" data-en="Discuss this episode">Converse sobre este episódio</h2>
       <p class="community-hint" data-pt="Comentários e votos são compartilhados entre as versões em português e inglês. A leitura não exige conta." data-en="Comments and votes are shared by the Portuguese and English versions. Reading does not require an account.">Comentários e votos são compartilhados entre as versões em português e inglês. A leitura não exige conta.</p>
@@ -37,6 +48,6 @@
       <ol id="commentList" class="comment-list" aria-live="polite"></ol><button id="moreComments" class="community-more" type="button" hidden data-pt="Carregar mais comentários" data-en="Load more comments">Carregar mais comentários</button>
     </section>
   </main>
-  <footer class="site-footer">CYBER-US · <span data-pt="Leitor oficial em desenvolvimento" data-en="Official reader in development">Leitor oficial em desenvolvimento</span></footer>
+  <footer class="site-footer">CYBER-US · <a href="../catalogo.html" data-pt="Voltar ao catálogo" data-en="Back to catalog">Voltar ao catálogo</a></footer>
 </body>
 </html>

@@ -49,7 +49,10 @@
           callback: token => { tokens.set(formId, token); },
           'expired-callback': () => { tokens.delete(formId); },
           'timeout-callback': () => { tokens.delete(formId); },
-          'error-callback': () => { tokens.delete(formId); }
+          'error-callback': () => {
+            tokens.delete(formId);
+            setStatus('A verificação antibots falhou. Confira se este domínio está permitido no Turnstile e recarregue a página.', 'Bot verification failed. Check whether this hostname is allowed in Turnstile and reload the page.');
+          }
         });
         widgets.set(formId, widgetId);
       });
@@ -59,7 +62,9 @@
       failClosed('Erro ao inicializar a verificação antibots. Tente novamente mais tarde.', 'Could not initialize bot verification. Try again later.');
     }
   };
-  window.turnstile.ready(() => {
+  // Both scripts use defer in document order, so api.js has already executed.
+  // Turnstile rejects ready() when its script tag uses async/defer.
+  const prepareWidgets = () => {
     const guest = document.getElementById('guestAccount');
     if (!guest?.hidden) return mountWidgets();
     // The account page reveals these forms only after checking the current session.
@@ -70,5 +75,6 @@
       mountWidgets();
     });
     observer.observe(guest, { attributes: true, attributeFilter: ['hidden'] });
-  });
+  };
+  prepareWidgets();
 })();
