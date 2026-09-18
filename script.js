@@ -11,7 +11,7 @@ for (const [href, pt, en] of [
   ['#comic', 'Quadrinho', 'Comic'],
   ['#about', 'Sobre a HQ', 'About the comic'],
   ['#newsletter', 'Newsletter', 'Newsletter'],
-  ['#support', 'Apoio', 'Fund Cyber-Us']
+  ['#support', 'Apoie Cyber-Us', 'Fund Cyber-Us']
 ]) {
   const link = document.querySelector(`.site-header nav a[href="${href}"]`);
   if (link) {
