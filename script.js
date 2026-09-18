@@ -12,6 +12,19 @@ function applyLanguage() {
     if (value) el.textContent = value;
   });
 
+  // Decorative panels also follow the chosen language; keep their existing line breaks.
+  const fanartsArt = document.querySelector('.fanarts-teaser-art');
+  if (fanartsArt) {
+    fanartsArt.querySelector('span:first-child').textContent = language === 'pt' ? 'CYBER / US · COMUNIDADE' : 'CYBER / US · COMMUNITY';
+    fanartsArt.querySelector('strong').innerHTML = language === 'pt' ? 'ARTE<br>SEM<br>FRONTEIRAS' : 'ART<br>WITHOUT<br>BORDERS';
+    fanartsArt.querySelector('span:last-child').textContent = language === 'pt' ? 'TRANSMISSÃO // PENDENTE' : 'TRANSMISSION // PENDING';
+  }
+  const newsletterArt = document.querySelector('.newsletter-teaser-art');
+  if (newsletterArt) {
+    newsletterArt.querySelector('strong').innerHTML = language === 'pt' ? 'SINAL<br>A CAMINHO' : 'INCOMING<br>SIGNAL';
+    newsletterArt.querySelector('span:last-child').textContent = language === 'pt' ? 'TRANSMISSÃO PENDENTE · · ·' : 'TRANSMISSION PENDING · · ·';
+  }
+
   document.documentElement.lang = language === "pt" ? "pt-BR" : "en";
   document.getElementById("languageBtn").textContent = language === "pt" ? "EN" : "PT-BR";
   localStorage.setItem("cyber-us-language", language);
