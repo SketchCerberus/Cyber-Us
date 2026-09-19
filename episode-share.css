@@ -1,0 +1,41 @@
+/* A single, discreet share control near each episode title. */
+.reader-header .episode-share {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .65rem 1rem;
+  margin: 1rem 0 0;
+}
+.episode-share-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: .55rem .85rem;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--panel2, var(--panel));
+  color: var(--text);
+  font: inherit;
+  font-size: .9rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+.episode-share-button:hover { border-color: var(--cyan); }
+.episode-share-button:focus-visible,
+.episode-share-manual:focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
+.episode-share-status { color: var(--muted); font-size: .9rem; line-height: 1.4; }
+.episode-share-manual {
+  flex-basis: 100%;
+  width: 100%;
+  max-width: 620px;
+  min-height: 44px;
+  padding: .55rem .75rem;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: .88rem;
+}
+.episode-share-manual[hidden] { display: none !important; }

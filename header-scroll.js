@@ -132,10 +132,13 @@
   progressScript.src = new URL('reading-progress.js', base).href;
   document.head.appendChild(progressScript);
 
-  // Reader-only visual progress and end-of-episode actions; no markup duplication.
+  // Reader-only visual progress and sharing, without duplicating episode HTML.
   if (document.querySelector('main.reader-page[data-community-episode] .comic-strip')) {
     const episodeProgressScript = document.createElement('script');
     episodeProgressScript.src = new URL('episode-progress.js', base).href;
     document.head.appendChild(episodeProgressScript);
+    const shareScript = document.createElement('script');
+    shareScript.src = new URL('episode-share.js', base).href;
+    document.head.appendChild(shareScript);
   }
 }());
