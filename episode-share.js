@@ -4,7 +4,7 @@
   const reader = document.querySelector('main.reader-page[data-community-episode]');
   const header = reader && reader.querySelector('.reader-header');
   const heading = header && header.querySelector('h1');
-  if (!heading || header.querySelector('.episode-share')) return;
+  if (!heading || reader.querySelector('.episode-share')) return;
 
   const scriptUrl = document.currentScript ? document.currentScript.src : document.baseURI;
   const styles = document.createElement('link');
@@ -27,7 +27,18 @@
   manualLink.spellcheck = false;
   manualLink.hidden = true;
   controls.append(button, status, manualLink);
-  heading.insertAdjacentElement('afterend', controls);
+
+  // Keep the single share control at the end of the episode, after the community
+  // panel when present. That panel is added by another deferred script.
+  function positionAtEnd() {
+    const community = reader.querySelector('.community-panel');
+    if (community) community.insertAdjacentElement('afterend', controls);
+    else reader.append(controls);
+  }
+  positionAtEnd();
+  if (document.readyState !== 'complete') {
+    document.addEventListener('DOMContentLoaded', positionAtEnd, { once: true });
+  }
 
   const nativeShare = typeof navigator.share === 'function';
   const isPortuguese = () => document.documentElement.lang.toLowerCase().startsWith('pt');
