@@ -115,4 +115,15 @@
     attributes: true, attributeFilter: ['lang']
   });
   syncMenu();
+
+  // Every page already loads this header; resolve assets relative to this script,
+  // including when the current page is nested under /episodios/.
+  const base = document.currentScript && document.currentScript.src || document.baseURI;
+  const themeStyles = document.createElement('link');
+  themeStyles.rel = 'stylesheet';
+  themeStyles.href = new URL('theme.css', base).href;
+  document.head.appendChild(themeStyles);
+  const themeScript = document.createElement('script');
+  themeScript.src = new URL('theme.js', base).href;
+  document.head.appendChild(themeScript);
 }());
