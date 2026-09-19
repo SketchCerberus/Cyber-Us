@@ -1,12 +1,23 @@
-/* A single, discreet share control at the end of each episode, below the community. */
+/* One share control beside the vote buttons, wrapping on narrow screens. */
+.community-vote-share-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .75rem 1rem;
+  margin: 1.1rem 0;
+}
+.community-vote-share-row .community-votes { margin: 0; }
+.community-vote-share-row > .episode-share,
 .reader-page > .episode-share {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: .65rem 1rem;
-  max-width: 800px;
-  margin: 2rem auto 0;
+  min-width: 0;
 }
+.community-vote-share-row > .episode-share { flex: 1 1 190px; }
+/* Fallback if the community panel cannot be loaded. */
+.reader-page > .episode-share { max-width: 800px; margin: 2rem auto 0; }
 .episode-share-button {
   display: inline-flex;
   align-items: center;
@@ -40,3 +51,7 @@
   font-size: .88rem;
 }
 .episode-share-manual[hidden] { display: none !important; }
+@media (max-width: 680px) {
+  .community-vote-share-row .community-votes { flex: 1 1 260px; }
+  .community-vote-share-row > .episode-share { flex: 1 1 180px; }
+}
