@@ -28,16 +28,27 @@
   manualLink.hidden = true;
   controls.append(button, status, manualLink);
 
-  // Keep the single share control at the end of the episode, after the community
-  // panel when present. That panel is added by another deferred script.
-  function positionAtEnd() {
-    const community = reader.querySelector('.community-panel');
-    if (community) community.insertAdjacentElement('afterend', controls);
-    else reader.append(controls);
+  // Keep sharing beside the vote buttons without placing it inside the
+  // reactions group. The community panel is injected by another script.
+  function positionBesideVotes() {
+    const votes = reader.querySelector('.community-votes');
+    if (!votes) {
+      // Safe fallback while the community is still loading or unavailable.
+      reader.append(controls);
+      return;
+    }
+    let row = votes.closest('.community-vote-share-row');
+    if (!row) {
+      row = document.createElement('div');
+      row.className = 'community-vote-share-row';
+      votes.insertAdjacentElement('beforebegin', row);
+      row.append(votes);
+    }
+    row.append(controls);
   }
-  positionAtEnd();
+  positionBesideVotes();
   if (document.readyState !== 'complete') {
-    document.addEventListener('DOMContentLoaded', positionAtEnd, { once: true });
+    document.addEventListener('DOMContentLoaded', positionBesideVotes, { once: true });
   }
 
   const nativeShare = typeof navigator.share === 'function';
