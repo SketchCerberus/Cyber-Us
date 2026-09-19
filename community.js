@@ -32,6 +32,7 @@
   const db = window.supabase.createClient(PROJECT_URL, PUBLISHABLE_KEY, {
     auth: { flowType: 'pkce', detectSessionInUrl: true, persistSession: true, autoRefreshToken: true }
   });
+  const avatars = window.CyberUsAvatars?.create({db,projectUrl:PROJECT_URL,state,t});
   let refreshIndex = 0;
   const busy = (form, value) => form?.querySelectorAll('button').forEach(button => { button.disabled = value; });
   const errorText = error => error?.message || t('Tente novamente.', 'Please try again.');
@@ -77,9 +78,10 @@
     byId('banStatus').hidden = !state.banned;
     byId('banStatus').textContent = state.banned ? t('Sua conta foi suspensa da comunidade. A leitura continua disponível.', 'Your account is suspended from participating. Reading remains available.') : '';
     byId('profileForm').querySelectorAll('input,button').forEach(item => { item.disabled = state.banned; });
-    const { data, error } = await db.from('profiles').select('username,display_name').eq('id', state.user.id).maybeSingle();
+    const { data, error } = await db.from('profiles').select('username,display_name,avatar').eq('id', state.user.id).maybeSingle();
     if (error) notice('accountStatus', errorText(error), true);
     else {
+      avatars?.render({...data,id:state.user.id});
       byId('profileName').value = data?.display_name || '';
       byId('profileUsername').value = data?.username || '';
       notice('accountStatus', t('Sua sessão está ativa.', 'You are signed in.'));
@@ -280,12 +282,14 @@
       return;
     }
     const ids = [...new Set((comments.data || []).map(item => item.author_id))];
-    const profiles = ids.length ? await db.from('profiles').select('id,display_name,username').in('id', ids) : { data: [] };
+    const profiles = ids.length ? await db.from('profiles').select('id,display_name,username,avatar').in('id', ids) : { data: [] };
     const names = new Map((profiles.data || []).map(item => [item.id, item.display_name]));
+    const people = new Map((profiles.data || []).map(item => [item.id, item]));
     list.replaceChildren();
     if (!comments.data.length) list.append(node('li', 'community-hint', t('Nenhum comentário.', 'No comments.')));
     (comments.data || []).forEach(comment => {
       const item = node('li', 'comment-item');
+      if (avatars) item.append(avatars.image(people.get(comment.author_id)));
       item.append(node('strong', '', names.get(comment.author_id) || t('Leitor', 'Reader')),
         node('p', 'comment-meta', `${comment.status} · ${dateText(comment.created_at)} · ${comment.author_id}`),
         node('p', 'comment-body', comment.body));
@@ -387,14 +391,16 @@
       return;
     }
     const ids = [...new Set((data || []).map(item => item.author_id))];
-    const profiles = ids.length ? await db.from('profiles').select('id,display_name').in('id', ids) : { data: [] };
+    const profiles = ids.length ? await db.from('profiles').select('id,display_name,avatar').in('id', ids) : { data: [] };
     const names = new Map((profiles.data || []).map(item => [item.id, item.display_name]));
+    const people = new Map((profiles.data || []).map(item => [item.id, item]));
     if (!more && !data.length) byId('commentList').append(node('li', 'community-hint', t('Ainda não há comentários. Comece a conversa!', 'No comments yet. Start the conversation!')));
     (data || []).forEach(comment => {
       const item = node('li', 'comment-item');
       const header = node('div', 'comment-header');
       const time = node('time', '', dateText(comment.created_at));
       time.dateTime = comment.created_at;
+      if (avatars) header.append(avatars.image(people.get(comment.author_id)));
       header.append(node('strong', '', names.get(comment.author_id) || t('Leitor', 'Reader')), time);
       item.append(header, node('p', 'comment-body', comment.body));
       byId('commentList').append(item);

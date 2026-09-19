@@ -233,3 +233,11 @@ footer strong { color: var(--text); margin-right: 14px; }
 .fanarts-teaser-art strong{font-size:clamp(2rem,4.5vw,4rem);line-height:.92;letter-spacing:-.055em}
 .fanarts-teaser-art span:last-child{text-align:right;font-size:.67rem}
 @media(max-width:800px){.fanarts-teaser{grid-template-columns:1fr}.fanarts-teaser-art{min-height:225px}}
+
+/* Shared account entry remains visible when the header wraps on small screens. */
+.site-header{gap:1rem;flex-wrap:wrap}.site-header .logo{flex-shrink:0}
+.site-header nav{flex-wrap:wrap;gap:.65rem 1rem}
+.site-header .account-access{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.5rem .8rem;border:1px solid var(--accent);border-radius:8px;color:var(--text);font-weight:700;font-size:.88rem;white-space:nowrap}
+.site-header .account-access:hover{background:var(--accent);color:#fff}
+.site-header .account-access:focus-visible{outline:3px solid #7dd3fc;outline-offset:3px}
+@media(max-width:650px){.site-header nav{width:100%;gap:.6rem .85rem}.site-header .account-access{display:inline-flex}}

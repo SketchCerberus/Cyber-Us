@@ -38,3 +38,10 @@
 .community-panel a,.community-account a{color:var(--cyan)}
 [hidden]{display:none!important}
 @media(max-width:680px){.account-grid{grid-template-columns:1fr}.community-box{padding:1rem}.community-vote{flex:1}.community-form .action{align-self:stretch}}
+
+.profile-avatar{position:relative;display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;flex:0 0 48px;border-radius:50%;background:var(--panel2);font-size:1.6rem;overflow:hidden;vertical-align:middle}
+.profile-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.comment-header{align-items:center}
+.avatar-editor{display:flex;flex-direction:column;align-items:flex-start;gap:.8rem;padding:1rem 0 1.5rem;border-bottom:1px solid var(--line)}
+.avatar-editor h3{margin:0}.avatar-preview .profile-avatar,.avatar-local-preview{width:96px;height:96px;border-radius:50%;object-fit:cover;font-size:3rem}
+.avatar-choices{display:flex;flex-wrap:wrap;gap:.5rem}.avatar-choice{min-width:48px;min-height:48px;background:var(--panel2);border:2px solid transparent;border-radius:50%;font-size:1.6rem;cursor:pointer}.avatar-choice[aria-pressed=true]{border-color:var(--cyan)}
+.avatar-editor input{max-width:100%;color:var(--text)}.avatar-editor button:disabled{opacity:.5;cursor:not-allowed}.avatar-editor .action{font:inherit;border:0;cursor:pointer}
