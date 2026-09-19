@@ -56,6 +56,7 @@
   voteAction.className = 'episode-complete-action secondary';
   const commentAction = document.createElement('a');
   commentAction.className = 'episode-complete-action secondary';
+  let currentPercent = 0;
   let communityActionsAdded = false;
   function addCommunityActions() {
     if (communityActionsAdded) return;
@@ -70,7 +71,6 @@
     syncLanguage();
   }
 
-  let currentPercent = 0;
   function syncLanguage() {
     const pt = root.lang.toLowerCase().startsWith('pt');
     percentage.textContent = `${currentPercent}%`;
