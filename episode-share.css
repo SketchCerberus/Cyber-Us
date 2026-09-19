@@ -1,10 +1,11 @@
-/* A single, discreet share control near each episode title. */
-.reader-header .episode-share {
+/* A single, discreet share control at the end of each episode, below the community. */
+.reader-page > .episode-share {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: .65rem 1rem;
-  margin: 1rem 0 0;
+  max-width: 800px;
+  margin: 2rem auto 0;
 }
 .episode-share-button {
   display: inline-flex;
