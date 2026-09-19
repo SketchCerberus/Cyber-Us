@@ -274,7 +274,7 @@
     list.replaceChildren(node('li', 'community-hint', t('Carregando…', 'Loading…')));
     bansList.replaceChildren();
     const [comments, bans] = await Promise.all([
-      db.from('comments').select('id,author_id,body,status,created_at').eq('episode_slug', 'episodio-01').order('created_at', { ascending: false }).limit(100),
+      db.from('comments').select('id,episode_slug,author_id,body,status,created_at').order('created_at', { ascending: false }).limit(100),
       db.rpc('moderation_active_bans')
     ]);
     if (comments.error || bans.error) {
@@ -291,7 +291,7 @@
       const item = node('li', 'comment-item');
       if (avatars) item.append(avatars.image(people.get(comment.author_id)));
       item.append(node('strong', '', names.get(comment.author_id) || t('Leitor', 'Reader')),
-        node('p', 'comment-meta', `${comment.status} · ${dateText(comment.created_at)} · ${comment.author_id}`),
+        node('p', 'comment-meta', `${comment.episode_slug} · ${comment.status} · ${dateText(comment.created_at)} · ${comment.author_id}`),
         node('p', 'comment-body', comment.body));
       const actions = node('div', 'community-actions');
       [['visible', t('Restaurar', 'Restore')], ['hidden', t('Ocultar', 'Hide')], ['removed', t('Remover', 'Remove')]].forEach(([status, label]) => {

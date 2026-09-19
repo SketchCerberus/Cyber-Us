@@ -6,6 +6,24 @@ import { readFileSync } from 'node:fs';
 const source = readFileSync(new URL('../community.js', import.meta.url), 'utf8');
 const captcha = readFileSync(new URL('../community-captcha.js', import.meta.url), 'utf8');
 
+test('Every episode mounts the shared panel with its own canonical slug', () => {
+  const panel = readFileSync(new URL('../community-panel.js', import.meta.url), 'utf8');
+  for (const id of ['communityHeading','communityStatus','voteLike','voteDislike','commentForm','commentList']) {
+    assert.match(panel, new RegExp(`id="${id}"`));
+  }
+  for (const slug of ['episodio-01','episodio-02','episodio-03','episodio-04','episodio-05','marco-zero']) {
+    const html = readFileSync(new URL(`../episodios/${slug}.html`,import.meta.url),'utf8');
+    assert.match(html, new RegExp(`data-community-episode="${slug}"`));
+    assert.equal((html.match(/community-panel\.js/g) || []).length, 1);
+    assert.equal((html.match(/community\.js/g) || []).length, 1);
+    assert.ok(html.indexOf('community-panel.js') < html.indexOf('community.js'));
+    assert.doesNotMatch(html, /<section class="community-panel"/);
+  }
+  assert.match(source, /\.eq\('episode_slug', slug\)/);
+  assert.match(source, /episode_slug: slug/);
+  assert.doesNotMatch(source, /\.eq\('episode_slug', 'episodio-01'\)/);
+});
+
 test('Auth redirects stay on the script origin and base path, ignoring callback query/hash', () => {
   const declaration = source.match(/const ACCOUNT_URL = .*;/)[0];
   for (const [script, expected] of [
