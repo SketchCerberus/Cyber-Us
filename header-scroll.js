@@ -126,4 +126,9 @@
   const themeScript = document.createElement('script');
   themeScript.src = new URL('theme.js', base).href;
   document.head.appendChild(themeScript);
+
+  // One shared module handles all current and future episode pages, plus home/catalog.
+  const progressScript = document.createElement('script');
+  progressScript.src = new URL('reading-progress.js', base).href;
+  document.head.appendChild(progressScript);
 }());
