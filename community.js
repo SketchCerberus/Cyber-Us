@@ -274,7 +274,7 @@
     list.replaceChildren(node('li', 'community-hint', t('Carregando…', 'Loading…')));
     bansList.replaceChildren();
     const [comments, bans] = await Promise.all([
-      db.from('comments').select('id,episode_slug,author_id,body,status,created_at').order('created_at', { ascending: false }).limit(100),
+      db.from('comments').select('id,episode_slug,author_id,body,status,created_at,parent_id,deleted_by_author').order('created_at', { ascending: false }).limit(100),
       db.rpc('moderation_active_bans')
     ]);
     if (comments.error || bans.error) {
@@ -292,7 +292,8 @@
       if (avatars) item.append(avatars.image(people.get(comment.author_id)));
       item.append(node('strong', '', names.get(comment.author_id) || t('Leitor', 'Reader')),
         node('p', 'comment-meta', `${comment.episode_slug} · ${comment.status} · ${dateText(comment.created_at)} · ${comment.author_id}`),
-        node('p', 'comment-body', comment.body));
+        node('p', 'comment-body', comment.deleted_by_author ? t('Removido pelo autor.', 'Removed by author.') : comment.body));
+      if (comment.parent_id) item.append(node('p', 'comment-meta', t('Resposta a um comentário', 'Reply to a comment')));
       const actions = node('div', 'community-actions');
       [['visible', t('Restaurar', 'Restore')], ['hidden', t('Ocultar', 'Hide')], ['removed', t('Remover', 'Remove')]].forEach(([status, label]) => {
         if (status === comment.status) return;
@@ -381,33 +382,116 @@
     await loadComments(false);
   }
 
-  async function loadComments(more) {
-    if (!more) byId('commentList').replaceChildren();
-    const slug = episodeRoot.dataset.communityEpisode;
-    const { data, error } = await db.from('comments').select('id,author_id,body,created_at').eq('episode_slug', slug).eq('status', 'visible').order('created_at', { ascending: false }).range(state.offset, state.offset + 19);
-    if (error) {
-      notice('communityStatus', errorText(error), true);
-      byId('moreComments').hidden = true;
-      return;
-    }
-    const ids = [...new Set((data || []).map(item => item.author_id))];
+  const commentFields = 'id,author_id,body,created_at,parent_id,deleted_by_author';
+  let commentsLoading = false;
+
+  async function appendComments(data, list) {
+    const ids = [...new Set(data.filter(c => !c.deleted_by_author).map(c => c.author_id))];
     const profiles = ids.length ? await db.from('profiles').select('id,display_name,avatar').in('id', ids) : { data: [] };
-    const names = new Map((profiles.data || []).map(item => [item.id, item.display_name]));
-    const people = new Map((profiles.data || []).map(item => [item.id, item]));
-    if (!more && !data.length) byId('commentList').append(node('li', 'community-hint', t('Ainda não há comentários. Comece a conversa!', 'No comments yet. Start the conversation!')));
-    (data || []).forEach(comment => {
+    const people = new Map((profiles.data || []).map(p => [p.id, p]));
+    for (const comment of data) {
       const item = node('li', 'comment-item');
       const header = node('div', 'comment-header');
+      const person = people.get(comment.author_id);
+      if (!comment.deleted_by_author && avatars) header.append(avatars.image(person));
       const time = node('time', '', dateText(comment.created_at));
       time.dateTime = comment.created_at;
-      if (avatars) header.append(avatars.image(people.get(comment.author_id)));
-      header.append(node('strong', '', names.get(comment.author_id) || t('Leitor', 'Reader')), time);
-      item.append(header, node('p', 'comment-body', comment.body));
-      byId('commentList').append(item);
-    });
-    state.offset += (data || []).length;
-    byId('moreComments').hidden = data.length < 20;
+      header.append(node('strong', '', comment.deleted_by_author ? t('Comentário removido', 'Comment removed') : person?.display_name || t('Leitor', 'Reader')), time);
+      item.append(header, node('p', 'comment-body', comment.deleted_by_author ? t('Este comentário foi removido pelo autor.', 'This comment was removed by its author.') : comment.body));
+      const actions = node('div', 'community-actions');
+      if (state.user?.id === comment.author_id && !comment.deleted_by_author) {
+        const remove = node('button', 'community-action danger', t('Remover meu comentário', 'Remove my comment'));
+        remove.type = 'button';
+        remove.addEventListener('click', async () => {
+          if (state.user?.id !== comment.author_id || !window.confirm(t('Remover seu comentário? O texto será apagado; as respostas de outras pessoas serão mantidas.', 'Remove your comment? Its text will be erased; other people’s replies will remain.'))) return;
+          remove.disabled = true;
+          try {
+            const result = await db.rpc('remove_own_comment', { p_comment_id: comment.id });
+            if (result.error) throw result.error;
+            if (!result.data) throw new Error(t('O comentário já foi removido ou não pertence à sua conta.', 'The comment was already removed or does not belong to your account.'));
+            state.offset = 0;
+            await loadComments(false);
+            notice('communityStatus', t('Seu comentário foi removido.', 'Your comment was removed.'));
+          } catch (error) { notice('communityStatus', errorText(error), true); }
+          finally { remove.disabled = false; }
+        });
+        actions.append(remove);
+      }
+      item.append(actions);
+      if (!comment.parent_id) {
+        const replies = node('ul', 'comment-list comment-replies');
+        const more = node('button', 'community-more', t('Ver respostas', 'View replies'));
+        more.type = 'button';
+        let offset = 0, loading = false;
+        const loadReplies = async (reset = false) => {
+          if (loading) return;
+          loading = true; more.disabled = true;
+          try {
+            const start = reset ? 0 : offset;
+            const result = await db.from('comments').select(commentFields).eq('episode_slug', episodeRoot.dataset.communityEpisode).eq('parent_id', comment.id).eq('status', 'visible').order('created_at', {ascending:true}).order('id', {ascending:true}).range(start, start + 19);
+            if (result.error) throw result.error;
+            if (reset) replies.replaceChildren();
+            await appendComments(result.data || [], replies);
+            offset = start + result.data.length;
+            more.hidden = result.data.length < 20;
+            more.textContent = t('Mais respostas', 'More replies');
+            if (!offset) replies.append(node('li', 'community-hint', t('Nenhuma resposta ainda.', 'No replies yet.')));
+          } catch (error) { notice('communityStatus', errorText(error), true); }
+          finally { loading = false; more.disabled = false; }
+        };
+        more.addEventListener('click', () => loadReplies());
+        if (state.user && !state.banned && !comment.deleted_by_author) {
+          const reply = node('button', 'community-action', t('Responder', 'Reply'));
+          reply.type = 'button'; reply.setAttribute('aria-expanded', 'false');
+          const form = node('form', 'community-form reply-form'); form.hidden = true;
+          const label = node('label', '', t('Sua resposta', 'Your reply'));
+          const input = node('textarea'); input.id = 'reply-' + comment.id;
+          input.required = true; input.maxLength = 2000; label.htmlFor = input.id;
+          const send = node('button', 'action', t('Publicar resposta', 'Post reply')); send.type = 'submit';
+          const cancel = node('button', 'community-link', t('Cancelar', 'Cancel')); cancel.type = 'button';
+          const close = () => { form.hidden = true; reply.setAttribute('aria-expanded', 'false'); reply.focus(); };
+          cancel.addEventListener('click', close);
+          reply.addEventListener('click', () => { form.hidden = !form.hidden; reply.setAttribute('aria-expanded', String(!form.hidden)); if (!form.hidden) { input.focus(); loadReplies(true); } });
+          form.append(label, input, send, cancel);
+          form.addEventListener('submit', async event => {
+            event.preventDefault();
+            if (!state.user || state.banned || send.disabled) return;
+            const body = input.value.trim();
+            if (!body || body.length > 2000) return;
+            busy(form, true);
+            try {
+              const result = await db.from('comments').insert({episode_slug:episodeRoot.dataset.communityEpisode,author_id:state.user.id,parent_id:comment.id,body});
+              if (result.error) throw result.error;
+              input.value = ''; close(); await loadReplies(true);
+              notice('communityStatus', t('Resposta publicada.', 'Reply posted.'));
+            } catch (error) { notice('communityStatus', errorText(error), true); }
+            finally { busy(form, false); }
+          });
+          actions.append(reply); item.append(form);
+        }
+        item.append(replies, more);
+      }
+      list.append(item);
+    }
   }
+
+  async function loadComments(more) {
+    if (commentsLoading) return;
+    commentsLoading = true;
+    byId('moreComments').disabled = true;
+    try {
+      const start = more ? state.offset : 0;
+      const {data, error} = await db.from('comments').select(commentFields).eq('episode_slug', episodeRoot.dataset.communityEpisode).is('parent_id', null).eq('status', 'visible').order('created_at', {ascending:false}).order('id', {ascending:false}).range(start, start + 19);
+      if (error) throw error;
+      if (!more) byId('commentList').replaceChildren();
+      await appendComments(data || [], byId('commentList'));
+      if (!more && !data.length) byId('commentList').append(node('li', 'community-hint', t('Ainda não há comentários. Comece a conversa!', 'No comments yet. Start the conversation!')));
+      state.offset = start + data.length;
+      byId('moreComments').hidden = data.length < 20;
+    } catch (error) { notice('communityStatus', errorText(error), true); }
+    finally { commentsLoading = false; byId('moreComments').disabled = false; }
+  }
+
 
   function installEpisodeForms() {
     const slug = episodeRoot.dataset.communityEpisode;

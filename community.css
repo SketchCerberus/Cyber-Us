@@ -45,3 +45,4 @@
 .avatar-editor h3{margin:0}.avatar-preview .profile-avatar,.avatar-local-preview{width:96px;height:96px;border-radius:50%;object-fit:cover;font-size:3rem}
 .avatar-choices{display:flex;flex-wrap:wrap;gap:.5rem}.avatar-choice{min-width:48px;min-height:48px;background:var(--panel2);border:2px solid transparent;border-radius:50%;font-size:1.6rem;cursor:pointer}.avatar-choice[aria-pressed=true]{border-color:var(--cyan)}
 .avatar-editor input{max-width:100%;color:var(--text)}.avatar-editor button:disabled{opacity:.5;cursor:not-allowed}.avatar-editor .action{font:inherit;border:0;cursor:pointer}
+.comment-replies{margin:1rem 0 0 .6rem;padding-left:.6rem;border-left:2px solid var(--community-border)}.comment-replies:empty{display:none}.reply-form{padding:.6rem 0}.comment-item .community-action{min-height:44px}@media(max-width:480px){.comment-replies{margin-left:0;padding-left:.4rem}.comment-replies .comment-item{padding:.65rem}}
