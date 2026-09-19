@@ -13,8 +13,7 @@
   box-shadow: 0 -3px 14px rgba(0, 0, 0, .16);
   pointer-events: none;
 }
-.episode-reading-progress[hidden],
-.episode-complete[hidden] { display: none !important; }
+.episode-reading-progress[hidden] { display: none !important; }
 .episode-reading-percentage {
   min-width: 3.2em;
   font-size: .78rem;
@@ -35,42 +34,6 @@
   border-radius: inherit;
   background: var(--accent);
   transition: width .12s linear;
-}
-.episode-complete {
-  max-width: 800px;
-  margin: 1.5rem auto;
-  padding: 1.4rem;
-  border: 1px solid var(--line);
-  border-left: 4px solid var(--accent);
-  border-radius: 14px;
-  background: var(--panel);
-  color: var(--text);
-  line-height: 1.5;
-}
-.episode-complete h2 { margin: 0 0 .4rem; font-size: clamp(1.25rem, 3vw, 1.65rem); }
-.episode-complete p { margin: 0; color: var(--muted); }
-.episode-complete-actions { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 1.2rem; }
-.episode-complete-action {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 44px;
-  padding: .65rem .95rem;
-  border: 1px solid var(--line);
-  border-radius: 9px;
-  font-weight: 750;
-  text-align: center;
-  text-decoration: none;
-}
-.episode-complete-action.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-.episode-complete-action.secondary { background: var(--panel2, var(--panel-2)); color: var(--text); }
-.episode-complete-action:hover { filter: brightness(1.12); }
-.episode-complete-action:focus-visible { outline: 3px solid var(--cyan, var(--accent-2)); outline-offset: 3px; }
-.reader-page .community-votes,
-.reader-page #communityHeading { scroll-margin-top: 6rem; }
-@media (max-width: 650px) {
-  .episode-complete { margin: 1.5rem 4vw; padding: 1.1rem; }
-  .episode-complete-action { width: 100%; }
 }
 @media (prefers-reduced-motion: reduce) {
   .episode-reading-fill { transition: none; }
