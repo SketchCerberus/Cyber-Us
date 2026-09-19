@@ -2,11 +2,80 @@
    Nenhum envio é aceito por este arquivo. As imagens devem estar em assets/fanarts/.
    Exemplo (NÃO é uma obra real; deixe comentado até obter autorização):
    { image: 'assets/fanarts/arquivo.webp', artist: 'Nome autorizado',
-     region: 'Região autorizada', showRegion: true, accent: 'blue', approved: true }
+     region: 'Região autorizada', showRegion: true, accent: 'blue', approved: true,
+     tags: ['Personagem', 'Arte digital', 'Neon'] }
    accent: 'blue', 'red', 'green' ou 'random'; região só aparece com showRegion: true.
 */
 (function () {
   'use strict';
+
+  function tagKey(value) {
+    return String(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+  }
+  function cleanTags(tags) {
+    if (!Array.isArray(tags)) return [];
+    const found = new Set();
+    return tags.filter(tag => typeof tag === 'string').map(tag => tag.trim().replace(/^#+/, '').replace(/\s+/g, ' '))
+      .filter(tag => {
+        const key = tagKey(tag);
+        if (!key || tag.length > 32 || found.has(key)) return false;
+        found.add(key); return true;
+      }).slice(0, 8);
+  }
+  function matchesFanart(work, query, selected) {
+    const keys = work.tags.map(tagKey);
+    const words = tagKey(query).split(/\s+/).map(word => word.replace(/^#/, '')).filter(Boolean);
+    const searchable = tagKey([work.artist, ...work.tags].join(' '));
+    return words.every(word => searchable.includes(word)) && [...selected].every(key => keys.includes(key));
+  }
+  function installTagSearch(gallery, works) {
+    if (!gallery) return null;
+    const selected = new Set(), cards = [], labels = new Map();
+    works.forEach(work => work.tags.forEach(tag => { if (!labels.has(tagKey(tag))) labels.set(tagKey(tag), tag); }));
+    const make = (tag, className) => { const el = document.createElement(tag); el.className = className; return el; };
+    const panel = make('div', 'fanarts-search');
+    const label = make('label', ''); label.htmlFor = 'fanarts-search-input';
+    const input = make('input', ''); input.type = 'search'; input.id = 'fanarts-search-input'; input.maxLength = 120;
+    const hint = make('p', 'fanarts-search-hint'); hint.id = 'fanarts-search-hint'; input.setAttribute('aria-describedby', hint.id);
+    const filters = make('div', 'fanarts-tag-filters');
+    const clear = make('button', 'fanarts-tag'); clear.type = 'button';
+    const status = make('p', 'fanarts-search-status'); status.setAttribute('role', 'status');
+    const buttons = [];
+    function button(tag) {
+      const key = tagKey(tag), el = make('button', 'fanarts-tag'); el.type = 'button'; el.textContent = '#' + tag;
+      el.addEventListener('click', () => { if (selected.has(key)) selected.delete(key); else selected.add(key); render(); });
+      buttons.push({el,key}); return el;
+    }
+    for (const tag of [...labels.values()].sort((a,b) => a.localeCompare(b))) filters.appendChild(button(tag));
+    function render() {
+      const pt = document.documentElement.lang !== 'en';
+      label.textContent = pt ? 'Buscar fanarts' : 'Search fanart';
+      input.placeholder = pt ? 'Artista ou tag…' : 'Artist or tag…';
+      hint.textContent = !works.length ? (pt ? 'A busca estará disponível quando houver fanarts aprovadas.' : 'Search will be available when approved fanart is published.') :
+        (pt ? 'Busque por artista ou tag. Ao selecionar várias tags, aparecem obras que tenham todas elas.' : 'Search by artist or tag. Selecting several tags shows works matching all of them.');
+      input.disabled = !works.length;
+      filters.setAttribute('aria-label', pt ? 'Filtrar por tags' : 'Filter by tags');
+      clear.textContent = pt ? 'Limpar filtros' : 'Clear filters'; clear.hidden = !input.value && !selected.size;
+      let count = 0;
+      cards.forEach(({work,figure}) => { figure.hidden = !matchesFanart(work, input.value, selected); if (!figure.hidden) count++; });
+      buttons.forEach(({el,key}) => el.setAttribute('aria-pressed', String(selected.has(key))));
+      status.textContent = !works.length ? '' : count ? (pt ? `${count} de ${cards.length} obras` : `${count} of ${cards.length} works`) : (pt ? 'Nenhuma obra encontrada. Experimente outras tags ou limpe os filtros.' : 'No works found. Try other tags or clear the filters.');
+    }
+    input.addEventListener('input', render);
+    clear.addEventListener('click', () => { input.value = ''; selected.clear(); render(); input.focus(); });
+    panel.append(label, input, hint, filters, clear, status);
+    gallery.appendChild(panel);
+    new MutationObserver(render).observe(document.documentElement, {attributes:true,attributeFilter:['lang']});
+    render();
+    return {
+      add(work, figure, caption) {
+        const tags = make('div', 'fanarts-work-tags'); work.tags.forEach(tag => tags.appendChild(button(tag)));
+        caption.appendChild(tags); cards.push({work,figure}); render();
+      },
+      remove(figure) { const index = cards.findIndex(card => card.figure === figure); if (index !== -1) cards.splice(index, 1); render(); }
+    };
+  }
+
 
   const approvedFanarts = [
     // Adicionar apenas após aprovação da obra e consentimento específico do artista.
@@ -52,9 +121,11 @@
   ).map(work => ({
     image: work.image,
     artist: work.artist.trim(),
+    tags: cleanTags(work.tags),
     region: work.showRegion === true && typeof work.region === 'string' ? work.region.trim().slice(0, 80) : '',
     accent: work.accent === 'random' ? ['blue', 'red', 'green'][Math.floor(Math.random() * 3)] : work.accent
   }));
+  const tagSearch = installTagSearch(document.querySelector('.fanarts-gallery'), works);
   if (!works.length) return; // Moldura original intacta até existir arte aprovada.
 
   const style = document.createElement('link');
@@ -82,7 +153,7 @@
       image.decoding = 'async';
       image.src = work.image;
       image.alt = '';
-      image.addEventListener('error', () => figure.remove());
+      image.addEventListener('error', () => { figure.remove(); tagSearch?.remove(figure); });
       const caption = document.createElement('figcaption');
       const name = document.createElement('strong');
       name.textContent = work.artist;
@@ -92,6 +163,7 @@
         region.textContent = work.region;
         caption.appendChild(region);
       }
+      tagSearch?.add(work, figure, caption);
       figure.append(image, caption);
       grid.appendChild(figure);
       galleryImages.push({ image, artist: work.artist });
