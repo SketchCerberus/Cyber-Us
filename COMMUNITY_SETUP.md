@@ -1,12 +1,12 @@
 # Cyber-Us Community — preparação para publicação
 
-Este código continua no PR #3 **em rascunho**. Não integrar à `main` nem abrir cadastros ao público antes das verificações abaixo. A branch foi sincronizada com o leitor publicado: os seis episódios bilíngues e os 12 JPEGs originais foram preservados. Só o episódio 1 tem interface de comunidade. Consulte COMMUNITY_PREVIEW.md para a prévia local gratuita.
+O código comunitário do PR #3 já está na `main`. Não abrir cadastros ao público antes das verificações abaixo. Os seis episódios bilíngues e os 12 JPEGs originais foram preservados. A interface agora está nos seis episódios; os cinco registros novos exigem a migration descrita em COMMUNITY_EPISODES.md. Consulte COMMUNITY_PREVIEW.md para a prévia local gratuita.
 
 ## Implementado
 
 - Supabase Free: projeto `Cyber-Us Community`, referência `znenamrszhjsiztllcit`, região São Paulo (`sa-east-1`).
 - Tabelas: `public.profiles`, `public.episodes`, `public.comments`, `public.reactions`; dados de equipe, banimentos e logs no esquema privado `community_private`.
-- Episódio `episodio-01` registrado com comunidade habilitada. Os votos e comentários são comuns às duas traduções do episódio.
+- Episódio `episodio-01` registrado com comunidade habilitada. Os demais episódios têm migration preparada, ainda não aplicada nesta tarefa. Os votos e comentários são comuns às duas traduções de cada episódio.
 - `community.js`: URL e chave **publishable** do Supabase, apropriadas para o navegador. Nunca incluir chave `secret`, `service_role`, tokens privados nem senha do banco no GitHub.
 - RLS, permissões por coluna, validação de votos, moderação e limites de comentários são aplicados no banco, não apenas pela interface.
 - Cloudflare Turnstile **integrado ao frontend**: três desafios independentes em cadastro, login e recuperação, tokens enviados ao Supabase Auth e reiniciados após cada tentativa. Quando falta a site key ou o script não carrega, os formulários são bloqueados. Isso **não ativa proteção no servidor** automaticamente: é preciso configurar o segredo no Supabase.
@@ -46,7 +46,7 @@ Atribuir permissões de administrador é uma operação privilegiada: não inclu
 
 ### Banimentos
 
-A equipe pode ocultar, restaurar e remover comentários, banir autores por 1–3.650 dias ou permanentemente (motivo obrigatório) e revogar o banimento. Banidos não escrevem comentários, não votam nem alteram o perfil; comentários visíveis anteriores são ocultados. A leitura da HQ e o login continuam possíveis. Comentários ocultados não retornam automaticamente após revogação. O banco registra ações e suas justificativas. O painel mostra até 100 comentários recentes do episódio 1 e 100 banimentos ativos.
+A equipe pode ocultar, restaurar e remover comentários, banir autores por 1–3.650 dias ou permanentemente (motivo obrigatório) e revogar o banimento. Banidos não escrevem comentários, não votam nem alteram o perfil; comentários visíveis anteriores são ocultados. A leitura da HQ e o login continuam possíveis. Comentários ocultados não retornam automaticamente após revogação. O banco registra ações e suas justificativas. O painel mostra até 100 comentários recentes de todos os episódios, identificados por slug, e 100 banimentos ativos.
 
 ## 4. Privacidade, regras e validação
 
