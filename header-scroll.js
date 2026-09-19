@@ -131,4 +131,11 @@
   const progressScript = document.createElement('script');
   progressScript.src = new URL('reading-progress.js', base).href;
   document.head.appendChild(progressScript);
+
+  // Reader-only visual progress and end-of-episode actions; no markup duplication.
+  if (document.querySelector('main.reader-page[data-community-episode] .comic-strip')) {
+    const episodeProgressScript = document.createElement('script');
+    episodeProgressScript.src = new URL('episode-progress.js', base).href;
+    document.head.appendChild(episodeProgressScript);
+  }
 }());
