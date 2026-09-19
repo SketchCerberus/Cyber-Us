@@ -1,0 +1,48 @@
+/* Continue reading: the existing light/dark color tokens handle both themes. */
+.reading-resume {
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:.4rem;
+  margin:1.75rem 0;
+  padding:1.25rem 1.4rem;
+  border:1px solid var(--line);
+  border-left:4px solid var(--accent);
+  border-radius:14px;
+  background:var(--panel);
+  color:var(--text);
+  line-height:1.45;
+}
+.reading-resume[hidden] { display:none!important; }
+.hero-content .reading-resume { max-width:570px; margin:2rem 0 0; }
+.wrap > .reading-resume { margin:1.5rem 0 2rem; }
+.reading-resume .reading-resume-eyebrow {
+  margin:0;
+  color:var(--accent-2,var(--cyan));
+  font-size:.76rem;
+  font-weight:800;
+  letter-spacing:.12em;
+}
+.reading-resume h3 { margin:0; font-size:clamp(1.15rem,2.4vw,1.5rem); line-height:1.25; }
+.reading-resume .reading-resume-detail { margin:.15rem 0 .6rem; color:var(--muted); font-size:.91rem; }
+.reading-resume .reading-resume-action {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:44px;
+  padding:.65rem 1rem;
+  border-radius:9px;
+  background:var(--accent);
+  color:#fff;
+  font-weight:800;
+  text-decoration:none;
+}
+.reading-resume .reading-resume-action:hover { filter:brightness(1.1); }
+.reading-resume .reading-resume-action:focus-visible {
+  outline:3px solid var(--accent-2,var(--cyan));
+  outline-offset:3px;
+}
+@media(max-width:500px){
+  .reading-resume { padding:1rem; }
+  .reading-resume .reading-resume-action { width:100%; }
+}
