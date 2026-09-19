@@ -4,9 +4,9 @@ O painel de comentários e votos é criado por `community-panel.js`. Cada págin
 
 ## Ativação no banco
 
-O banco de produção foi consultado apenas para leitura nesta tarefa. Em 19/09/2026, havia somente `episodio-01` em `public.episodes`. A migration `supabase/migrations/20260919_register_remaining_episodes.sql` precisa ser revisada e aplicada no projeto correto antes de disponibilizar os outros painéis. Ela insere os cinco slugs restantes, sem alterar um slug já existente. Nenhuma política RLS, função de moderação ou banimento precisa ser copiada por episódio.
+Em 19/09/2026, a migration `register_remaining_episodes` (versão `20260919033545`) foi aplicada ao projeto `Cyber-Us Community` após autorização do autor. Ela inseriu os cinco slugs restantes, sem alterar o episódio 1. A consulta posterior confirmou os seis episódios com `community_enabled = true`; a leitura dos seis slugs com papel `anon` funcionou e RLS permaneceu ativa em `episodes`, `comments` e `reactions`. Nenhuma política RLS, função de moderação ou banimento precisa ser copiada por episódio.
 
-Após aplicar a migration, confirme com uma consulta somente leitura que os seis slugs têm `community_enabled = true` e títulos/ordem corretos. Verifique no navegador, como visitante e com uma conta de teste autorizada: lista pública, comentário, voto/troca/remoção por episódio, PT/EN compartilhados, separação entre episódios, conta banida impedida de escrever, e painel de moderação com o slug correto. Testes que escrevem ou moderam afetam o banco real; use ambiente de desenvolvimento ou autorização específica antes de executá-los em produção.
+Antes de publicar a interface, verifique no navegador, como visitante e com uma conta de teste autorizada: lista pública, comentário, voto/troca/remoção por episódio, PT/EN compartilhados, separação entre episódios, conta banida impedida de escrever, e painel de moderação com o slug correto. Esses fluxos de escrita e moderação ainda não foram executados. Testes que escrevem ou moderam afetam o banco real; use ambiente de desenvolvimento ou autorização específica antes de executá-los em produção.
 
 ## Novo episódio
 
