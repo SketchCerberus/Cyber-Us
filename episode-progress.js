@@ -31,62 +31,11 @@
   indicator.append(percentage, meter);
   document.body.append(indicator);
 
-  const completion = document.createElement('section');
-  completion.className = 'episode-complete';
-  completion.hidden = true;
-  completion.setAttribute('aria-labelledby', 'episodeCompleteHeading');
-  const heading = document.createElement('h2');
-  heading.id = 'episodeCompleteHeading';
-  const description = document.createElement('p');
-  const actions = document.createElement('div');
-  actions.className = 'episode-complete-actions';
-  const nextItem = reader.querySelector('.episode-navigation')?.lastElementChild;
-  // Last episode ends with a disabled span, not a link to the previous episode.
-  const nextEpisode = nextItem && nextItem.matches('a[href]') ? nextItem : null;
-  const nextAction = document.createElement('a');
-  nextAction.className = 'episode-complete-action primary';
-  nextAction.href = nextEpisode
-    ? nextEpisode.getAttribute('href')
-    : (reader.querySelector('.reader-header .back')?.getAttribute('href') || '../catalogo.html');
-  actions.append(nextAction);
-  completion.append(heading, description, actions);
-  strip.insertAdjacentElement('afterend', completion);
-
-  const voteAction = document.createElement('a');
-  voteAction.className = 'episode-complete-action secondary';
-  const commentAction = document.createElement('a');
-  commentAction.className = 'episode-complete-action secondary';
   let currentPercent = 0;
-  let communityActionsAdded = false;
-  function addCommunityActions() {
-    if (communityActionsAdded) return;
-    const voteGroup = reader.querySelector('.community-votes');
-    const commentHeading = reader.querySelector('#communityHeading');
-    if (!voteGroup || !commentHeading) return;
-    if (!voteGroup.id) voteGroup.id = 'episodeReadingVotes';
-    voteAction.href = `#${voteGroup.id}`;
-    commentAction.href = `#${commentHeading.id}`;
-    actions.append(voteAction, commentAction);
-    communityActionsAdded = true;
-    syncLanguage();
-  }
-
   function syncLanguage() {
     const pt = root.lang.toLowerCase().startsWith('pt');
     percentage.textContent = `${currentPercent}%`;
     meter.setAttribute('aria-label', pt ? 'Progresso de leitura do episódio' : 'Episode reading progress');
-    heading.textContent = pt ? 'Você chegou ao final!' : 'You reached the end!';
-    description.textContent = pt
-      ? 'Continue a história ou participe da conversa sobre este episódio.'
-      : 'Continue the story or join the discussion about this episode.';
-    if (nextEpisode) {
-      const title = (nextEpisode.getAttribute(pt ? 'data-pt' : 'data-en') || nextEpisode.textContent).trim();
-      nextAction.textContent = `${pt ? 'Próximo episódio: ' : 'Next episode: '}${title}`;
-    } else {
-      nextAction.textContent = pt ? 'Voltar ao catálogo →' : 'Back to the catalog →';
-    }
-    voteAction.textContent = pt ? 'Avaliar episódio ↓' : 'Rate episode ↓';
-    commentAction.textContent = pt ? 'Ver comentários ↓' : 'View comments ↓';
   }
 
   function update() {
@@ -100,7 +49,6 @@
       window.scrollY < top + rect.height + 160);
     meter.setAttribute('aria-valuenow', String(currentPercent));
     fill.style.width = `${currentPercent}%`;
-    completion.hidden = fraction < 0.98;
     syncLanguage();
   }
 
@@ -113,9 +61,6 @@
       update();
     });
   }
-  addCommunityActions();
-  // The episode's community panel is injected by a separate defer script.
-  document.addEventListener('DOMContentLoaded', addCommunityActions, { once: true });
   window.addEventListener('scroll', scheduleUpdate, { passive: true });
   window.addEventListener('resize', scheduleUpdate);
   window.addEventListener('pageshow', scheduleUpdate);
