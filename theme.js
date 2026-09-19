@@ -20,11 +20,11 @@
 
   function sync() {
     const pt = root.lang.toLowerCase().startsWith('pt');
-    const toLight = theme === 'dark';
-    toggle.textContent = toLight ? (pt ? '☀ Claro' : '☀ Light') : (pt ? '☾ Escuro' : '☾ Dark');
-    const description = toLight
-      ? (pt ? 'Ativar modo claro' : 'Switch to light mode')
-      : (pt ? 'Ativar modo escuro' : 'Switch to dark mode');
+    const isLight = theme === 'light';
+    toggle.textContent = isLight ? (pt ? '☀ Claro' : '☀ Light') : (pt ? '☾ Escuro' : '☾ Dark');
+    const description = isLight
+      ? (pt ? 'Tema atual: claro. Ativar modo escuro' : 'Current theme: light. Switch to dark mode')
+      : (pt ? 'Tema atual: escuro. Ativar modo claro' : 'Current theme: dark. Switch to light mode');
     toggle.setAttribute('aria-label', description);
     toggle.setAttribute('title', description);
     toggle.setAttribute('aria-pressed', String(theme === 'light'));
