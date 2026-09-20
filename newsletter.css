@@ -29,3 +29,5 @@
 @media(max-width:600px){.site-header{flex-wrap:wrap;gap:.7rem}.site-header nav{gap:.7rem;flex-wrap:wrap}.site-header nav a{font-size:.88rem}}
 @media(max-width:440px){.newsletter-form-row{flex-direction:column}.newsletter-form-row button{min-height:46px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+.newsletter-signup-link{display:inline-flex;min-height:44px;align-items:center;text-decoration:none}.newsletter-privacy{margin-top:1rem;color:var(--muted);font-size:.9rem}.newsletter-privacy summary{cursor:pointer;min-height:44px}.newsletter-privacy a{color:var(--cyan)}
