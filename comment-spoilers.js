@@ -52,6 +52,7 @@
       if (!checkbox.checked) return;
       const original = textarea.value;
       const body = original.trim();
+      if (!body) return; // Let the existing empty-comment validation run normally.
       const limit = textarea.maxLength > 0 ? textarea.maxLength : 2000;
       if (body.length + SPOILER_PREFIX.length > limit) {
         event.preventDefault();
