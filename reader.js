@@ -99,6 +99,36 @@
       aboutHero.querySelector('.about-us-art small:first-child').textContent = lang === 'pt' ? 'CYBER-US / SINAL DO CRIADOR' : 'CYBER-US / CREATOR SIGNAL';
       aboutHero.querySelector('.about-us-art small:last-child').textContent = lang === 'pt' ? 'HISTÓRIA EM ANDAMENTO · · ·' : 'STORY IN PROGRESS · · ·';
     }
+
+    // The Extras page has a few static section markers and accessible labels that
+    // don't use data-pt/data-en. Keep these, the tab title and description in sync.
+    const extrasPage = document.querySelector('.extras-page');
+    if (extrasPage) {
+      const english = lang === 'en';
+      for (const [sectionId, portuguese, englishText] of [
+        ['artes', '01 / ARTE', '01 / ART'],
+        ['curiosidades', '02 / CURIOSIDADES', '02 / TRIVIA'],
+        ['bastidores', '03 / PROCESSO', '03 / PROCESS'],
+        ['personagens', '04 / FICHAS', '04 / PROFILES']
+      ]) {
+        const marker = document.querySelector(`#${sectionId} .extras-index`);
+        if (marker) marker.textContent = english ? englishText : portuguese;
+      }
+      document.title = english ? 'Cyber-Us — Universe extras' : 'Cyber-Us — Extras do universo';
+      const description = document.querySelector('meta[name="description"]');
+      if (description) description.content = english
+        ? 'Official Cyber-Us extras: concept art, trivia, behind the scenes and spoiler-safe character profiles.'
+        : 'Extras oficiais de Cyber-Us: artes conceituais, curiosidades, bastidores e fichas de personagens sem spoilers futuros.';
+      const logo = document.querySelector('.site-header .logo');
+      if (logo) logo.setAttribute('aria-label', english ? 'Cyber-Us — home' : 'Cyber-Us — início');
+      const mainNav = document.querySelector('.site-header nav');
+      if (mainNav) mainNav.setAttribute('aria-label', english ? 'Main navigation' : 'Navegação principal');
+      const sectionNav = extrasPage.querySelector('.extras-jump-links');
+      if (sectionNav) sectionNav.setAttribute('aria-label', english ? 'Extras sections' : 'Seções dos extras');
+      const languageChoices = document.getElementById('languageChoices');
+      if (languageChoices) languageChoices.setAttribute('aria-label', english ? 'Language' : 'Idioma');
+    }
+
     if (picker) picker.sync(lang);
     try { localStorage.setItem('cyber-us-language', lang); } catch (_) { /* private mode */ }
   }
