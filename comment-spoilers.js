@@ -1,10 +1,12 @@
-/* Optional inline spoilers in comments; plain-text storage uses ||spoiler||. */
+/* Whole-comment spoilers: the author opts in; storage remains plain text. */
 (() => {
   'use strict';
   const panel = document.querySelector('main.reader-page[data-community-episode] .community-panel');
   if (!panel || panel.dataset.spoilersReady) return;
   panel.dataset.spoilersReady = 'true';
 
+  // Distinctive plain-text prefix avoids a database migration. Never render it to readers.
+  const SPOILER_PREFIX = '[CYBER-US-SPOILER]\n';
   const base = document.currentScript?.src || document.baseURI;
   const stylesheet = document.createElement('link');
   stylesheet.rel = 'stylesheet';
@@ -13,18 +15,8 @@
 
   const pt = () => document.documentElement.lang.toLowerCase().startsWith('pt');
   const tr = (portuguese, english) => pt() ? portuguese : english;
-  const editorHelp = (help, state = '') => {
-    help.dataset.state = state;
-    help.textContent = state === 'marked'
-      ? tr('Trecho marcado. Publique o comentário para ocultá-lo dos leitores.', 'Selection marked. Post your comment to hide it from readers.')
-      : state === 'select'
-        ? tr('Primeiro, selecione o texto que deseja ocultar.', 'First select the text you want to hide.')
-        : state === 'length'
-          ? tr('O comentário ultrapassaria o limite de 2.000 caracteres.', 'This would exceed the 2,000-character comment limit.')
-          : state === 'nested'
-            ? tr('Selecione um trecho sem outra marcação de spoiler.', 'Select text without another spoiler marker.')
-            : tr('Selecione um trecho e clique em “Marcar spoiler”. Também é possível escrever ||trecho secreto||.', 'Select some text and click “Mark spoiler”. You can also type ||secret text||.');
-  };
+  const optionText = () => tr('Este comentário contém spoilers', 'This comment contains spoilers');
+  const lengthError = () => tr('Reduza o texto: a marcação de spoiler também conta no limite de 2.000 caracteres.', 'Shorten the text: the spoiler marker also counts toward the 2,000-character limit.');
 
   function decorateForm(form) {
     if (form.dataset.spoilersEditorReady) return;
@@ -32,90 +24,91 @@
     const submit = form.querySelector('button[type="submit"]');
     if (!textarea || !submit) return;
     form.dataset.spoilersEditorReady = 'true';
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'community-action spoiler-mark';
+
+    const option = document.createElement('label');
+    option.className = 'spoiler-option';
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.className = 'spoiler-checkbox';
+    const label = document.createElement('span');
+    label.className = 'spoiler-option-label';
+    label.textContent = optionText();
+    option.append(checkbox, label);
     const help = document.createElement('p');
     help.className = 'community-hint spoiler-editor-help';
-    editorHelp(help);
-    button.textContent = tr('Marcar spoiler', 'Mark spoiler');
-    button.addEventListener('click', () => {
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      const selected = textarea.value.slice(start, end);
-      if (!selected.trim()) { editorHelp(help, 'select'); textarea.focus(); return; }
-      if (selected.includes('||')) { editorHelp(help, 'nested'); textarea.focus(); return; }
-      if (textarea.maxLength > -1 && textarea.value.length + 4 > textarea.maxLength) {
-        editorHelp(help, 'length'); textarea.focus(); return;
+    help.setAttribute('role', 'alert');
+    help.hidden = true;
+    submit.insertAdjacentElement('beforebegin', option);
+    option.insertAdjacentElement('afterend', help);
+
+    const clearError = () => { help.hidden = true; help.textContent = ''; };
+    checkbox.addEventListener('change', clearError);
+    textarea.addEventListener('input', clearError);
+
+    // Capture runs before community.js reads the textarea in its existing submit
+    // handler, even when its listener was installed first. Restore the editor in
+    // a microtask so failed submissions never leave the storage marker visible.
+    form.addEventListener('submit', event => {
+      if (!checkbox.checked) return;
+      const original = textarea.value;
+      const body = original.trim();
+      const limit = textarea.maxLength > 0 ? textarea.maxLength : 2000;
+      if (body.length + SPOILER_PREFIX.length > limit) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        help.hidden = false;
+        help.textContent = lengthError();
+        textarea.focus();
+        return;
       }
-      textarea.setRangeText(`||${selected}||`, start, end, 'select');
-      textarea.dispatchEvent(new Event('input', { bubbles: true }));
-      textarea.focus();
-      textarea.setSelectionRange(start + 2, end + 2);
-      editorHelp(help, 'marked');
-    });
-    textarea.insertAdjacentElement('afterend', help);
-    submit.insertAdjacentElement('beforebegin', button);
+      const encoded = SPOILER_PREFIX + body;
+      textarea.value = encoded;
+      queueMicrotask(() => {
+        if (textarea.value === encoded) textarea.value = original;
+      });
+    }, true);
   }
 
   let nextId = 0;
-  function syncSpoilerButton(button) {
-    const secret = button.nextElementSibling;
-    const open = secret && !secret.hidden;
-    button.textContent = open
-      ? tr('Ocultar spoiler', 'Hide spoiler')
-      : tr('Spoiler — revelar trecho', 'Spoiler — reveal text');
-    button.setAttribute('aria-expanded', String(!!open));
+  function syncReveal(button, content) {
+    button.textContent = content.hidden
+      ? tr('Comentário com spoiler — revelar', 'Spoiler comment — reveal')
+      : tr('Ocultar comentário com spoiler', 'Hide spoiler comment');
+    button.setAttribute('aria-expanded', String(!content.hidden));
   }
-  function renderSpoilers(body) {
+
+  function renderSpoiler(body) {
     if (body.dataset.spoilersReady) return;
     body.dataset.spoilersReady = 'true';
-    const original = body.textContent || '';
-    const pattern = /\|\|([^|]|\|(?!\|))+?\|\|/g;
-    let cursor = 0;
-    let match;
-    const content = document.createDocumentFragment();
-    while ((match = pattern.exec(original))) {
-      const secretText = match[0].slice(2, -2);
-      if (!secretText.trim()) continue;
-      content.append(document.createTextNode(original.slice(cursor, match.index)));
-      const wrapper = document.createElement('span');
-      wrapper.className = 'comment-spoiler';
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'spoiler-reveal';
-      const secret = document.createElement('span');
-      secret.className = 'spoiler-text';
-      secret.id = `comment-spoiler-${++nextId}`;
-      secret.textContent = secretText;
-      secret.hidden = true;
-      button.setAttribute('aria-controls', secret.id);
-      button.addEventListener('click', () => {
-        secret.hidden = !secret.hidden;
-        syncSpoilerButton(button);
-      });
-      wrapper.append(button, secret);
-      syncSpoilerButton(button);
-      content.append(wrapper);
-      cursor = pattern.lastIndex;
-    }
-    if (!cursor) return;
-    content.append(document.createTextNode(original.slice(cursor)));
-    // Author content is always text, never HTML; a spoiler starts collapsed.
-    body.replaceChildren(content);
+    const raw = body.textContent || '';
+    if (!raw.startsWith(SPOILER_PREFIX)) return;
+    const comment = raw.slice(SPOILER_PREFIX.length);
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'spoiler-reveal';
+    const content = document.createElement('span');
+    content.className = 'spoiler-text';
+    content.id = `comment-spoiler-${++nextId}`;
+    content.hidden = true;
+    content.textContent = comment; // User text is never interpreted as HTML.
+    button.setAttribute('aria-controls', content.id);
+    button.addEventListener('click', () => {
+      content.hidden = !content.hidden;
+      syncReveal(button, content);
+    });
+    syncReveal(button, content);
+    body.replaceChildren(button, content);
   }
 
   function scan() {
     panel.querySelectorAll('#commentForm, .reply-form').forEach(decorateForm);
-    panel.querySelectorAll('.comment-list .comment-body').forEach(renderSpoilers);
+    panel.querySelectorAll('.comment-list .comment-body').forEach(renderSpoiler);
   }
   new MutationObserver(scan).observe(panel, { childList: true, subtree: true });
   new MutationObserver(() => {
-    panel.querySelectorAll('.spoiler-reveal').forEach(syncSpoilerButton);
-    panel.querySelectorAll('.spoiler-mark').forEach(button => {
-      button.textContent = tr('Marcar spoiler', 'Mark spoiler');
-    });
-    panel.querySelectorAll('.spoiler-editor-help').forEach(help => editorHelp(help, help.dataset.state));
+    panel.querySelectorAll('.spoiler-option-label').forEach(label => { label.textContent = optionText(); });
+    panel.querySelectorAll('.spoiler-editor-help:not([hidden])').forEach(help => { help.textContent = lengthError(); });
+    panel.querySelectorAll('.spoiler-reveal').forEach(button => syncReveal(button, button.nextElementSibling));
   }).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
   scan();
 })();
