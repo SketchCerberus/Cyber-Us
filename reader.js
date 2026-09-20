@@ -68,7 +68,17 @@
     };
   }
 
-  const picker = makeLanguagePicker(button, () => lang, code => { lang = code; render(); });
+  const picker = makeLanguagePicker(button, () => lang, code => {
+    lang = code;
+    // A link with ?lang= must not override a later manual choice on refresh.
+    // Keep other query parameters and the current section anchor untouched.
+    const url = new URL(window.location.href);
+    if (url.searchParams.has('lang')) {
+      url.searchParams.set('lang', code);
+      window.history.replaceState(window.history.state, '', url.pathname + url.search + url.hash);
+    }
+    render();
+  });
   function render() {
     document.documentElement.lang = lang === 'pt' ? 'pt-BR' : 'en';
     document.querySelectorAll('[data-pt][data-en]').forEach(node => {
@@ -100,20 +110,11 @@
       aboutHero.querySelector('.about-us-art small:last-child').textContent = lang === 'pt' ? 'HISTÓRIA EM ANDAMENTO · · ·' : 'STORY IN PROGRESS · · ·';
     }
 
-    // The Extras page has a few static section markers and accessible labels that
-    // don't use data-pt/data-en. Keep these, the tab title and description in sync.
+    // Extras section labels now use the same data-pt/data-en flow as the rest
+    // of the page. Only metadata and accessible names need special handling.
     const extrasPage = document.querySelector('.extras-page');
     if (extrasPage) {
       const english = lang === 'en';
-      for (const [sectionId, portuguese, englishText] of [
-        ['artes', '01 / ARTE', '01 / ART'],
-        ['curiosidades', '02 / CURIOSIDADES', '02 / TRIVIA'],
-        ['bastidores', '03 / PROCESSO', '03 / PROCESS'],
-        ['personagens', '04 / FICHAS', '04 / PROFILES']
-      ]) {
-        const marker = document.querySelector(`#${sectionId} .extras-index`);
-        if (marker) marker.textContent = english ? englishText : portuguese;
-      }
       document.title = english ? 'Cyber-Us — Universe extras' : 'Cyber-Us — Extras do universo';
       const description = document.querySelector('meta[name="description"]');
       if (description) description.content = english
