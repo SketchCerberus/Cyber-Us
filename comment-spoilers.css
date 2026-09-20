@@ -1,0 +1,50 @@
+/* Authors mark the entire comment or reply; the body starts collapsed for readers. */
+.community-form .spoiler-option {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: .6rem;
+  min-height: 44px;
+  cursor: pointer;
+}
+.community-form .spoiler-option input {
+  width: 19px;
+  min-width: 19px;
+  max-width: 19px;
+  height: 19px;
+  margin: 0;
+  accent-color: var(--cyan);
+  cursor: pointer;
+}
+.community-form .spoiler-option input:focus-visible,
+.comment-body .spoiler-reveal:focus-visible {
+  outline: 3px solid var(--cyan);
+  outline-offset: 3px;
+}
+.community-form .spoiler-editor-help { margin: .1rem 0; font-size: .85rem; }
+.comment-body .spoiler-reveal {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: .45rem .75rem;
+  border: 1px solid var(--cyan);
+  border-radius: 8px;
+  background: var(--panel2);
+  color: var(--text);
+  font: inherit;
+  font-size: .9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.comment-body .spoiler-reveal:hover { border-color: var(--accent); }
+.comment-body .spoiler-text {
+  display: block;
+  margin-top: .65rem;
+  padding: .5rem .65rem;
+  border-radius: 8px;
+  background: var(--panel2);
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.comment-body .spoiler-text[hidden] { display: none !important; }
+@media(max-width:680px) { .community-form .spoiler-option { align-self: stretch; } }

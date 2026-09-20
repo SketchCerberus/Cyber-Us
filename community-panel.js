@@ -19,4 +19,8 @@
   if (document.documentElement.lang === 'en') {
     panel.querySelectorAll('[data-en]').forEach(item => { item.textContent = item.dataset.en; });
   }
+  // Enhancement only: comment storage, votes, account and moderation stay unchanged.
+  const spoilersScript = document.createElement('script');
+  spoilersScript.src = new URL('comment-spoilers.js', document.currentScript?.src || document.baseURI).href;
+  document.head.appendChild(spoilersScript);
 })();
