@@ -1,0 +1,32 @@
+/* Inline spoiler disclosure is opt-in, keyboard accessible and collapsed by default. */
+.comment-body .comment-spoiler { display: inline; }
+.comment-body .spoiler-reveal {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: baseline;
+  min-height: 44px;
+  padding: .35rem .65rem;
+  margin: .1rem .12rem;
+  border: 1px solid var(--cyan);
+  border-radius: 8px;
+  background: var(--panel2);
+  color: var(--text);
+  font: inherit;
+  font-size: .9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.comment-body .spoiler-reveal:hover { border-color: var(--accent); }
+.comment-body .spoiler-reveal:focus-visible,
+.community-form .spoiler-mark:focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
+.comment-body .spoiler-text {
+  display: inline;
+  padding: .15rem .3rem;
+  border-radius: 4px;
+  background: var(--panel2);
+  overflow-wrap: anywhere;
+}
+.comment-body .spoiler-text[hidden] { display: none !important; }
+.community-form .spoiler-mark { align-self: flex-start; min-height: 44px; }
+.community-form .spoiler-editor-help { margin: .1rem 0; font-size: .85rem; }
+@media(max-width:680px) { .community-form .spoiler-mark { align-self: stretch; } }
