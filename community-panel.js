@@ -20,7 +20,14 @@
     panel.querySelectorAll('[data-en]').forEach(item => { item.textContent = item.dataset.en; });
   }
   // Enhancement only: comment storage, votes, account and moderation stay unchanged.
+  const scriptBase = document.currentScript?.src || document.baseURI;
   const spoilersScript = document.createElement('script');
-  spoilersScript.src = new URL('comment-spoilers.js', document.currentScript?.src || document.baseURI).href;
+  spoilersScript.src = new URL('comment-spoilers.js', scriptBase).href;
   document.head.appendChild(spoilersScript);
+
+  // A separate, compact newsletter CTA appears only on the latest linked episode.
+  // The signup itself stays on the existing Brevo-backed newsletter page.
+  const newsletterScript = document.createElement('script');
+  newsletterScript.src = new URL('episode-newsletter.js', scriptBase).href;
+  document.head.appendChild(newsletterScript);
 })();
