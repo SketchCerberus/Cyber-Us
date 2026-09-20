@@ -119,6 +119,20 @@
   // Every page already loads this header; resolve assets relative to this script,
   // including when the current page is nested under /episodios/.
   const base = document.currentScript && document.currentScript.src || document.baseURI;
+
+  // One consistent Extras entry across home, catalog and reader, without touching
+  // episode markup or any newsletter/community integration.
+  if (!nav.querySelector('a[data-extras-link], a[href="extras.html"]')) {
+    const extras = document.createElement('a');
+    extras.href = new URL('extras.html', base).href;
+    extras.dataset.extrasLink = 'true';
+    extras.dataset.pt = 'Extras';
+    extras.dataset.en = 'Extras';
+    extras.textContent = 'Extras';
+    if (location.pathname === new URL(extras.href).pathname) extras.setAttribute('aria-current', 'page');
+    nav.insertBefore(extras, nav.querySelector('.account-access') || nav.querySelector('.language-picker') || null);
+  }
+
   const themeStyles = document.createElement('link');
   themeStyles.rel = 'stylesheet';
   themeStyles.href = new URL('theme.css', base).href;
