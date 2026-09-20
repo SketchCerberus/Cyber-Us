@@ -1,0 +1,33 @@
+/* A small invitation between episode navigation and community, never over the comic. */
+.episode-newsletter-cta {
+  box-sizing: border-box;
+  max-width: 800px;
+  margin: 1.75rem auto 0;
+  padding: 1.25rem 1.4rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+  color: var(--text);
+}
+.episode-newsletter-cta h2 { margin: 0 0 .45rem; font-size: clamp(1.15rem, 3vw, 1.45rem); }
+.episode-newsletter-cta p { margin: 0 0 1rem; color: var(--muted); line-height: 1.5; }
+.episode-newsletter-actions { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem 1rem; }
+.episode-newsletter-actions .episode-newsletter-link { display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; }
+.episode-newsletter-dismiss {
+  min-height: 44px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: .9rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.episode-newsletter-dismiss:hover { color: var(--text); }
+.episode-newsletter-dismiss:focus-visible,
+.episode-newsletter-link:focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
+@media (max-width: 480px) {
+  .episode-newsletter-cta { padding: 1rem; }
+  .episode-newsletter-actions { align-items: stretch; flex-direction: column; }
+  .episode-newsletter-link, .episode-newsletter-dismiss { justify-content: center; text-align: center; }
+}
