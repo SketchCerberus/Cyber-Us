@@ -6,6 +6,10 @@
   if (!anchor || !db) return;
   const pt=()=>document.documentElement.lang.startsWith('pt');
   const t=(a,b)=>pt()?a:b;
+  // Keep the artwork-file label adjacent to its input after adding the optional tags.
+  const tags=anchor.querySelector('.fanarts-tag-choices');
+  const fileLabel=anchor.querySelector('label[for="fanarts-image"]');
+  if(tags&&fileLabel)fileLabel.before(tags);
   const section=document.createElement('section');
   section.className='fanarts-guidelines'; section.id='my-fanarts';
   const heading=document.createElement('h2'); heading.id='my-fanarts-heading';
