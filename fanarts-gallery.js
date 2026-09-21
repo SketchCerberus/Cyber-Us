@@ -6,24 +6,7 @@
   if (!gallery || !empty || !window.supabase?.createClient) return;
   const pt=()=>document.documentElement.lang.startsWith('pt');
   const t=(br,en)=>pt()?br:en;
-  // The original Fanarts landing page remains operational during migration.
-  if (location.pathname.split('/').pop()==='fanarts.html') {
-    const nav=document.createElement('nav'); nav.className='fanarts-subnav';
-    nav.setAttribute('aria-label','Fanarts');
-    for (const [path,br,en] of [
-      ['fanarts.html','Visão geral','Overview'],
-      ['fanarts-galeria.html','Galeria','Gallery'],
-      ['fanarts-publicar.html','Publicar','Submit']
-    ]) {
-      const link=document.createElement('a'); link.href=path;
-      link.dataset.pt=br;link.dataset.en=en;link.textContent=t(br,en);
-      if (path==='fanarts.html') link.setAttribute('aria-current','page');
-      nav.append(link);
-    }
-    gallery.closest('main')?.prepend(nav);
-    const sheet=document.createElement('link');sheet.rel='stylesheet';sheet.href='fanarts-subpages.css';
-    document.head.append(sheet);
-  }
+  // The overview owns its navigation in HTML, even when Supabase is unavailable.
   const db=window.supabase.createClient('https://znenamrszhjsiztllcit.supabase.co',
     'sb_publishable_3VRFxwtDuYq4ETHs4xof8g_Fp3GRl6c',
     {auth:{flowType:'pkce',detectSessionInUrl:false,persistSession:true,autoRefreshToken:true}});
