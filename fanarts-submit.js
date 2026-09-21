@@ -40,6 +40,36 @@
     accent.appendChild(option);
   }
   image.before(accentLabel,accent);
+  // Shared, explicit vocabulary: artist-controlled classification, never inferred.
+  const tagGroup=document.createElement('fieldset');
+  tagGroup.className='fanarts-tag-choices';
+  const tagLegend=document.createElement('legend');
+  tagLegend.dataset.pt='Tags da obra (opcional; até 8)';
+  tagLegend.dataset.en='Artwork tags (optional; up to 8)';
+  tagLegend.textContent=t(tagLegend.dataset.pt,tagLegend.dataset.en);
+  tagGroup.append(tagLegend);
+  const tagInputs=[];
+  for (const [value,br,en] of [
+    ['Auará','Auará','Auará'],['Kaubi','Kaubi','Kaubi'],['Óete','Óete','Óete'],
+    ['Sistema','Sistema','Sistema'],['Trojan','Trojan','Trojan'],['Malwer','Malwer','Malwer'],
+    ['OC','OC (personagem original)','OC (original character)'],
+    ['Ships','Ships / casais','Ships / pairings'],
+    ['Crossover','Crossover','Crossover'],['Grupo','Grupo','Group']
+  ]) {
+    const label=document.createElement('label');label.className='fanarts-check';
+    const input=document.createElement('input');input.type='checkbox';input.value=value;
+    input.name='fanart-tag';
+    const caption=document.createElement('span');
+    caption.dataset.pt=br;caption.dataset.en=en;caption.textContent=t(br,en);
+    label.append(input,caption);tagGroup.append(label);tagInputs.push(input);
+  }
+  tagGroup.addEventListener('change',event=>{
+    if (tagInputs.filter(input=>input.checked).length>8) {
+      event.target.checked=false;
+      say('Escolha no máximo 8 tags por obra.','Choose up to 8 tags per artwork.',true);
+    }
+  });
+  image.before(tagGroup);
   const conversion=document.createElement('label'); conversion.className='fanarts-check';
   const conversionCheck=document.createElement('input'); conversionCheck.type='checkbox'; conversionCheck.required=true;
   const conversionText=document.createElement('span');
@@ -128,15 +158,16 @@
     try {
       const name=artist.value.trim(),workTitle=title.value.trim(),place=region.value.trim();
       const url=link.value.trim();
-      if (!name || name.length>60 || !workTitle || workTitle.length>100 || (showRegion.checked&&!place))
-        throw new Error('Invalid title, name or location consent');
+      const tags=tagInputs.filter(input=>input.checked).map(input=>input.value);
+      if (!name || name.length>60 || !workTitle || workTitle.length>100 || (showRegion.checked&&!place) || tags.length>8)
+        throw new Error('Invalid title, name, location consent or tags');
       if (url && new URL(url).protocol!=='https:') throw new Error('HTTPS required');
       const prepared=await prepareImage(image.files[0]);
       const id=crypto.randomUUID(),path=`${userId}/${id}.${prepared.extension}`;
       const {error:recordError}=await db.from('fanart_submissions').insert({
         id,user_id:userId,artist_name:name,title:workTitle,region:place||null,
         show_region:!!place&&showRegion.checked,artist_link:url||null,
-        accent:accent.value,extension:prepared.extension,image_path:path,rights_confirmed:rights.checked
+        accent:accent.value,tags,extension:prepared.extension,image_path:path,rights_confirmed:rights.checked
       });
       if (recordError) throw recordError;
       reserved=true;
