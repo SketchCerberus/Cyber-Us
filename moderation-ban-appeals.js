@@ -20,7 +20,8 @@
     ['inappropriate_content','Conteúdo impróprio','Inappropriate content'],
     ['harassment','Assédio ou ofensas','Harassment or abuse'],
     ['spam','Spam','Spam'],
-    ['other','Outro','Other']
+    ['other','Outro','Other'],
+    ['fanart_violation','Violação das regras de fanarts','Fanart rules violation']
   ];
   const categoryLabel = code => categories.find(row=>row[0]===code)?.[pt()?1:2] || t('A classificar','Not classified');
   const date = value => value ? new Intl.DateTimeFormat(pt()?'pt-BR':'en',{dateStyle:'medium',timeStyle:'short'}).format(new Date(value)) : '';
@@ -75,7 +76,7 @@
     const answer=window.prompt(`${t('Categoria do banimento','Ban category')}:\n${menu}`);
     if (answer===null) return;
     const category=categories[Number(answer.trim())-1]?.[0];
-    if (!category || !/^[1-5]$/.test(answer.trim())) return notice(t('Escolha uma categoria de 1 a 5.','Choose a category from 1 to 5.'),true);
+    if (!category || !/^[1-6]$/.test(answer.trim())) return notice(t('Escolha uma categoria de 1 a 6.','Choose a category from 1 to 6.'),true);
     const reason=window.prompt(t('Descreva a infração (5–500 caracteres):','Describe the violation (5–500 characters):'));
     if (!reason || reason.trim().length<5 || reason.trim().length>500) return;
     const days=window.prompt(t('Duração em dias: 1 a 3650; 0 = permanente.','Duration in days: 1–3650; 0 = permanent.'),'7');
