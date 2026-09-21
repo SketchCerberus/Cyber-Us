@@ -66,6 +66,9 @@
         option.type = 'button';
         option.setAttribute('aria-pressed', String(state.selection?.slug === episode.slug && state.selection?.locale === locale));
         option.addEventListener('click', () => {
+          // A previous locale's response must never be rendered under the newly selected heading.
+          ++state.request;
+          state.loading = false;
           state.selection = {slug:episode.slug,locale};
           state.open = episode.slug;
           byId('moderationSelection').hidden = false;
