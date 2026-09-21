@@ -27,6 +27,7 @@
   const notice = (value,error=false) => {const node=$('moderationNotice');node.textContent=value;node.classList.toggle('error',error);};
   const uuid = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
   let authorized=false;
+  let identityRequest=0;
   let categoryRequest=0;
   let appealRequest=0;
   const tabs=document.querySelector('.moderation-tabs');
@@ -49,18 +50,25 @@
     return !staff.error && staff.data===true;
   }
   async function refreshPermission() {
+    const ticket=++identityRequest;
     authorized=false;appealsTab.hidden=true;appealsView.hidden=true;
     list.replaceChildren();++categoryRequest;++appealRequest;
-    authorized=await verifyStaff();
-    appealsTab.hidden=!authorized;
+    try {
+      const permitted=await verifyStaff();
+      if (ticket!==identityRequest) return;
+      authorized=permitted;
+      appealsTab.hidden=!authorized;
+      if (authorized) decorateBans();
+    } catch (error) {if (ticket===identityRequest) notice(t('Não foi possível verificar a permissão.','Could not verify permissions.'),true);}
   }
 
-  // Intercept the existing ban button before its legacy uncategorized click handler runs.
-  // Its card already displays the author's UUID; the RPC independently validates the target.
+  // Capture ban clicks before the legacy handler. Never allow the old, uncategorized flow,
+  // even while staff permission is loading: all authorization is rechecked by the RPC.
   $('moderationComments').addEventListener('click',async event => {
     const button=event.target.closest('button.community-action.danger');
-    if (!button || !authorized || !event.currentTarget.contains(button)) return;
+    if (!button || !event.currentTarget.contains(button)) return;
     event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();
+    if (!authorized) return notice(t('Aguarde a verificação da moderação.','Wait for moderation access verification.'),true);
     const author=button.closest('li')?.querySelector('.comment-meta')?.textContent.match(uuid)?.[0];
     if (!author) return notice(t('Não foi possível identificar a conta.','Could not identify the account.'),true);
     const menu=categories.map((category,index)=>`${index+1}. ${categoryLabel(category[0])}`).join('\n');
@@ -173,5 +181,5 @@
     reload.textContent=t('Atualizar recursos','Refresh appeals');
     if (authorized && !appealsView.hidden) loadAppeals();
   }).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
-  refreshPermission().then(()=>{if (authorized) decorateBans();});
+  refreshPermission();
 })();
