@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Área de moderação da comunidade Cyber-Us, restrita à equipe autorizada.">
+  <title>Cyber-Us — Moderação</title>
+  <link rel="stylesheet" href="reader.css">
+  <link rel="stylesheet" href="community.css">
+  <link rel="stylesheet" href="moderation.css">
+  <link rel="stylesheet" href="header-scroll.css">
+  <script defer src="reader.js"></script>
+  <script defer src="header-scroll.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
+  <script defer src="community-avatar.js"></script>
+  <script defer src="moderation.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main" data-pt="Pular para o conteúdo" data-en="Skip to content">Pular para o conteúdo</a>
+  <header class="site-header"><a class="logo" href="index.html" aria-label="Cyber-Us — início">CYBER <span>US</span></a><nav aria-label="Navegação principal"><a href="catalogo.html" data-pt="Episódios" data-en="Episodes">Episódios</a><a class="account-access" href="comunidade.html" data-pt="Entrar / Cadastre-se" data-en="Sign in / Sign up">Entrar / Cadastre-se</a><button id="languageBtn" class="lang-btn" type="button" aria-label="Switch to English">EN</button></nav></header>
+  <main id="main" class="wrap community-account moderation-page">
+    <a class="moderation-back" href="comunidade.html" data-pt="← Voltar ao perfil" data-en="← Back to profile">← Voltar ao perfil</a>
+    <p class="eyebrow" data-pt="ÁREA RESTRITA" data-en="RESTRICTED AREA">ÁREA RESTRITA</p>
+    <h1 data-pt="Moderação" data-en="Moderation">Moderação</h1>
+    <p id="moderationNotice" class="community-notice" role="status" aria-live="polite" data-pt="Verificando acesso…" data-en="Checking access…">Verificando acesso…</p>
+    <div id="moderationWorkspace" hidden>
+      <p class="community-hint" data-pt="Somente a equipe autorizada pode moderar. Todas as ações exigem motivo e são registradas." data-en="Only authorized staff can moderate. All actions require a reason and are logged.">Somente a equipe autorizada pode moderar. Todas as ações exigem motivo e são registradas.</p>
+      <div class="moderation-tabs" role="group" aria-label="Área / Section">
+        <button id="moderationCommentsTab" class="community-action" type="button" aria-pressed="true" data-pt="Comentários" data-en="Comments">Comentários</button>
+        <button id="moderationBansTab" class="community-action" type="button" aria-pressed="false" data-pt="Banimentos" data-en="Bans">Banimentos</button>
+      </div>
+      <section id="moderationCommentsView" aria-labelledby="moderationCommentsHeading">
+        <h2 id="moderationCommentsHeading" data-pt="Comentários por episódio" data-en="Comments by episode">Comentários por episódio</h2>
+        <p class="community-hint" data-pt="Abra uma pasta de episódio e escolha o idioma em que o leitor estava ao comentar." data-en="Open an episode folder and choose the reader's interface language at posting time.">Abra uma pasta de episódio e escolha o idioma em que o leitor estava ao comentar.</p>
+        <div id="moderationFolders" class="moderation-folders" aria-label="Pastas de episódios"></div>
+        <div id="moderationSelection" class="moderation-selection" hidden>
+          <div class="moderation-selection-heading"><h3 id="moderationSelectedHeading"></h3><button id="moderationReload" type="button" class="community-action" data-pt="Atualizar" data-en="Refresh">Atualizar</button></div>
+          <p id="moderationCommentsStatus" class="community-hint" role="status" aria-live="polite"></p>
+          <ol id="moderationComments" class="comment-list"></ol>
+          <button id="moderationMore" class="community-more" type="button" hidden data-pt="Carregar mais comentários" data-en="Load more comments">Carregar mais comentários</button>
+        </div>
+      </section>
+      <section id="moderationBansView" aria-labelledby="moderationBansHeading" hidden>
+        <div class="moderation-selection-heading"><h2 id="moderationBansHeading" data-pt="Banimentos ativos" data-en="Active bans">Banimentos ativos</h2><button id="moderationBansReload" class="community-action" type="button" data-pt="Atualizar" data-en="Refresh">Atualizar</button></div>
+        <ol id="moderationBans" class="comment-list"></ol>
+      </section>
+    </div>
+  </main>
+  <footer class="site-footer">CYBER-US · <span data-pt="Comunidade oficial" data-en="Official community">Comunidade oficial</span></footer>
+</body>
+</html>
