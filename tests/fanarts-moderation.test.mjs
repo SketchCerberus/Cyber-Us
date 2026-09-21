@@ -106,6 +106,9 @@ test('moderator opens the private queue and receives a signed preview',async()=>
   assert.equal(document.getElementById('moderationFanartsView').hidden,false);
   assert.ok(document.getElementById(`fanartApprove-${submissionId}`));
   assert.ok(document.getElementById(`fanartReject-${submissionId}`));
+  const idBadge=document.getElementById(`fanartApprove-${submissionId}`).parent.parent.children
+    .find(item=>item.className==='moderation-fanart-user-id');
+  assert.equal(idBadge.textContent,`(ID: ${accountId})`);
 });
 
 test('approval copies the image, publishes metadata and cleans the private file',async()=>{
@@ -154,6 +157,7 @@ test('migration protects queue reads, previews and decisions on the server',()=>
   assert.match(migration,/fanart_moderation_log/);
   assert.match(page,/src="moderation-fanarts\.js"/);
   assert.match(css,/moderation-fanart-card/);
+  assert.match(css,/moderation-fanart-user-id/);
 });
 
 test('publication migration exposes only sanitized gallery data',()=>{

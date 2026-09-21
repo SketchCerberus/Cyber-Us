@@ -200,7 +200,8 @@
     const details = el('div','moderation-fanart-details');
     details.append(el('h4','',work.title),
       el('p','moderation-fanart-artist',`${t('Artista','Artist')}: ${work.artist_name}`),
-      el('p','comment-meta',`${formatDate(work.created_at)} · ${work.user_id}`));
+      el('p','comment-meta',formatDate(work.created_at)),
+      el('p','moderation-fanart-user-id',`(ID: ${work.user_id})`));
     if (work.region) details.append(el('p','comment-meta',`${t('Região','Region')}: ${work.region} · ${work.show_region?t('exibição autorizada','display authorized'):t('não exibir','do not display')}`));
     if (work.artist_link) {
       const link = el('a','moderation-fanart-link',work.artist_link);
