@@ -18,6 +18,9 @@
 .fanarts-spoiler-detail-reveal[hidden]{display:none!important}
 .fanarts-report-comment{display:inline-flex;min-height:40px;margin-top:.75rem;padding:.35rem .7rem;background:transparent;color:var(--muted);border:1px solid var(--line);border-radius:8px;font:inherit;cursor:pointer}
 .fanarts-report-comment:hover{color:var(--cyan);border-color:var(--cyan)}
+.fanarts-report-form{max-width:100%;margin-top:1rem;padding:1rem;border:1px solid var(--line);border-radius:10px}
+.fanarts-report-form label{display:grid;gap:.4rem}
+.fanarts-report-form select{width:100%;min-width:0;box-sizing:border-box;padding:.7rem;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:8px;font:inherit}
 .moderation-fanart-report-list{display:grid;gap:1rem;padding-left:1.25rem}
 .moderation-fanart-report-list li{padding:1rem;border:1px solid var(--line);border-radius:12px;overflow-wrap:anywhere}
 .moderation-fanart-report-list button{margin:.4rem .5rem .1rem 0}
