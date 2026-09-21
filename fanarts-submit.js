@@ -40,7 +40,7 @@
     accent.appendChild(option);
   }
   image.before(accentLabel,accent);
-  // Shared, explicit vocabulary: artist-controlled classification, never inferred.
+  // Artist-controlled vocabulary; values are the canonical keys in the database.
   const tagGroup=document.createElement('fieldset');
   tagGroup.className='fanarts-tag-choices';
   const tagLegend=document.createElement('legend');
@@ -56,7 +56,11 @@
     ['Ships','Ships / casais','Ships / pairings'],
     ['Crossover','Crossover','Crossover'],['Grupo','Grupo','Group'],
     ['Swap','Swap','Swap'],['E se...','E se...','What if...'],
-    ['Fofo','Fofo','Cute'],['Sério','Sério','Serious'],['Chibi','Chibi','Chibi']
+    ['Fofo','Fofo','Cute'],['Sério','Sério','Serious'],['Chibi','Chibi','Chibi'],
+    ['AU','Universo alternativo (AU)','Alternate universe (AU)'],
+    ['Humor','Humor','Humor'],['Colaboração','Colaboração','Collaboration'],
+    ['WIP','Em progresso (WIP)','Work in progress (WIP)'],
+    ['Spoiler','Spoiler','Spoiler']
   ]) {
     const label=document.createElement('label');label.className='fanarts-check';
     const input=document.createElement('input');input.type='checkbox';input.value=value;
@@ -70,6 +74,7 @@
       event.target.checked=false;
       say('Escolha no máximo 8 tags por obra.','Choose up to 8 tags per artwork.',true);
     }
+    renderPreview();
   });
   image.before(tagGroup);
   const conversion=document.createElement('label'); conversion.className='fanarts-check';
@@ -83,6 +88,68 @@
   terms.dataset.pt='Sua arte fica privada até a revisão; seus direitos permanecem seus. Se aprovada, concederá somente permissão para exibição com crédito neste site. Você pode solicitar retirada em “Meus envios”. Até 5 MB, 4096 × 4096 pixels e 3 envios por 24 horas.';
   terms.dataset.en='Your art stays private until review; you retain your copyright. Approval grants only permission to display it here with credit. Request withdrawal via “My submissions”. Up to 5 MB, 4096 × 4096 pixels and 3 submissions per 24 hours.';
   terms.textContent=t(terms.dataset.pt,terms.dataset.en); button.before(terms);
+
+  // This is a local, revocable object URL: no upload, database record or external fetch.
+  const previewCard=document.createElement('figure');previewCard.className='fanarts-upload-preview';
+  previewCard.id='fanarts-upload-preview';previewCard.hidden=true;
+  const previewHeading=document.createElement('h3');
+  previewHeading.dataset.pt='Prévia da sua publicação';previewHeading.dataset.en='Preview your submission';
+  const previewImage=document.createElement('img');previewImage.className='fanarts-upload-preview-image';
+  const previewCaption=document.createElement('figcaption');
+  const previewTitle=document.createElement('strong');
+  const previewArtist=document.createElement('span');
+  const previewRegion=document.createElement('span');
+  const previewTags=document.createElement('div');previewTags.className='fanarts-work-tags';
+  const previewNotice=document.createElement('p');previewNotice.className='fanarts-hint';
+  previewNotice.dataset.pt='Prévia somente neste dispositivo. A obra não foi enviada e ainda precisará de aprovação.';
+  previewNotice.dataset.en='Preview only on this device. Nothing has been uploaded; approval is still required.';
+  previewCaption.append(previewTitle,previewArtist,previewRegion,previewTags);
+  previewCard.append(previewHeading,previewImage,previewCaption,previewNotice);
+  terms.before(previewCard);
+  let previewUrl=null;
+  function clearPreview() {
+    previewCard.hidden=true;previewImage.removeAttribute('src');
+    if(previewUrl){URL.revokeObjectURL(previewUrl);previewUrl=null;}
+    previewTags.replaceChildren();
+  }
+  function renderPreview() {
+    if(!previewUrl)return;
+    const workTitle=title.value.trim()||t('Sem título ainda','Untitled for now');
+    const artistName=artist.value.trim()||t('Nome do artista','Artist name');
+    previewHeading.textContent=t(previewHeading.dataset.pt,previewHeading.dataset.en);
+    previewNotice.textContent=t(previewNotice.dataset.pt,previewNotice.dataset.en);
+    previewTitle.textContent=workTitle;
+    previewArtist.textContent=t(`Por ${artistName}`,`By ${artistName}`);
+    previewImage.alt=t(`Prévia local de “${workTitle}”`,`Local preview of “${workTitle}”`);
+    previewRegion.textContent=showRegion.checked&&region.value.trim()?region.value.trim():'';
+    previewRegion.hidden=!previewRegion.textContent;
+    previewTags.replaceChildren();
+    tagInputs.filter(input=>input.checked).forEach(input=>{
+      const badge=document.createElement('span');badge.className='fanarts-tag';
+      badge.textContent=input.nextElementSibling?.textContent||input.value;
+      previewTags.append(badge);
+    });
+    previewCard.dataset.accent=accent.value;
+  }
+  function choosePreview() {
+    clearPreview();
+    const file=image.files?.[0];
+    if(!file)return;
+    if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>5*1024*1024){
+      say('Imagem inválida ou maior que 5 MB.','Invalid image or larger than 5 MB.',true);return;
+    }
+    previewUrl=URL.createObjectURL(file);
+    previewImage.onerror=()=>{clearPreview();say('Não foi possível visualizar a imagem.','Could not preview this image.',true);};
+    previewImage.src=previewUrl;previewCard.hidden=false;renderPreview();
+  }
+  image.addEventListener('change',choosePreview);
+  for(const field of [title,artist,region,showRegion,accent]){
+    field.addEventListener('input',renderPreview);field.addEventListener('change',renderPreview);
+  }
+  window.addEventListener('cyberus:fanart-uploaded',clearPreview);
+  window.addEventListener('pagehide',clearPreview,{once:true});
+  new MutationObserver(renderPreview).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+
   button.type='submit';
   const setButton=(br,en)=>{button.dataset.pt=br;button.dataset.en=en;button.textContent=t(br,en);};
   const kicker=document.querySelector('.fanarts-kicker');

@@ -1,0 +1,27 @@
+/* Preview and spoiler controls follow the site's existing colors and responsive layout. */
+.fanarts-upload-preview{margin:1.2rem 0;padding:1rem;max-width:100%;min-width:0;border:1px solid var(--cyan);border-radius:14px;background:var(--panel2);overflow:hidden}
+.fanarts-upload-preview[hidden]{display:none!important}
+.fanarts-upload-preview h3{margin:.15rem 0 1rem;color:var(--cyan)}
+.fanarts-upload-preview-image{display:block;width:100%;max-height:380px;object-fit:contain;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.fanarts-upload-preview figcaption{display:grid;gap:.4rem;padding:1rem 0;overflow-wrap:anywhere}
+.fanarts-upload-preview figcaption strong{font-size:1.15rem}
+.fanarts-upload-preview .fanarts-work-tags{display:flex;gap:.4rem;flex-wrap:wrap}
+.fanarts-gallery-work[data-spoiler=true]{position:relative}
+.fanarts-gallery-work.fanarts-spoiler-locked>img{filter:blur(26px);pointer-events:none;user-select:none}
+.fanarts-gallery-work.fanarts-spoiler-locked figcaption{visibility:hidden}
+.fanarts-spoiler-reveal{position:absolute;z-index:2;top:130px;left:50%;transform:translate(-50%,-50%);width:max-content;max-width:calc(100% - 2rem);min-height:48px;padding:.65rem .9rem;border:2px solid var(--cyan);border-radius:12px;background:var(--panel);color:var(--cyan);font:inherit;font-weight:800;cursor:pointer;white-space:normal;text-align:center}
+.fanarts-spoiler-reveal:focus-visible,.fanarts-spoiler-detail-reveal:focus-visible,.fanarts-report-comment:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+.fanarts-detail-spoiler-locked .fanarts-detail-image{filter:blur(32px);pointer-events:none;user-select:none}
+.fanarts-detail-spoiler-locked #fanarts-detail-title,.fanarts-detail-spoiler-locked>.fanarts-hint{visibility:hidden}
+.fanarts-detail-spoiler-locked .fanarts-interactions{display:none}
+.fanarts-spoiler-detail-reveal{display:flex;margin:1rem auto}
+.fanarts-spoiler-detail-reveal[hidden]{display:none!important}
+.fanarts-report-comment{display:inline-flex;min-height:40px;margin-top:.75rem;padding:.35rem .7rem;background:transparent;color:var(--muted);border:1px solid var(--line);border-radius:8px;font:inherit;cursor:pointer}
+.fanarts-report-comment:hover{color:var(--cyan);border-color:var(--cyan)}
+.fanarts-report-form{max-width:100%;margin-top:1rem;padding:1rem;border:1px solid var(--line);border-radius:10px}
+.fanarts-report-form label{display:grid;gap:.4rem}
+.fanarts-report-form select{width:100%;min-width:0;box-sizing:border-box;padding:.7rem;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:8px;font:inherit}
+.moderation-fanart-report-list{display:grid;gap:1rem;padding-left:1.25rem}
+.moderation-fanart-report-list li{padding:1rem;border:1px solid var(--line);border-radius:12px;overflow-wrap:anywhere}
+.moderation-fanart-report-list button{margin:.4rem .5rem .1rem 0}
+@media(max-width:600px){.fanarts-upload-preview{padding:.75rem}.fanarts-spoiler-reveal{font-size:.95rem}}

@@ -64,7 +64,6 @@
     const caption=card?.querySelector('figcaption');
     if(!caption)return;
     credit.textContent=caption.querySelector('.fanarts-gallery-artist')?.textContent||'';
-    // Only a direct child is a consented region; tag badges are nested spans.
     const region=caption.querySelector(':scope > span:not(.fanarts-gallery-artist)');
     if(region)credit.append(document.createTextNode(` · ${region.textContent}`));
   }
@@ -118,6 +117,8 @@
     }
     for(const item of data){
       const article=document.createElement('article');article.className='fanarts-comment';
+      // Only the public comment ID is surfaced for reporting; NEVER author_id.
+      article.dataset.commentId=String(item.id);
       const author=document.createElement('strong');author.textContent=item.display_name;
       const date=document.createElement('time');date.dateTime=item.created_at;
       date.textContent=new Intl.DateTimeFormat(pt()?'pt-BR':'en',{dateStyle:'medium'}).format(new Date(item.created_at));
