@@ -117,12 +117,3 @@ document.querySelector('.site-header nav a[href="#comic"]')?.setAttribute('href'
 document.querySelector('.hero-buttons a[href="#comic"]')?.setAttribute('href', 'catalogo.html');
 
 applyLanguage();
-
-// Shared navigation keeps its own stylesheet and script; no account/auth logic is changed.
-const headerStyles = document.createElement('link');
-headerStyles.rel = 'stylesheet';
-headerStyles.href = 'header-scroll.css';
-document.head.appendChild(headerStyles);
-const headerNavigation = document.createElement('script');
-headerNavigation.src = 'header-scroll.js';
-document.head.appendChild(headerNavigation);

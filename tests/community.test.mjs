@@ -114,7 +114,7 @@ test('Reader switches the real episode images without a community service', () =
     const make=()=>({style:{},children:[],events:{},setAttribute(){},focus(){},addEventListener(event,fn){this.events[event]=fn;},appendChild(child){this.children.push(child);},insertBefore(){},contains(){return false;}});
     const button=make(); button.parentNode=make();
     const document = {head:make(),currentScript:{src:"https://example.com/Cyber-Us/reader.js"},getElementById:()=>button,documentElement:{},createElement(){const el=make();created.push(el);return el;},addEventListener(){},querySelector:()=>null,querySelectorAll:selector=>selector.startsWith('img[')?[image]:[]};
-    vm.runInNewContext(reader,{document,URL,URLSearchParams,window:{location:{search:'?lang=pt'}},localStorage:{getItem:()=>null,setItem(){}}});
+    vm.runInNewContext(reader,{document,URL,URLSearchParams,window:{location:{href:'https://example.com/Cyber-Us/episodios/'+slug+'.html?lang=pt',search:'?lang=pt'},history:{replaceState(){},state:null}},localStorage:{getItem:()=>null,setItem(){}}});
     assert.equal(attributes.src,attributes['data-src-pt']);
     created.find(el=>el.textContent==='English').events.click();
     assert.equal(document.documentElement.lang,'en');
