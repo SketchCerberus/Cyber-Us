@@ -41,14 +41,14 @@ function setup({staff=true,submissions}={}) {
     artist_link:'https://example.com',accent:'blue',extension:'png',image_path:imagePath,status:'pending',
     created_at:'2026-09-21T17:03:52Z'
   }];
-  const log={rpc:[],lookup:[],confirm:[],prompt:[],removed:[],signed:[]};
+  const log={rpc:[],lookup:[],confirm:[],prompt:[],removed:[],signed:[],downloads:[],uploads:[],publicUrls:[]};
   const db={
     auth:{getUser:async()=>({data:{user:{id:accountId}},error:null}),onAuthStateChange:()=>{}},
     rpc:async(name,args)=>{
       log.rpc.push({name,args});
       if(name==='is_moderator')return {data:staff,error:null};
       if(name==='moderation_active_bans_with_history'||name==='moderation_active_ban_categories')return {data:[],error:null};
-      if(name==='moderate_fanart_submission'||name==='ban_member_categorized')return {data:true,error:null};
+      if(name==='moderate_fanart_submission'||name==='publish_fanart_submission'||name==='ban_member_categorized')return {data:true,error:null};
       return {data:null,error:{message:'unknown RPC'}};
     },
     from:name=>{
@@ -62,6 +62,9 @@ function setup({staff=true,submissions}={}) {
     },
     storage:{from:bucket=>({
       createSignedUrl:async(path,seconds)=>{log.signed.push({bucket,path,seconds});return {data:{signedUrl:'https://signed.example/preview'},error:null};},
+      download:async path=>{log.downloads.push({bucket,path});return {data:{kind:'image-blob'},error:null};},
+      upload:async(path,data,options)=>{log.uploads.push({bucket,path,data,options});return {data:{path},error:null};},
+      getPublicUrl:path=>{log.publicUrls.push({bucket,path});return {data:{publicUrl:`https://public.example/${path}`}};},
       remove:async paths=>{log.removed.push({bucket,paths});return {data:paths,error:null};}
     })}
   };
@@ -105,17 +108,23 @@ test('moderator opens the private queue and receives a signed preview',async()=>
   assert.ok(document.getElementById(`fanartReject-${submissionId}`));
 });
 
-test('approval uses the moderator-only RPC and does not delete the private file',async()=>{
+test('approval copies the image, publishes metadata and cleans the private file',async()=>{
   const {document,log}=setup();
   await tick();
   await document.getElementById('moderationFanartsTab').fire('click');
   await tick();
   await document.getElementById(`fanartApprove-${submissionId}`).fire('click');
-  const decision=log.rpc.find(call=>call.name==='moderate_fanart_submission');
+  const decision=log.rpc.find(call=>call.name==='publish_fanart_submission');
   assert.equal(decision.args.p_submission_id,submissionId);
-  assert.equal(decision.args.p_decision,'approved');
-  assert.equal(decision.args.p_reason,null);
-  assert.equal(log.removed.length,0);
+  assert.equal(decision.args.p_public_path,`${submissionId}.png`);
+  assert.deepEqual(log.downloads,[{bucket:'fanart-pending',path:imagePath}]);
+  assert.equal(log.uploads[0].bucket,'fanart-public');
+  assert.equal(log.uploads[0].path,`${submissionId}.png`);
+  assert.equal(log.uploads[0].options.contentType,'image/png');
+  assert.equal(log.uploads[0].options.upsert,true);
+  assert.equal(log.removed.length,1);
+  assert.equal(log.removed[0].bucket,'fanart-pending');
+  assert.equal(log.removed[0].paths[0],imagePath);
 });
 
 test('rejection records a reason and deletes through the Storage API',async()=>{
@@ -145,4 +154,21 @@ test('migration protects queue reads, previews and decisions on the server',()=>
   assert.match(migration,/fanart_moderation_log/);
   assert.match(page,/src="moderation-fanarts\.js"/);
   assert.match(css,/moderation-fanart-card/);
+});
+
+test('publication migration exposes only sanitized gallery data',()=>{
+  const migration=read('supabase/migrations/20260921173818_publish_approved_fanarts_automatically.sql');
+  const gallery=read('fanarts-gallery.js');
+  const page=read('fanarts.html');
+  assert.match(migration,/create table public\.fanart_gallery/);
+  assert.match(migration,/alter table public\.fanart_gallery enable row level security/);
+  assert.match(migration,/grant select on public\.fanart_gallery to anon,authenticated/);
+  assert.match(migration,/community_private\.is_moderator\(\)/);
+  assert.match(migration,/case when v_work\.show_region/);
+  assert.match(migration,/bucket_id='fanart-public'/);
+  assert.match(migration,/Approvals must publish the fanart/);
+  assert.match(gallery,/from\('fanart_gallery'\)/);
+  assert.match(gallery,/storage\.from\('fanart-public'\)/);
+  assert.doesNotMatch(gallery,/user_id/);
+  assert.match(page,/src="fanarts-gallery\.js"/);
 });

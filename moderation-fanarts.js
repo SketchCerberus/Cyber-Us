@@ -50,8 +50,8 @@
   heading.id = 'moderationFanartsHeading';
   view.setAttribute('aria-labelledby',heading.id);
   const explanation = localize(el('p','community-hint'),
-    'Revise a imagem privada antes de decidir. Aprovar registra a decisão, mas ainda não publica a obra na galeria. Rejeitar registra o motivo e tenta excluir o arquivo privado.',
-    'Review the private image before deciding. Approval records the decision but does not publish the artwork to the gallery. Rejection records the reason and attempts to delete the private file.');
+    'Revise a imagem privada antes de decidir. Aprovar publica a obra automaticamente na galeria com os créditos autorizados. Rejeitar registra o motivo e exclui o arquivo privado.',
+    'Review the private image before deciding. Approval automatically publishes the artwork with its authorized credit. Rejection records the reason and deletes the private file.');
 
   const queueHeading = el('div','moderation-selection-heading');
   const queueTitle = localize(el('h3'),'Fila de análise','Review queue');
@@ -137,29 +137,50 @@
     queueStatus.classList.toggle('error',error);
   };
 
+  const publishedPath = work => `${work.id}.${work.extension}`;
+  const mimeType = extension => ({jpg:'image/jpeg',png:'image/png',webp:'image/webp'})[extension];
+
   async function decide(work,decision,reasonText=null) {
     const label = decision === 'approved'
       ? t('aprovar esta fanart','approve this fanart')
       : t('rejeitar esta fanart','reject this fanart');
     if (!window.confirm(t(`Confirmar: ${label}?`,`Confirm: ${label}?`))) return;
-    queueNotice(t('Registrando decisão…','Recording decision…'));
-    const result = await db.rpc('moderate_fanart_submission',{
-      p_submission_id:work.id,p_decision:decision,p_reason:reasonText
-    });
-    if (result.error) throw result.error;
-    if (decision === 'rejected') {
-      const removal = await db.storage.from('fanart-pending').remove([work.image_path]);
-      if (removal.error) {
-        queueNotice(t(
-          'A rejeição foi registrada, mas o arquivo privado não foi excluído. Remova-o manualmente no armazenamento.',
-          'The rejection was recorded, but the private file was not deleted. Remove it manually from storage.'),true);
-        await loadQueue();
-        return;
+    if (decision === 'approved') {
+      queueNotice(t('Publicando fanart…','Publishing fanart…'));
+      const path = publishedPath(work);
+      const source = await db.storage.from('fanart-pending').download(work.image_path);
+      if (source.error || !source.data) throw source.error || new Error(t('Arquivo privado indisponível.','Private file unavailable.'));
+      const upload = await db.storage.from('fanart-public').upload(path,source.data,{
+        contentType:mimeType(work.extension),cacheControl:'3600',upsert:true
+      });
+      if (upload.error) throw upload.error;
+      const result = await db.rpc('publish_fanart_submission',{
+        p_submission_id:work.id,p_public_path:path
+      });
+      if (result.error) {
+        await db.storage.from('fanart-public').remove([path]);
+        throw result.error;
       }
+      const cleanup = await db.storage.from('fanart-pending').remove([work.image_path]);
+      queueNotice(cleanup.error
+        ? t('Fanart publicada, mas o arquivo privado não foi limpo. Remova-o manualmente no armazenamento.','Fanart published, but the private file was not cleaned up. Remove it manually from storage.')
+        : t('Fanart aprovada e publicada na galeria.','Fanart approved and published to the gallery.'),Boolean(cleanup.error));
+    } else {
+      queueNotice(t('Registrando rejeição…','Recording rejection…'));
+      const result = await db.rpc('moderate_fanart_submission',{
+        p_submission_id:work.id,p_decision:'rejected',p_reason:reasonText
+      });
+      if (result.error) throw result.error;
+      const removals = [db.storage.from('fanart-pending').remove([work.image_path])];
+      if (work.status === 'withdrawal_requested') {
+        removals.push(db.storage.from('fanart-public').remove([publishedPath(work)]));
+      }
+      const cleaned = await Promise.all(removals);
+      const cleanupError = cleaned.find(item=>item.error)?.error;
+      queueNotice(cleanupError
+        ? t('A decisão foi registrada, mas um arquivo não foi excluído. Remova-o manualmente no armazenamento.','The decision was recorded, but a file was not deleted. Remove it manually from storage.')
+        : t('Fanart rejeitada e arquivos excluídos.','Fanart rejected and files deleted.'),Boolean(cleanupError));
     }
-    queueNotice(decision === 'approved'
-      ? t('Fanart aprovada. A publicação na galeria continua manual.','Fanart approved. Gallery publication remains manual.')
-      : t('Fanart rejeitada e arquivo privado excluído.','Fanart rejected and private file deleted.'));
     await loadQueue();
   }
 
@@ -248,9 +269,11 @@
       }
       queueNotice(t(`${works.length} envio(s) aguardando ação.`,`${works.length} submission(s) awaiting action.`));
       for (const work of works) {
-        const signed = await db.storage.from('fanart-pending').createSignedUrl(work.image_path,600);
+        const signed = work.status === 'withdrawal_requested'
+          ? {data:db.storage.from('fanart-public').getPublicUrl(publishedPath(work))}
+          : await db.storage.from('fanart-pending').createSignedUrl(work.image_path,600);
         if (ticket !== queueTicket || !authorized) return;
-        renderSubmission(work,signed.error ? null : signed.data?.signedUrl);
+        renderSubmission(work,signed.error ? null : (signed.data?.signedUrl || signed.data?.publicUrl));
       }
     } catch (error) {
       if (ticket === queueTicket) queueNotice(message(error),true);
