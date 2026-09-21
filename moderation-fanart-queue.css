@@ -1,0 +1,7 @@
+.fanart-review-queue{margin:1rem 0 2rem;padding:1rem;border:1px solid var(--community-border,var(--line));border-radius:12px;}
+.fanart-review-queue .community-actions{display:flex;align-items:flex-end;flex-wrap:wrap;gap:.7rem;}
+.fanart-review-queue .community-actions label{display:flex;flex-direction:column;gap:.3rem;}
+.fanart-review-image{display:block;max-width:100%;max-height:380px;object-fit:contain;margin:.7rem 0;border-radius:8px;}
+.fanart-review-card{overflow-wrap:anywhere;}
+.fanart-review-card .community-actions button{min-height:44px;}
+@media(max-width:650px){.fanart-review-queue{padding:.7rem;}.fanart-review-queue .community-actions button{width:100%;}}
