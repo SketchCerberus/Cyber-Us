@@ -1,4 +1,4 @@
-# Cyber-Us — fanarts: envio inicial e moderação manual
+# Cyber-Us — fanarts: envio privado e fila de moderação
 
 ## O que foi implementado
 
@@ -9,9 +9,9 @@
 - Imagens são decodificadas e reexportadas no navegador após consentimento; máximo 4096 x 4096. O bucket restringe MIME e tamanho, mas validação de conteúdo no servidor ainda não é completa: a moderação deve tratar arquivos recebidos como não confiáveis.
 - Nenhuma obra é publicada automaticamente. A galeria continua vazia até receber arte real autorizada e aprovada.
 
-## Administração: rotina obrigatória enquanto a publicação for manual
+## Administração: fila visual e publicação manual
 
-1. Abra o projeto `Cyber-Us Community` no Supabase Dashboard (nunca use chave service_role no GitHub ou no site). Em Database → SQL Editor, consulte a fila **sem incluir imagem em resultados públicos**:
+1. Entre na conta autorizada do site, abra **Moderação → Fanarts** e use a fila visual. A imagem é carregada por um endereço privado temporário, disponível apenas após a verificação de moderador no servidor. Como alternativa de diagnóstico, abra o projeto `Cyber-Us Community` no Supabase Dashboard (nunca use chave service_role no GitHub ou no site) e consulte:
 
 ```sql
 select f.id, f.user_id, f.artist_name, f.title, f.region, f.show_region,
@@ -24,10 +24,10 @@ order by (f.status = 'withdrawal_requested') desc, f.created_at asc;
 ```
 
 2. **Retirada é prioritária.** Para `withdrawal_requested`, remova eventuais imagens publicadas do repositório e entradas da galeria, remova o arquivo privado via **Storage API ou Dashboard** (não dê `DELETE` diretamente em `storage.objects`), e só depois remova o registro ou finalize o pedido. Não marque a retirada como concluída antes de retirar as cópias.
-3. Para `pending`, confira `file_present`; sem arquivo, não aprove: peça reenvio/limpe a reserva manualmente. Com arquivo, examine com cautela, confira autoria e conformidade com as regras, consentimento de exibição e campos publicáveis. Não use URLs públicas ou assinadas para mostrar pendências à galeria.
-4. Para rejeitar, remova o arquivo do bucket privado pelo Dashboard/API e marque o registro como `rejected` (ou remova o registro caso adequado à política de retenção). Para aprovar, publique uma cópia revisada e autorizada no repositório público via processo editorial, confira crédito e região condicional, e altere `status` para `approved` **somente depois que a publicação real estiver pronta**. Não confunda o campo de status com um controle de segurança para arquivos públicos.
+3. Para `pending`, examine a prévia com cautela, confira autoria, conformidade com as regras, consentimento de exibição e campos publicáveis. Se a prévia falhar, o botão **Aprovar** fica bloqueado. Nunca reutilize o endereço assinado da prévia na galeria.
+4. **Aprovar** registra `approved` e a decisão no histórico privado, mas não publica automaticamente. A cópia revisada e autorizada ainda deve ser adicionada à galeria pelo processo editorial, respeitando crédito e região condicional. **Rejeitar** exige motivo, registra `rejected` e tenta excluir o arquivo pelo Storage API; se a exclusão falhar, o painel avisa que a limpeza manual é necessária.
 5. Revisite a fila com frequência e limpe arquivos pendentes sem registro, reservas sem upload e rejeições. Arquivos de Storage devem ser removidos pela API/Dashboard; apagar somente metadados via SQL não apaga bytes armazenados.
-6. Moderação no site (`moderation-fanarts.js`) ainda serve para localizar/banir contas, não possui painel visual de revisão de imagens. Até essa interface existir, a revisão pelo Supabase Dashboard é manual.
+6. A área de localização/banimento de contas continua separada da decisão sobre a obra. Rejeitar uma fanart não bane automaticamente o autor; use o banimento apenas quando a infração justificar uma punição para toda a comunidade.
 
 ## Limitações e verificações
 
