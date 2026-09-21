@@ -9,12 +9,11 @@
   <link rel="stylesheet" href="fanarts.css">
   <link rel="stylesheet" href="fanarts-showcase.css">
   <link rel="stylesheet" href="header-scroll.css">
+  <link rel="stylesheet" href="fanarts-subpages.css">
   <script defer src="reader.js"></script>
   <script defer src="header-scroll.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
   <script defer src="fanarts-gallery.js"></script>
-  <script defer src="fanarts-submit.js"></script>
-  <script defer src="fanarts-my-submissions.js"></script>
 </head>
 <body>
   <a class="skip" href="#main" data-pt="Pular para o conteúdo" data-en="Skip to content">Pular para o conteúdo</a>
@@ -29,12 +28,17 @@
     </nav>
   </header>
   <main id="main" class="fanarts-page">
+    <nav class="fanarts-subnav" aria-label="Fanarts">
+      <a href="fanarts.html" aria-current="page" data-pt="Visão geral" data-en="Overview">Visão geral</a>
+      <a href="fanarts-galeria.html" data-pt="Galeria" data-en="Gallery">Galeria</a>
+      <a href="fanarts-publicar.html" data-pt="Publicar" data-en="Submit">Publicar</a>
+    </nav>
     <section class="fanarts-hero" aria-labelledby="fanarts-title">
       <div class="fanarts-hero-copy">
         <p class="eyebrow" data-pt="CYBER-US // ARTE DA COMUNIDADE" data-en="CYBER-US // COMMUNITY ART">CYBER-US // ARTE DA COMUNIDADE</p>
         <h1 id="fanarts-title" data-pt="O universo é de todos os artistas." data-en="A universe for every artist.">O universo é de todos os artistas.</h1>
         <p class="fanarts-lead" data-pt="Uma galeria para interpretações, personagens e criações dos leitores da Cyber-Us — conectando arte de diferentes lugares do mundo." data-en="A gallery for Cyber-Us readers' interpretations, characters and creations — connecting art from around the world.">Uma galeria para interpretações, personagens e criações dos leitores da Cyber-Us — conectando arte de diferentes lugares do mundo.</p>
-        <a class="action" href="#gallery" data-pt="Conhecer a galeria ↓" data-en="Explore the gallery ↓">Conhecer a galeria ↓</a>
+        <a class="action" href="fanarts-galeria.html" data-pt="Conhecer a galeria →" data-en="Explore the gallery →">Conhecer a galeria →</a>
         <p class="fanarts-kicker" data-pt="Envios sujeitos a revisão" data-en="Submissions are reviewed">Envios sujeitos a revisão</p>
       </div>
       <div class="fanarts-signal" aria-hidden="true">
@@ -54,6 +58,7 @@
         <div><h3 data-pt="Ainda não há fanarts publicadas." data-en="No fanart has been published yet.">Ainda não há fanarts publicadas.</h3>
           <p data-pt="Estes quadros reservam espaço para obras reais. Nenhum envio aparece sem análise: depois da aprovação do moderador, a obra entra automaticamente na galeria." data-en="These frames reserve space for real art. Nothing appears without review: after moderator approval, the artwork is automatically added to the gallery.">Estes quadros reservam espaço para obras reais. Nenhum envio aparece sem análise: depois da aprovação do moderador, a obra entra automaticamente na galeria.</p></div>
       </div>
+      <p><a class="fanarts-back" href="fanarts-galeria.html" data-pt="Ver galeria completa →" data-en="View full gallery →">Ver galeria completa →</a></p>
     </section>
     <section class="fanarts-how" aria-labelledby="fanarts-how-title">
       <p class="eyebrow" data-pt="COMO FUNCIONA" data-en="HOW IT WORKS">COMO FUNCIONA</p>
@@ -64,36 +69,11 @@
         <article><span class="fanarts-step-number">03</span><h3 data-pt="Revisão antes da publicação" data-en="Review before publication">Revisão antes da publicação</h3><p data-pt="A obra permanece privada enquanto aguarda revisão. Só obras autorizadas e aprovadas entram na galeria." data-en="Your work stays private while awaiting review. Only authorized and approved art enters the gallery.">A obra permanece privada enquanto aguarda revisão. Só obras autorizadas e aprovadas entram na galeria.</p></article>
       </div>
     </section>
-    <section id="submit" class="fanarts-submission" aria-labelledby="fanarts-submit-title">
-      <div>
-        <p class="eyebrow" data-pt="ENVIO COM REVISÃO" data-en="REVIEWED SUBMISSION">ENVIO COM REVISÃO</p>
-        <h2 id="fanarts-submit-title" data-pt="Compartilhe sua fanart." data-en="Share your fanart.">Compartilhe sua fanart.</h2>
-        <p id="fanarts-disabled-note" class="fanarts-hint" data-pt="O formulário só é ativado para contas verificadas, não suspensas e com o serviço disponível." data-en="The form unlocks only for verified, unsuspended accounts when the service is available.">O formulário só é ativado para contas verificadas, não suspensas e com o serviço disponível.</p>
-        <p class="fanarts-hint" data-pt="Participação voluntária; não é necessário informar país ou região nem enviar arte para ler a HQ." data-en="Participation is voluntary. You need not disclose your country or submit artwork to read the comic.">Participação voluntária; não é necessário informar país ou região nem enviar arte para ler a HQ.</p>
-        <p class="fanarts-hint"><a href="comunidade.html" data-pt="Acessar minha conta da comunidade →" data-en="Access my community account →">Acessar minha conta da comunidade →</a></p>
-        <p class="fanarts-hint"><a href="fanarts-regras.html" data-pt="Ler as regras e o aviso de privacidade →" data-en="Read the rules and privacy notice →">Ler as regras e o aviso de privacidade →</a></p>
-      </div>
-      <div class="fanarts-form-preview" aria-describedby="fanarts-disabled-note">
-        <fieldset disabled>
-          <legend data-pt="Enviar para revisão" data-en="Submit for review">Enviar para revisão</legend>
-          <label for="fanarts-name" data-pt="Nome artístico ou nome de exibição" data-en="Artist name or display name">Nome artístico ou nome de exibição</label>
-          <input id="fanarts-name" type="text" autocomplete="off" maxlength="60">
-          <label for="fanarts-art-title" data-pt="Título da obra" data-en="Artwork title">Título da obra</label>
-          <input id="fanarts-art-title" type="text" maxlength="100">
-          <label for="fanarts-country" data-pt="País ou região (opcional)" data-en="Country or region (optional)">País ou região (opcional)</label>
-          <select id="fanarts-country"><option value="" data-pt="Prefiro não informar" data-en="Prefer not to say">Prefiro não informar</option></select>
-          <label class="fanarts-check"><input id="fanarts-publish-country" type="checkbox"><span data-pt="Autorizo exibir publicamente minha região ao lado da obra (opcional)." data-en="I allow my region to appear publicly beside the artwork (optional).">Autorizo exibir publicamente minha região ao lado da obra (opcional).</span></label>
-          <label for="fanarts-image" data-pt="Arquivo da arte" data-en="Artwork file">Arquivo da arte</label>
-          <input id="fanarts-image" type="file" accept="image/png,image/jpeg,image/webp">
-          <label for="fanarts-artist-link" data-pt="Link do artista (opcional; HTTPS)" data-en="Artist link (optional; HTTPS)">Link do artista (opcional; HTTPS)</label>
-          <input id="fanarts-artist-link" type="url" autocomplete="off">
-          <label class="fanarts-check"><input id="fanarts-original" type="checkbox"><span data-pt="Confirmo que tenho autorização para compartilhar a obra, mantenho meus direitos autorais e autorizo sua exibição no site apenas se aprovada, com crédito e possibilidade de solicitar remoção." data-en="I confirm I have permission to submit this art, retain my copyright, and authorize display on this site only if approved, with credit and a way to request removal.">Confirmo que tenho autorização para compartilhar a obra, mantenho meus direitos autorais e autorizo sua exibição no site apenas se aprovada, com crédito e possibilidade de solicitar remoção.</span></label>
-          <button type="button" data-pt="Verificando permissão de envio" data-en="Checking submission permissions">Verificando permissão de envio</button>
-        </fieldset>
-      </div>
-    </section>
     <section class="fanarts-guidelines" aria-labelledby="fanarts-guidelines-title">
-      <h2 id="fanarts-guidelines-title" data-pt="Antes de participar" data-en="Before taking part">Antes de participar</h2>
+      <p class="eyebrow" data-pt="QUER PARTICIPAR?" data-en="WANT TO PARTICIPATE?">QUER PARTICIPAR?</p>
+      <h2 id="fanarts-guidelines-title" data-pt="Compartilhe sua fanart." data-en="Share your fanart.">Compartilhe sua fanart.</h2>
+      <p data-pt="O envio é feito na página Publicar. Sua obra fica privada até a revisão manual, e você mantém seus direitos autorais." data-en="Submit your artwork on the Submit page. It stays private until manual review, and you retain your copyright.">O envio é feito na página Publicar. Sua obra fica privada até a revisão manual, e você mantém seus direitos autorais.</p>
+      <p><a class="action" href="fanarts-publicar.html" data-pt="Ir para Publicar →" data-en="Go to Submit →">Ir para Publicar →</a></p>
       <p data-pt="Envie apenas obras próprias ou autorizadas. Não envie dados pessoais de terceiros ou conteúdo ilegal. O nome artístico, título e link enviados poderão aparecer publicamente se a obra for aprovada; país ou região só será exibido mediante autorização específica. Os arquivos pendentes ficam em armazenamento privado; você pode solicitar retirada em Meus envios." data-en="Submit only your own or authorized work. Do not submit other people's personal details or illegal content. Artist name, title and link may be public upon approval; country or region appears only with specific permission. Pending files remain private; you can request withdrawal under My submissions.">Envie apenas obras próprias ou autorizadas. Não envie dados pessoais de terceiros ou conteúdo ilegal. O nome artístico, título e link enviados poderão aparecer publicamente se a obra for aprovada; país ou região só será exibido mediante autorização específica. Os arquivos pendentes ficam em armazenamento privado; você pode solicitar retirada em Meus envios.</p>
       <a href="fanarts-regras.html" class="fanarts-back" data-pt="Regras completas e privacidade →" data-en="Full rules and privacy →">Regras completas e privacidade →</a>
       <p><a href="catalogo.html" class="fanarts-back" data-pt="Voltar ao catálogo de episódios →" data-en="Back to the episode catalog →">Voltar ao catálogo de episódios →</a></p>
