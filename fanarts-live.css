@@ -1,0 +1,16 @@
+/* Authenticated, pre-moderated fanart submissions. */
+.fanarts-live-form{width:100%;}
+.fanarts-live-form fieldset{display:flex;flex-direction:column;gap:.65rem;min-width:0;}
+.fanarts-live-form input,.fanarts-live-form select,.fanarts-live-form textarea{width:100%;max-width:100%;}
+.fanarts-live-form input[type=checkbox]{width:auto;}
+.fanarts-live-form button{min-height:44px;}
+.fanarts-live-notice{margin:1rem 0;line-height:1.5;overflow-wrap:anywhere;}
+.fanarts-live-notice.error{color:#e64c6b;}
+.fanarts-mine{margin:1.4rem 0;padding:1rem;border:1px solid var(--line,#637083);border-radius:12px;}
+.fanarts-mine[hidden]{display:none!important;}
+.fanarts-mine-item{margin:.6rem 0;padding:.85rem;border:1px solid var(--line,#637083);border-radius:10px;overflow-wrap:anywhere;}
+.fanarts-mine-item p{margin:.3rem 0;}
+.fanarts-gallery-work figcaption a{color:#8ceaff;text-decoration:underline;overflow-wrap:anywhere;}
+.fanarts-tags-line{white-space:normal;overflow-wrap:anywhere;}
+.fanarts-approved-gallery{width:100%;}
+@media(max-width:650px){.fanarts-mine{padding:.75rem;}.fanarts-live-form button{width:100%;}}
