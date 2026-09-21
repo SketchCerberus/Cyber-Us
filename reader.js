@@ -144,4 +144,26 @@
     document.head.appendChild(showcase);
   }
 
+  // Load only the modules relevant to this page after all deferred Supabase scripts.
+  // Resolve against reader.js because episode pages are one directory deeper.
+  const base=new URL('.',document.currentScript?.src||document.baseURI);
+  const modules=[];
+  if(document.querySelector('.fanarts-gallery')){
+    modules.push('fanarts-featured.js');
+    if(document.querySelector('script[src="fanarts-detail.js"]'))modules.push('community-mentions.js');
+  }
+  if(document.body.dataset.communityPage==='account')modules.push('community-notifications.js');
+  if(document.getElementById('moderationWorkspace')){
+    modules.push('moderation-edit-history.js','moderation-featured-fanarts.js');
+  }
+  if(modules.length){
+    const css=document.createElement('link');css.rel='stylesheet';
+    css.href=new URL('community-social.css',base).href;document.head.append(css);
+    const load=()=>modules.forEach(file=>{
+      const script=document.createElement('script');script.src=new URL(file,base).href;
+      document.head.append(script);
+    });
+    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',load,{once:true});
+    else load();
+  }
 }());
