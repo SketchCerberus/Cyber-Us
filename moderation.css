@@ -1,0 +1,38 @@
+/* Moderator entry belongs in the profile heading; the old embedded panel stays out of sight. */
+.community-account #moderationPanel { display:none!important; }
+.profile-heading-row { display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:.35rem; }
+.profile-heading-row h2 { margin:0; }
+.community-account a.moderation-launch {
+  display:inline-flex;align-items:center;justify-content:center;min-height:44px;
+  padding:.55rem .9rem;border:1px solid var(--cyan);border-radius:9px;
+  background:var(--panel2,var(--panel));color:var(--cyan);font-weight:750;text-decoration:none;
+}
+.community-account a.moderation-launch[hidden],.moderation-languages[hidden] { display:none!important; }
+.community-account a.moderation-launch:hover { background:var(--panel2,var(--panel));filter:brightness(1.12); }
+.community-account a.moderation-launch:focus-visible,.moderation-page button:focus-visible,.moderation-back:focus-visible { outline:3px solid var(--cyan);outline-offset:3px; }
+.moderation-page { max-width:1060px; }
+.moderation-back { display:inline-block;margin:1.2rem 0;text-decoration:none;font-weight:700; }
+.moderation-tabs { display:flex;gap:.65rem;flex-wrap:wrap;margin:1.4rem 0; }
+.moderation-tabs button { min-height:44px;font-weight:750; }
+.moderation-tabs button[aria-pressed="true"] { border-color:var(--cyan);box-shadow:inset 0 -3px 0 var(--cyan); }
+.moderation-folders { display:grid;gap:.75rem;margin:1.3rem 0; }
+.moderation-folder { border:1px solid var(--community-border,var(--line));border-radius:12px;background:var(--panel);overflow:hidden; }
+.moderation-folder > button {
+  width:100%;min-height:52px;border:0;background:var(--panel2,var(--panel));color:var(--text);
+  font:inherit;font-weight:750;text-align:left;padding:.85rem 1rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;gap:.75rem;
+}
+.moderation-folder > button[aria-expanded="true"] { color:var(--cyan); }
+.moderation-folder > button::after { content:'+';font-size:1.35rem;line-height:1; }
+.moderation-folder > button[aria-expanded="true"]::after { content:'−'; }
+.moderation-languages { display:flex;flex-wrap:wrap;gap:.6rem;padding:.9rem 1rem;border-top:1px solid var(--community-border,var(--line)); }
+.moderation-languages button { min-height:44px;flex:1 1 155px;padding:.55rem .8rem;background:var(--panel);color:var(--text);border:1px solid var(--community-border,var(--line));border-radius:8px;font:inherit;cursor:pointer; }
+.moderation-languages button[aria-pressed="true"] { border-color:var(--cyan);color:var(--cyan);font-weight:750; }
+.moderation-selection { margin:1.5rem 0;padding:1.2rem;border:1px solid var(--community-border,var(--line));border-radius:14px;background:var(--panel);scroll-margin-top:6rem; }
+.moderation-selection-heading { display:flex;align-items:center;justify-content:space-between;gap:.8rem;flex-wrap:wrap; }
+.moderation-selection-heading h2,.moderation-selection-heading h3 { margin:.25rem 0;overflow-wrap:anywhere; }
+.moderation-page .comment-item .profile-avatar { margin-right:.55rem; }
+.moderation-page .comment-item strong { vertical-align:middle; }
+.moderation-page .comment-meta { overflow-wrap:anywhere; }
+.moderation-page .community-more { width:100%; }
+@media(max-width:600px) { .profile-heading-row { align-items:stretch; }.profile-heading-row .moderation-launch { width:100%; }.moderation-selection { padding:.8rem; }.moderation-languages { padding:.7rem; } }

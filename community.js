@@ -86,7 +86,7 @@
       byId('profileUsername').value = data?.username || '';
       notice('accountStatus', t('Sua sessão está ativa.', 'You are signed in.'));
     }
-    if (state.moderator) await loadModeration();
+    // The moderation queue now loads only inside moderacao.html, not in the hidden legacy panel.
   }
 
   function installPasswordToggle(input) {
@@ -460,7 +460,8 @@
             if (!body || body.length > 2000) return;
             busy(form, true);
             try {
-              const result = await db.from('comments').insert({episode_slug:episodeRoot.dataset.communityEpisode,author_id:state.user.id,parent_id:comment.id,body});
+              // PostgreSQL enforces the parent comment's locale even if the UI changes mid-thread.
+              const result = await db.from('comments').insert({episode_slug:episodeRoot.dataset.communityEpisode,author_id:state.user.id,parent_id:comment.id,body,language_code:pt() ? 'pt' : 'en'});
               if (result.error) throw result.error;
               input.value = ''; close(); await loadReplies(true);
               notice('communityStatus', t('Resposta publicada.', 'Reply posted.'));
@@ -516,7 +517,7 @@
       const body = byId('commentBody').value.trim();
       if (!body || body.length > 2000) return notice('communityStatus', t('Seu comentário deve ter de 1 a 2.000 caracteres.', 'Comments must contain 1–2,000 characters.'), true);
       busy(form, true);
-      const { error } = await db.from('comments').insert({ episode_slug: slug, author_id: state.user.id, body });
+      const { error } = await db.from('comments').insert({ episode_slug: slug, author_id: state.user.id, body, language_code: pt() ? 'pt' : 'en' });
       busy(form, false);
       if (error) return notice('communityStatus', errorText(error), true);
       byId('commentBody').value = '';
