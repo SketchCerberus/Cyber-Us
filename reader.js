@@ -142,14 +142,4 @@
     document.head.appendChild(showcase);
   }
 
-  // Resolve caminhos a partir de reader.js também nos episódios em /episodios/.
-  const readerScriptUrl = document.currentScript && document.currentScript.src;
-  const headerBase = readerScriptUrl || document.baseURI;
-  const headerStyles = document.createElement('link');
-  headerStyles.rel = 'stylesheet';
-  headerStyles.href = new URL('header-scroll.css', headerBase).href;
-  document.head.appendChild(headerStyles);
-  const headerNavigation = document.createElement('script');
-  headerNavigation.src = new URL('header-scroll.js', headerBase).href;
-  document.head.appendChild(headerNavigation);
 }());
