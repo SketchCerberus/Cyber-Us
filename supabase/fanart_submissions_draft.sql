@@ -19,22 +19,20 @@ create table if not exists public.fanart_submissions (
   constraint region_requires_consent check (not show_region or (region is not null and length(btrim(region)) > 0)),
   constraint image_path_matches_owner check (image_path = user_id::text || '/' || id::text || '.' || extension)
 );
-
 create index if not exists fanart_submissions_owner_created on public.fanart_submissions(user_id, created_at desc);
 create index if not exists fanart_submissions_pending on public.fanart_submissions(created_at) where status = 'pending';
 alter table public.fanart_submissions enable row level security;
 revoke all on public.fanart_submissions from anon, authenticated;
-grant select, insert, delete on public.fanart_submissions to authenticated;
+grant select on public.fanart_submissions to authenticated;
+-- Nunca conceder INSERT em status/created_at; o visitante não pode retroagir a data e burlar o limite.
+grant insert (id,user_id,artist_name,title,region,show_region,artist_link,accent,extension,image_path,rights_confirmed)
+on public.fanart_submissions to authenticated;
 
--- Proprietário consulta somente seus registros. Nenhum visitante obtém envios pendentes.
 create policy "fanart_owner_read" on public.fanart_submissions for select to authenticated
   using (user_id = (select auth.uid()));
 create policy "fanart_owner_submit" on public.fanart_submissions for insert to authenticated
   with check (user_id = (select auth.uid()) and status = 'pending' and rights_confirmed and not public.is_banned());
-create policy "fanart_owner_cancel" on public.fanart_submissions for delete to authenticated
-  using (user_id = (select auth.uid()) and status = 'pending');
 
--- Limite no banco (não apenas no browser). A proteção do armazenamento depende de registro reservado.
 create schema if not exists community_private;
 create or replace function community_private.check_fanart_submission_limit()
 returns trigger language plpgsql security definer set search_path = pg_catalog, public
@@ -55,7 +53,6 @@ revoke all on function community_private.check_fanart_submission_limit() from pu
 create trigger fanart_submission_limit before insert on public.fanart_submissions
 for each row execute function community_private.check_fanart_submission_limit();
 
--- Nome do bucket separado evita qualquer exposição acidental via public URL.
 insert into storage.buckets(id,name,public,file_size_limit,allowed_mime_types)
 values ('fanart-pending','fanart-pending',false,5242880,array['image/jpeg','image/png','image/webp'])
 on conflict (id) do update set public = false, file_size_limit = 5242880,
@@ -69,6 +66,6 @@ with check (
   and exists (select 1 from public.fanart_submissions f
     where f.image_path = name and f.user_id = (select auth.uid()) and f.status = 'pending')
 );
--- Intencionalmente nenhuma policy SELECT/UPDATE/DELETE em storage.objects para esse bucket.
--- Moderadores devem inspecionar via painel administrativo autorizado; não criar signed URLs
--- ou liberar originais não revisados ao público.
+-- Não conceder SELECT, UPDATE nem DELETE para usuários no bucket de pendências.
+-- Não permitir usuário apagar registro para reservar envios ilimitados. Administração
+-- fará limpeza de registros/arquivos fracassados ou rejeitados via painel seguro.
