@@ -1,15 +1,15 @@
--- Apply to the existing Cyber-Us Supabase project BEFORE publishing the matching frontend.
--- A comment's language is the reader interface language at submission, not automatic language detection.
--- Historical rows retain NULL; do not guess the language of existing readers' texts.
-alter table public.comments add column language_code text;
-alter table public.comments add constraint comments_language_code_check
-  check (language_code is null or language_code in ('pt', 'en'));
+-- Apply before the corresponding frontend is deployed. Existing comments are PT at the author's request.
+-- A comment's language records the reader interface at submission, not automated text detection.
+-- The PT default preserves compatibility with older clients during deployment.
+alter table public.comments
+  add column language_code text not null default 'pt'
+  constraint comments_language_code_check check (language_code in ('pt', 'en'));
 
 grant select (language_code) on public.comments to anon, authenticated;
 grant insert (language_code) on public.comments to authenticated;
 
--- Keep all replies in their parent thread's language, including historical unlabeled threads.
--- The existing reply validator still checks parent existence and access.
+-- A reply always inherits the parent's recorded locale, even if the reader changes UI language.
+-- Existing reply-validation and write/RLS safeguards remain unchanged.
 create function community_private.inherit_comment_language()
 returns trigger language plpgsql set search_path = '' as $function$
 begin
