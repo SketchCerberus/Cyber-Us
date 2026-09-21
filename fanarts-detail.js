@@ -54,61 +54,69 @@
   form.append(nameLabel,name,bodyLabel,body,consent,submit,commentNote);
   community.append(communityHeading,interactionStatus,votes,commentHeading,comments,form);
   header.append(title,close);detail.append(header,image,credit,community);gallery.after(detail);
-  let selected=null,request=0;
+  let selected=null,request=0,voteCounts={upvotes:0,downvotes:0};
   function setStatus(br,en,error=false) {
     interactionStatus.dataset.pt=br;interactionStatus.dataset.en=en;
     interactionStatus.textContent=t(br,en);
     interactionStatus.classList.toggle('error',error);
   }
+  function syncCredit(card) {
+    const caption=card?.querySelector('figcaption');
+    if(!caption)return;
+    credit.textContent=caption.querySelector('.fanarts-gallery-artist')?.textContent||'';
+    // Only a direct child is a consented region; tag badges are nested spans.
+    const region=caption.querySelector(':scope > span:not(.fanarts-gallery-artist)');
+    if(region)credit.append(document.createTextNode(` · ${region.textContent}`));
+  }
   function syncLanguage() {
     document.querySelectorAll('.fanarts-view-work').forEach(button=>{
-      if (button.dataset.pt && button.dataset.en && button!==up && button!==down) button.textContent=t(button.dataset.pt,button.dataset.en);
+      if(button.dataset.pt&&button.dataset.en&&button!==up&&button!==down)button.textContent=t(button.dataset.pt,button.dataset.en);
     });
-    for (const node of [communityHeading,commentHeading,nameLabel,bodyLabel,consentText,submit,commentNote])
+    up.textContent=t(up.dataset.pt,up.dataset.en)+` (${voteCounts.upvotes})`;
+    down.textContent=t(down.dataset.pt,down.dataset.en)+` (${voteCounts.downvotes})`;
+    for(const node of [communityHeading,commentHeading,nameLabel,bodyLabel,consentText,submit,commentNote])
       node.textContent=t(node.dataset.pt,node.dataset.en);
-    if (interactionStatus.dataset.pt) interactionStatus.textContent=t(interactionStatus.dataset.pt,interactionStatus.dataset.en);
+    if(interactionStatus.dataset.pt)interactionStatus.textContent=t(interactionStatus.dataset.pt,interactionStatus.dataset.en);
+    comments.querySelectorAll('[data-pt][data-en]').forEach(node=>node.textContent=t(node.dataset.pt,node.dataset.en));
+    comments.querySelectorAll('time[datetime]').forEach(node=>{
+      node.textContent=new Intl.DateTimeFormat(pt()?'pt-BR':'en',{dateStyle:'medium'}).format(new Date(node.dateTime));
+    });
+    if(selected)syncCredit(selected);
   }
   async function access() {
-    if (!db) return null;
+    if(!db)return null;
     const {data,error}=await db.auth.getUser();
-    if (error || !data?.user?.email_confirmed_at) return null;
+    if(error||!data?.user?.email_confirmed_at)return null;
     const ban=await db.rpc('is_banned');
-    if (ban.error || ban.data===true) return null;
+    if(ban.error||ban.data===true)return null;
     return data.user;
   }
   async function loadVotes(id,token) {
-    if (!db) return;
+    if(!db)return;
     const {data,error}=await db.from('fanart_vote_totals').select('upvotes,downvotes').eq('submission_id',id).maybeSingle();
-    if (token!==request) return;
-    if (error) {
-      votes.hidden=true;
-      setStatus('Votação indisponível.','Voting is unavailable.',true);
-      return;
-    }
+    if(token!==request)return;
+    if(error){votes.hidden=true;setStatus('Votação indisponível.','Voting is unavailable.',true);return;}
     votes.hidden=false;
-    up.textContent=t('Gostei','Upvote')+` (${data?.upvotes||0})`;
-    down.textContent=t('Não gostei','Downvote')+` (${data?.downvotes||0})`;
+    voteCounts={upvotes:Number(data?.upvotes)||0,downvotes:Number(data?.downvotes)||0};
+    up.textContent=t(up.dataset.pt,up.dataset.en)+` (${voteCounts.upvotes})`;
+    down.textContent=t(down.dataset.pt,down.dataset.en)+` (${voteCounts.downvotes})`;
   }
   async function loadComments(id,token) {
-    if (!db) return;
+    if(!db)return;
     const {data,error}=await db.from('fanart_comments')
       .select('id,display_name,body,created_at').eq('submission_id',id)
       .order('created_at',{ascending:false}).limit(30);
-    if (token!==request) return;
+    if(token!==request)return;
     comments.replaceChildren();
-    if (error) {
-      form.hidden=true;
-      setStatus('Comentários indisponíveis.','Comments are unavailable.',true);
-      return;
-    }
+    if(error){form.hidden=true;setStatus('Comentários indisponíveis.','Comments are unavailable.',true);return;}
     form.hidden=false;
-    if (!data?.length) {
+    if(!data?.length){
       const empty=document.createElement('p');empty.className='fanarts-hint';
       empty.dataset.pt='Ainda não há comentários. Seja a primeira pessoa a comentar.';
       empty.dataset.en='No comments yet. Be the first to comment.';
       empty.textContent=t(empty.dataset.pt,empty.dataset.en);comments.append(empty);return;
     }
-    for (const item of data) {
+    for(const item of data){
       const article=document.createElement('article');article.className='fanarts-comment';
       const author=document.createElement('strong');author.textContent=item.display_name;
       const date=document.createElement('time');date.dateTime=item.created_at;
@@ -118,59 +126,55 @@
     }
   }
   async function loadInteractions() {
-    if (!selected) return;
+    if(!selected)return;
     const token=++request,id=selected.dataset.submissionId;
     setStatus('Carregando interações…','Loading interactions…');
-    if (!db) {
-      votes.hidden=form.hidden=true;
-      setStatus('Interações indisponíveis.','Interactions unavailable.',true);return;
-    }
+    if(!db){votes.hidden=form.hidden=true;setStatus('Interações indisponíveis.','Interactions unavailable.',true);return;}
     votes.hidden=form.hidden=false;
     await Promise.all([loadVotes(id,token),loadComments(id,token)]);
-    if (token===request && !interactionStatus.classList.contains('error')) setStatus('Uma conta verificada é necessária para interagir.','A verified account is required to participate.');
+    if(token===request&&!interactionStatus.classList.contains('error'))setStatus('Uma conta verificada é necessária para interagir.','A verified account is required to participate.');
   }
   async function vote(value) {
-    if (!selected || !db || votes.hidden) return;
-    const id=selected.dataset.submissionId;
+    if(!selected||!db||votes.hidden)return;
+    const id=selected.dataset.submissionId,token=request;
     const user=await access();
-    if (!user) {setStatus('Entre com uma conta verificada e não suspensa para votar.','Sign in with a verified, unsuspended account to vote.',true);return;}
+    if(token!==request||selected?.dataset.submissionId!==id)return;
+    if(!user){setStatus('Entre com uma conta verificada e não suspensa para votar.','Sign in with a verified, unsuspended account to vote.',true);return;}
     up.disabled=down.disabled=true;
-    const {error}=await db.from('fanart_votes').upsert(
-      {submission_id:id,user_id:user.id,value},{onConflict:'submission_id,user_id'});
+    const {error}=await db.from('fanart_votes').upsert({submission_id:id,user_id:user.id,value},{onConflict:'submission_id,user_id'});
     up.disabled=down.disabled=false;
-    if (error) {setStatus('Não foi possível registrar seu voto.','Could not save your vote.',true);return;}
+    if(token!==request)return;
+    if(error){setStatus('Não foi possível registrar seu voto.','Could not save your vote.',true);return;}
     setStatus('Voto registrado! Você pode trocar sua escolha.','Vote saved! You can change your choice.');
-    await loadVotes(id,request);
+    await loadVotes(id,token);
   }
   up.addEventListener('click',()=>vote(1));down.addEventListener('click',()=>vote(-1));
   form.addEventListener('submit',async event=>{
     event.preventDefault();
-    if (!selected || !db || !form.reportValidity()) return;
+    if(!selected||!db||!form.reportValidity())return;
+    const id=selected.dataset.submissionId,token=request;
     const user=await access();
-    if (!user) {setStatus('Entre com uma conta verificada e não suspensa para comentar.','Sign in with a verified, unsuspended account to comment.',true);return;}
+    if(token!==request||selected?.dataset.submissionId!==id)return;
+    if(!user){setStatus('Entre com uma conta verificada e não suspensa para comentar.','Sign in with a verified, unsuspended account to comment.',true);return;}
     const display_name=name.value.trim(),message=body.value.trim();
-    if (!display_name || display_name.length>60 || !message || message.length>1000 || !consentInput.checked) return;
-    const id=selected.dataset.submissionId;
+    if(!display_name||display_name.length>60||!message||message.length>1000||!consentInput.checked)return;
     submit.disabled=true;
-    const {error}=await db.from('fanart_comments').insert({
-      submission_id:id,author_id:user.id,display_name,body:message
-    });
+    const {error}=await db.from('fanart_comments').insert({submission_id:id,author_id:user.id,display_name,body:message});
     submit.disabled=false;
-    if (error) {setStatus('Não foi possível enviar. Verifique o limite de comentários e tente novamente.','Could not post. Check the comment limit and try again.',true);return;}
+    if(token!==request)return;
+    if(error){setStatus('Não foi possível enviar. Verifique o limite de comentários e tente novamente.','Could not post. Check the comment limit and try again.',true);return;}
     form.reset();
     setStatus('Comentário publicado. Obrigado por participar!','Comment published. Thanks for participating!');
-    await loadComments(id,request);
+    await loadComments(id,token);
   });
   function openCard(card) {
     const original=card.querySelector('img'),caption=card.querySelector('figcaption');
-    if (!original || !caption || !original.complete || !original.naturalWidth) return;
+    if(!original||!caption||!original.complete||!original.naturalWidth)return;
     const id=card.dataset.submissionId;
-    if (!/^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/i.test(id||'')) return;
+    if(!/^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/i.test(id||''))return;
     selected=card;
     title.textContent=caption.querySelector('strong')?.textContent||'';
-    credit.textContent=caption.querySelector('.fanarts-gallery-artist')?.textContent||'';
-    const region=caption.querySelector('span:not(.fanarts-gallery-artist)');
-    if (region) credit.append(document.createTextNode(` · ${region.textContent}`));
+    syncCredit(card);
     image.src=original.src;image.alt=original.alt;
     detail.hidden=false;
     const url=new URL(location.href);url.searchParams.set('art',id);
@@ -188,29 +192,29 @@
   close.addEventListener('click',closeCard);
   gallery.addEventListener('click',event=>{
     const button=event.target.closest('.fanarts-view-work');
-    if (button) {const card=button.closest('.fanarts-gallery-work');if(card)openCard(card);}
+    if(button){const card=button.closest('.fanarts-gallery-work');if(card)openCard(card);}
   });
   const observer=new MutationObserver(()=>{
     gallery.querySelectorAll('.fanarts-gallery-work').forEach(card=>{
-      if (card.querySelector('.fanarts-view-work')) return;
+      if(card.querySelector('.fanarts-view-work'))return;
       const button=document.createElement('button');button.type='button';
       button.className='fanarts-view-work';button.dataset.pt='Ver arte';button.dataset.en='View artwork';
       button.textContent=t(button.dataset.pt,button.dataset.en);
       card.querySelector('figcaption')?.append(button);
     });
-    if (selected && !selected.isConnected) closeCard();
+    if(selected&&!selected.isConnected)closeCard();
     const requested=new URLSearchParams(location.search).get('art');
-    if (requested && !selected) {
+    if(requested&&!selected){
       const card=[...gallery.querySelectorAll('.fanarts-gallery-work')].find(item=>item.dataset.submissionId===requested);
-      if (card?.querySelector('img')?.naturalWidth) openCard(card);
+      if(card?.querySelector('img')?.naturalWidth)openCard(card);
     }
   });
   observer.observe(gallery,{childList:true,subtree:true});
   gallery.addEventListener('load',event=>{
-    if (event.target.tagName==='IMG') {
+    if(event.target.tagName==='IMG'){
       const requested=new URLSearchParams(location.search).get('art');
       const card=event.target.closest('.fanarts-gallery-work');
-      if (requested && !selected && card?.dataset.submissionId===requested) openCard(card);
+      if(requested&&!selected&&card?.dataset.submissionId===requested)openCard(card);
     }
   },true);
   new MutationObserver(syncLanguage).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
