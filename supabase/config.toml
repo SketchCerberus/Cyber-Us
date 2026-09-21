@@ -1,0 +1,2 @@
+[functions.fanart-submit]
+verify_jwt = true
