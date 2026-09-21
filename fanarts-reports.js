@@ -8,8 +8,7 @@
     {auth:{flowType:'pkce',detectSessionInUrl:false,persistSession:true,autoRefreshToken:true}});
   const pt=()=>document.documentElement.lang.startsWith('pt');
   const t=(br,en)=>pt()?br:en;
-  const translatable=[];
-  function local(node,br,en){node.dataset.pt=br;node.dataset.en=en;node.textContent=t(br,en);translatable.push(node);return node;}
+  const local=(node,br,en)=>{node.dataset.pt=br;node.dataset.en=en;node.textContent=t(br,en);return node;};
   function decorate(){
     comments.querySelectorAll('.fanarts-comment[data-comment-id]').forEach(article=>{
       if(article.dataset.reportReady==='true')return;
@@ -19,14 +18,18 @@
       const trigger=local(document.createElement('button'),'Denunciar comentário','Report comment');
       trigger.type='button';trigger.className='fanarts-report-comment';
       const form=document.createElement('form');form.className='fanarts-comment-form fanarts-report-form';form.hidden=true;
-      const reasonLabel=local(document.createElement('label'),'Motivo da denúncia','Reason for reporting');
+      const reasonLabel=document.createElement('label');
       const reason=document.createElement('select');reason.required=true;
+      reason.id=`fanart-report-reason-${id}`;reasonLabel.htmlFor=reason.id;
+      reasonLabel.append(local(document.createElement('span'),'Motivo da denúncia','Reason for reporting'),reason);
       const choices=[['','Selecione um motivo','Choose a reason'],['spam','Spam','Spam'],
         ['harassment','Ofensa ou assédio','Abuse or harassment'],['spoiler','Spoiler não sinalizado','Unmarked spoiler'],
         ['other','Outro','Other']];
       for(const [value,br,en] of choices){const option=local(document.createElement('option'),br,en);option.value=value;reason.append(option);}
-      const detailsLabel=local(document.createElement('label'),'Detalhes (opcional; até 300 caracteres)','Details (optional; up to 300 characters)');
+      const detailsLabel=document.createElement('label');
       const details=document.createElement('textarea');details.maxLength=300;details.rows=3;
+      details.id=`fanart-report-details-${id}`;detailsLabel.htmlFor=details.id;
+      detailsLabel.append(local(document.createElement('span'),'Detalhes (opcional; até 300 caracteres)','Details (optional; up to 300 characters)'),details);
       const submit=local(document.createElement('button'),'Enviar denúncia','Submit report');
       submit.type='submit';submit.className='fanarts-view-work';
       const cancel=local(document.createElement('button'),'Cancelar','Cancel');
@@ -34,7 +37,6 @@
       const status=document.createElement('p');status.className='fanarts-hint';status.setAttribute('role','status');
       const say=(br,en,error=false)=>{status.dataset.pt=br;status.dataset.en=en;
         status.textContent=t(br,en);status.classList.toggle('error',error);};
-      reasonLabel.append(reason);detailsLabel.append(details);
       form.append(reasonLabel,detailsLabel,submit,cancel);
       trigger.addEventListener('click',()=>{form.hidden=!form.hidden;if(!form.hidden)reason.focus();});
       cancel.addEventListener('click',()=>{form.hidden=true;trigger.focus();});
@@ -63,10 +65,7 @@
   }
   new MutationObserver(decorate).observe(comments,{childList:true,subtree:true});
   new MutationObserver(()=>{
-    for(const node of translatable){if(node.isConnected)node.textContent=t(node.dataset.pt,node.dataset.en);}
-    comments.querySelectorAll('.fanarts-report-form + .fanarts-hint').forEach(node=>{
-      if(node.dataset.pt)node.textContent=t(node.dataset.pt,node.dataset.en);
-    });
+    comments.querySelectorAll('[data-pt][data-en]').forEach(node=>node.textContent=t(node.dataset.pt,node.dataset.en));
   }).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
   decorate();
 })();
