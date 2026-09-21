@@ -22,7 +22,7 @@
   ];
   let activeFile = currentPath.split('/').pop() || 'index.html';
   if (currentPath.includes('/episodios/')) activeFile = 'catalogo.html';
-  if (activeFile === 'fanarts-regras.html') activeFile = 'fanarts.html';
+  if (['fanarts-regras.html','fanarts-galeria.html','fanarts-publicar.html'].includes(activeFile)) activeFile = 'fanarts.html';
   if (['cadastro.html','recuperar-senha.html','moderacao.html'].includes(activeFile)) activeFile = 'comunidade.html';
   const links = standardLinks.map(([file,pt,en]) => {
     const link = document.createElement('a');

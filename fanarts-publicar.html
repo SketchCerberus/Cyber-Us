@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Envie fanarts para revisão manual no Cyber-Us.">
+  <title>Cyber-Us — Publicar fanart</title>
+  <link rel="stylesheet" href="reader.css">
+  <link rel="stylesheet" href="fanarts.css">
+  <link rel="stylesheet" href="fanarts-showcase.css">
+  <link rel="stylesheet" href="header-scroll.css">
+  <link rel="stylesheet" href="fanarts-subpages.css">
+  <script defer src="reader.js"></script>
+  <script defer src="header-scroll.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
+  <script defer src="fanarts-submit.js"></script>
+  <script defer src="fanarts-my-submissions.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main" data-pt="Pular para o conteúdo" data-en="Skip to content">Pular para o conteúdo</a>
+  <header class="site-header">
+    <a class="logo" href="index.html" aria-label="Cyber-Us — início">CYBER <span>US</span></a>
+    <nav aria-label="Navegação principal">
+      <a href="fanarts.html">Fanarts</a>
+      <a class="account-access" href="comunidade.html" data-pt="Entrar / Cadastre-se" data-en="Sign in / Sign up">Entrar / Cadastre-se</a>
+      <button id="languageBtn" class="lang-btn" type="button" aria-label="Switch to English">EN</button>
+    </nav>
+  </header>
+  <main id="main" class="fanarts-page">
+    <nav class="fanarts-subnav" aria-label="Fanarts">
+      <a href="fanarts.html" data-pt="Visão geral" data-en="Overview">Visão geral</a>
+      <a href="fanarts-galeria.html" data-pt="Galeria" data-en="Gallery">Galeria</a>
+      <a href="fanarts-publicar.html" aria-current="page" data-pt="Publicar" data-en="Submit">Publicar</a>
+    </nav>
+    <section id="submit" class="fanarts-submission" aria-labelledby="fanarts-submit-title">
+      <div>
+        <p class="eyebrow" data-pt="CYBER-US // PUBLICAR" data-en="CYBER-US // SUBMIT">CYBER-US // PUBLICAR</p>
+        <h1 id="fanarts-submit-title" data-pt="Compartilhe sua fanart." data-en="Share your fanart.">Compartilhe sua fanart.</h1>
+        <p id="fanarts-disabled-note" class="fanarts-hint" data-pt="O formulário só é ativado para contas verificadas, não suspensas e com o serviço disponível." data-en="The form unlocks only for verified, unsuspended accounts when the service is available.">O formulário só é ativado para contas verificadas, não suspensas e com o serviço disponível.</p>
+        <p class="fanarts-hint" data-pt="Sua obra fica privada até a moderação aprovar. Você mantém seus direitos autorais." data-en="Your artwork remains private until moderation approves it. You retain your copyright.">Sua obra fica privada até a moderação aprovar. Você mantém seus direitos autorais.</p>
+        <p><a class="fanarts-back" href="comunidade.html" data-pt="Acessar minha conta →" data-en="Access my account →">Acessar minha conta →</a></p>
+        <p><a class="fanarts-back" href="fanarts-regras.html" data-pt="Regras e privacidade →" data-en="Rules and privacy →">Regras e privacidade →</a></p>
+      </div>
+      <div class="fanarts-form-preview" aria-describedby="fanarts-disabled-note">
+        <fieldset disabled>
+          <legend data-pt="Enviar para revisão" data-en="Submit for review">Enviar para revisão</legend>
+          <label for="fanarts-name" data-pt="Nome artístico ou nome de exibição" data-en="Artist name or display name">Nome artístico ou nome de exibição</label>
+          <input id="fanarts-name" type="text" autocomplete="off" maxlength="60">
+          <label for="fanarts-art-title" data-pt="Título da obra" data-en="Artwork title">Título da obra</label>
+          <input id="fanarts-art-title" type="text" maxlength="100">
+          <label for="fanarts-country" data-pt="País ou região (opcional)" data-en="Country or region (optional)">País ou região (opcional)</label>
+          <select id="fanarts-country"><option value="" data-pt="Prefiro não informar" data-en="Prefer not to say">Prefiro não informar</option></select>
+          <label class="fanarts-check"><input id="fanarts-publish-country" type="checkbox"><span data-pt="Autorizo exibir publicamente minha região ao lado da obra (opcional)." data-en="I allow my region to appear publicly beside the artwork (optional).">Autorizo exibir publicamente minha região ao lado da obra (opcional).</span></label>
+          <label for="fanarts-image" data-pt="Arquivo da arte" data-en="Artwork file">Arquivo da arte</label>
+          <input id="fanarts-image" type="file" accept="image/png,image/jpeg,image/webp">
+          <label for="fanarts-artist-link" data-pt="Link do artista (opcional; HTTPS)" data-en="Artist link (optional; HTTPS)">Link do artista (opcional; HTTPS)</label>
+          <input id="fanarts-artist-link" type="url" autocomplete="off">
+          <label class="fanarts-check"><input id="fanarts-original" type="checkbox"><span data-pt="Tenho autorização para compartilhar a obra. Mantenho meus direitos autorais e autorizo exibição no site somente se aprovada, com crédito e possibilidade de solicitar retirada." data-en="I have permission to share the work. I retain my copyright and authorize display on this site only if approved, with credit and a way to request withdrawal.">Tenho autorização para compartilhar a obra. Mantenho meus direitos autorais e autorizo exibição no site somente se aprovada, com crédito e possibilidade de solicitar retirada.</span></label>
+          <button type="button" data-pt="Verificando permissão de envio" data-en="Checking submission permissions">Verificando permissão de envio</button>
+        </fieldset>
+      </div>
+    </section>
+    <section class="fanarts-guidelines">
+      <p data-pt="Envie apenas arte própria ou autorizada. Não compartilhe dados pessoais de terceiros. Você pode solicitar retirada em Meus envios." data-en="Submit only your own or authorized art. Do not share third-party personal information. You can request withdrawal under My submissions.">Envie apenas arte própria ou autorizada. Não compartilhe dados pessoais de terceiros. Você pode solicitar retirada em Meus envios.</p>
+      <a class="fanarts-back" href="fanarts-galeria.html" data-pt="Explorar galeria →" data-en="Explore gallery →">Explorar galeria →</a>
+    </section>
+  </main>
+  <footer class="site-footer">CYBER-US · <a href="fanarts.html" data-pt="Voltar a Fanarts" data-en="Back to Fanarts">Voltar a Fanarts</a></footer>
+</body>
+</html>
