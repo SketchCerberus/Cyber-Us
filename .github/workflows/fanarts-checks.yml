@@ -6,6 +6,7 @@ on:
       - 'header-scroll.js'
       - 'moderacao.html'
       - 'moderation-fanart-comments.js'
+      - 'moderation-fanart-reports.js'
       - 'supabase/migrations/*fanart*'
       - 'tests/fanarts*'
       - '.github/workflows/fanarts-checks.yml'
@@ -25,8 +26,11 @@ jobs:
           node --check fanarts-gallery.js
           node --check fanarts-detail.js
           node --check fanarts-submit.js
+          node --check fanarts-spoilers.js
+          node --check fanarts-reports.js
           node --check fanarts-my-submissions.js
           node --check moderation-fanart-comments.js
+          node --check moderation-fanart-reports.js
           node --check header-scroll.js
       - name: Run focused fanart and navigation tests
-        run: node --test tests/fanarts-subpages.test.mjs tests/fanarts-moderation.test.mjs tests/header-navigation.test.mjs tests/fanarts-publication.test.mjs
+        run: node --test tests/fanarts-subpages.test.mjs tests/fanarts-enhancements.test.mjs tests/fanarts-moderation.test.mjs tests/header-navigation.test.mjs tests/fanarts-publication.test.mjs
