@@ -1,0 +1,17 @@
+/* Verified account badge in the shared navigation, using the existing theme tokens. */
+.site-header nav .account-access.is-signed-in {
+  display:inline-flex;align-items:center;justify-content:flex-start;gap:.55rem;
+  max-width:230px;min-height:44px;min-width:0;
+}
+.header-account-avatar {
+  position:relative;display:inline-flex;align-items:center;justify-content:center;
+  flex:0 0 32px;width:32px;height:32px;border-radius:50%;overflow:hidden;
+  background:var(--panel2,var(--panel));color:var(--text);font-size:1.15rem;
+}
+.header-account-avatar img { position:absolute;inset:0;width:100%;height:100%;object-fit:cover; }
+.header-account-name { display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+@media(max-width:1100px) {
+  .site-header.scroll-header.menu-open > nav > a.account-access.is-signed-in {
+    display:flex;align-items:center;max-width:none;
+  }
+}
