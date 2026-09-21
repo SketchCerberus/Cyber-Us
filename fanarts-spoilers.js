@@ -1,17 +1,21 @@
-/* Reader-controlled spoiler cover. Approved images are still public URLs; this is a visual warning, not an access-control boundary. */
+/* Reader-controlled spoiler cover. Approved images are public URLs: this is a visual warning, not access control. */
 (() => {
   'use strict';
   const gallery=document.querySelector('.fanarts-gallery');
   if(!gallery)return;
   const pt=()=>document.documentElement.lang.startsWith('pt');
   const text=(br,en)=>pt()?br:en;
-  const label=(button,br,en)=>{button.dataset.pt=br;button.dataset.en=en;button.textContent=text(br,en);};
+  // MutationObserver observes childList; only write text when it has really changed.
+  const label=(button,br,en)=>{
+    button.dataset.pt=br;button.dataset.en=en;
+    const value=text(br,en);
+    if(button.textContent!==value)button.textContent=value;
+  };
   function lockCard(card){
     if(card.dataset.spoiler!=='true'||card.dataset.spoilerEnhanced==='true')return;
     const image=card.querySelector('img'),caption=card.querySelector('figcaption');
     if(!image||!caption)return;
-    card.dataset.spoilerEnhanced='true';
-    card.classList.add('fanarts-spoiler-locked');
+    card.dataset.spoilerEnhanced='true';card.classList.add('fanarts-spoiler-locked');
     image.dataset.artworkAlt=image.alt;
     image.alt=text('Fanart com spoiler oculto','Spoiler artwork hidden');
     const reveal=document.createElement('button');reveal.type='button';
@@ -31,11 +35,17 @@
       lockCard(card);
       const image=card.querySelector('img');
       if(card.classList.contains('fanarts-spoiler-locked')&&image){
-        if(image.alt!==text('Fanart com spoiler oculto','Spoiler artwork hidden'))image.dataset.artworkAlt=image.alt;
-        image.alt=text('Fanart com spoiler oculto','Spoiler artwork hidden');
+        const hiddenAlt=text('Fanart com spoiler oculto','Spoiler artwork hidden');
+        if(image.alt!==hiddenAlt){
+          // The gallery's language switch can refresh alt; retain that translation
+          // without exposing the title while the spoiler is still covered.
+          if(image.alt!=='Fanart com spoiler oculto'&&image.alt!=='Spoiler artwork hidden')
+            image.dataset.artworkAlt=image.alt;
+          image.alt=hiddenAlt;
+        }
       }
-      card.querySelector('.fanarts-spoiler-reveal') && label(card.querySelector('.fanarts-spoiler-reveal'),
-        'Spoiler · Revelar imagem','Spoiler · Reveal artwork');
+      const button=card.querySelector('.fanarts-spoiler-reveal');
+      if(button)label(button,'Spoiler · Revelar imagem','Spoiler · Reveal artwork');
     });
   }
   const detail=document.querySelector('.fanarts-detail');
@@ -45,12 +55,11 @@
     detailReveal=document.createElement('button');detailReveal.type='button';
     detailReveal.className='fanarts-spoiler-detail-reveal fanarts-view-work';
     label(detailReveal,'Spoiler · Revelar imagem','Spoiler · Reveal artwork');
-    detailReveal.hidden=true;
-    image?.before(detailReveal);
+    detailReveal.hidden=true;image?.before(detailReveal);
     detailReveal.addEventListener('click',()=>{
-      const selected=gallery.querySelector(`.fanarts-gallery-work[data-submission-id="${new URLSearchParams(location.search).get('art')||''}"]`);
-      detail.classList.remove('fanarts-detail-spoiler-locked');
-      detailReveal.hidden=true;
+      const id=new URLSearchParams(location.search).get('art');
+      const selected=[...gallery.querySelectorAll('.fanarts-gallery-work')].find(card=>card.dataset.submissionId===id);
+      detail.classList.remove('fanarts-detail-spoiler-locked');detailReveal.hidden=true;
       if(image)image.alt=selected?.querySelector('img')?.dataset.artworkAlt||selected?.querySelector('img')?.alt||text('Fanart revelada','Revealed artwork');
       detail.querySelector('.fanarts-detail-header .fanarts-view-work')?.focus({preventScroll:true});
     });
