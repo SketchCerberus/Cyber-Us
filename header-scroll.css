@@ -47,3 +47,12 @@ html{scroll-padding-top:5rem}
 @media(prefers-reduced-motion:reduce){
   .site-header.scroll-header{transition:none}
 }
+
+/* Avoid flashing the guest label before Supabase checks an existing session.
+   visibility:hidden preserves the link's layout space until its final state is ready.
+   If scripts fail entirely, restore the original usable link after five seconds. */
+.site-header nav a.account-access:not(.account-badge-ready){
+  visibility:hidden;
+  animation:account-badge-fallback 0s 5s forwards;
+}
+@keyframes account-badge-fallback{to{visibility:visible}}

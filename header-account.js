@@ -29,6 +29,7 @@
     link.setAttribute('data-en', guestEN);
     link.removeAttribute('aria-label');
     link.textContent = pt() ? guestPT : guestEN;
+    link.classList.add('account-badge-ready'); // Reveal only after the session is checked.
   }
 
   function display(profile) {
@@ -65,6 +66,7 @@
     link.classList.add('is-signed-in');
     link.setAttribute('aria-label', pt() ? `Sua conta: ${name}` : `Your account: ${name}`);
     link.replaceChildren(avatar, label);
+    link.classList.add('account-badge-ready'); // Reveal the complete name and avatar together.
   }
 
   // The home and reader language pickers replace nodes with data-pt/data-en.
@@ -139,7 +141,9 @@
     }
     sdkScript.addEventListener('load', () => {
       if (window.supabase?.createClient) start(window.supabase);
+      else guest(); // Restore the sign-in link if the SDK did not initialize.
     }, { once: true });
+    sdkScript.addEventListener('error', guest, { once: true });
     // On unavailable services the original guest link remains usable.
   }
 })();
