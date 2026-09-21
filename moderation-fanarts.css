@@ -10,6 +10,7 @@
 .moderation-fanart-details { min-width:0; }
 .moderation-fanart-details h4 { margin:.15rem 0 .55rem;font-size:1.25rem;overflow-wrap:anywhere; }
 .moderation-fanart-artist { color:var(--cyan);font-weight:750;overflow-wrap:anywhere; }
+.moderation-fanart-user-id { display:inline-block;max-width:100%;margin:.25rem 0 .65rem;padding:.35rem .55rem;border:1px solid var(--cyan);border-radius:7px;background:rgba(125,211,252,.1);color:var(--text);font:750 .88rem ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.01em;overflow-wrap:anywhere; }
 .moderation-fanart-link { display:block;margin:.7rem 0;overflow-wrap:anywhere; }
 .moderation-fanart-actions { margin-top:1rem; }
 .moderation-fanart-lookup,.moderation-fanart-ban { max-width:650px; }
