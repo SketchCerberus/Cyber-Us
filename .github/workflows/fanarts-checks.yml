@@ -1,0 +1,29 @@
+name: Fanarts checks
+on:
+  pull_request:
+    paths:
+      - 'fanarts*'
+      - 'header-scroll.js'
+      - 'supabase/migrations/*fanart*'
+      - 'tests/fanarts*'
+      - '.github/workflows/fanarts-checks.yml'
+  workflow_dispatch:
+jobs:
+  fanarts:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check JavaScript syntax
+        run: |
+          node --check fanarts-gallery.js
+          node --check fanarts-detail.js
+          node --check fanarts-submit.js
+          node --check fanarts-my-submissions.js
+          node --check header-scroll.js
+      - name: Run focused fanart and navigation tests
+        run: node --test tests/fanarts-subpages.test.mjs tests/fanarts-moderation.test.mjs tests/header-navigation.test.mjs
