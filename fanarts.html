@@ -12,6 +12,7 @@
   <script defer src="header-scroll.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
   <script defer src="fanarts-submit.js"></script>
+  <script defer src="fanarts-my-submissions.js"></script>
 </head>
 <body>
   <a class="skip" href="#main" data-pt="Pular para o conteúdo" data-en="Skip to content">Pular para o conteúdo</a>
@@ -32,7 +33,7 @@
         <h1 id="fanarts-title" data-pt="O universo é de todos os artistas." data-en="A universe for every artist.">O universo é de todos os artistas.</h1>
         <p class="fanarts-lead" data-pt="Uma galeria para interpretações, personagens e criações dos leitores da Cyber-Us — conectando arte de diferentes lugares do mundo." data-en="A gallery for Cyber-Us readers' interpretations, characters and creations — connecting art from around the world.">Uma galeria para interpretações, personagens e criações dos leitores da Cyber-Us — conectando arte de diferentes lugares do mundo.</p>
         <a class="action" href="#gallery" data-pt="Conhecer a galeria ↓" data-en="Explore the gallery ↓">Conhecer a galeria ↓</a>
-        <p class="fanarts-kicker" data-pt="Galeria em preparação · Envios disponíveis apenas depois da configuração segura" data-en="Gallery in development · Submissions available only after secure setup">Galeria em preparação · Envios disponíveis apenas depois da configuração segura</p>
+        <p class="fanarts-kicker" data-pt="Envios sujeitos a revisão" data-en="Submissions are reviewed">Envios sujeitos a revisão</p>
       </div>
       <div class="fanarts-signal" aria-hidden="true">
         <span class="fanarts-signal-label">CYBER-US / COMMUNITY</span>
@@ -65,9 +66,10 @@
       <div>
         <p class="eyebrow" data-pt="ENVIO COM REVISÃO" data-en="REVIEWED SUBMISSION">ENVIO COM REVISÃO</p>
         <h2 id="fanarts-submit-title" data-pt="Compartilhe sua fanart." data-en="Share your fanart.">Compartilhe sua fanart.</h2>
-        <p id="fanarts-disabled-note" class="fanarts-hint" data-pt="Envio temporariamente indisponível. O formulário só será ativado após a configuração segura do armazenamento." data-en="Submissions are temporarily unavailable. The form only unlocks after secure storage is configured.">Envio temporariamente indisponível. O formulário só será ativado após a configuração segura do armazenamento.</p>
+        <p id="fanarts-disabled-note" class="fanarts-hint" data-pt="O formulário só é ativado para contas verificadas, não suspensas e com o serviço disponível." data-en="The form unlocks only for verified, unsuspended accounts when the service is available.">O formulário só é ativado para contas verificadas, não suspensas e com o serviço disponível.</p>
         <p class="fanarts-hint" data-pt="Participação voluntária; não é necessário informar país ou região nem enviar arte para ler a HQ." data-en="Participation is voluntary. You need not disclose your country or submit artwork to read the comic.">Participação voluntária; não é necessário informar país ou região nem enviar arte para ler a HQ.</p>
         <p class="fanarts-hint"><a href="comunidade.html" data-pt="Acessar minha conta da comunidade →" data-en="Access my community account →">Acessar minha conta da comunidade →</a></p>
+        <p class="fanarts-hint"><a href="fanarts-regras.html" data-pt="Ler as regras e o aviso de privacidade →" data-en="Read the rules and privacy notice →">Ler as regras e o aviso de privacidade →</a></p>
       </div>
       <div class="fanarts-form-preview" aria-describedby="fanarts-disabled-note">
         <fieldset disabled>
@@ -84,14 +86,15 @@
           <label for="fanarts-artist-link" data-pt="Link do artista (opcional; HTTPS)" data-en="Artist link (optional; HTTPS)">Link do artista (opcional; HTTPS)</label>
           <input id="fanarts-artist-link" type="url" autocomplete="off">
           <label class="fanarts-check"><input id="fanarts-original" type="checkbox"><span data-pt="Confirmo que tenho autorização para compartilhar a obra, mantenho meus direitos autorais e autorizo sua exibição no site apenas se aprovada, com crédito e possibilidade de solicitar remoção." data-en="I confirm I have permission to submit this art, retain my copyright, and authorize display on this site only if approved, with credit and a way to request removal.">Confirmo que tenho autorização para compartilhar a obra, mantenho meus direitos autorais e autorizo sua exibição no site apenas se aprovada, com crédito e possibilidade de solicitar remoção.</span></label>
-          <button type="button" data-pt="Envios em preparação" data-en="Submissions in development">Envios em preparação</button>
+          <button type="button" data-pt="Verificando permissão de envio" data-en="Checking submission permissions">Verificando permissão de envio</button>
         </fieldset>
       </div>
     </section>
     <section class="fanarts-guidelines" aria-labelledby="fanarts-guidelines-title">
       <h2 id="fanarts-guidelines-title" data-pt="Antes de participar" data-en="Before taking part">Antes de participar</h2>
-      <p data-pt="Envie apenas obras próprias ou autorizadas. Não envie dados pessoais de terceiros ou conteúdo ilegal. O nome artístico, título e link enviados poderão aparecer publicamente se a obra for aprovada; país ou região só será exibido mediante autorização específica. Os arquivos pendentes ficam em armazenamento privado e você pode pedir retirada à moderação da comunidade." data-en="Submit only work you own or have permission to share. Do not submit other people's personal data or illegal content. Artist name, title and link may be public if the work is approved; country or region is displayed only with specific consent. Pending files are privately stored; you may request removal through community moderation.">Envie apenas obras próprias ou autorizadas. Não envie dados pessoais de terceiros ou conteúdo ilegal. O nome artístico, título e link enviados poderão aparecer publicamente se a obra for aprovada; país ou região só será exibido mediante autorização específica. Os arquivos pendentes ficam em armazenamento privado e você pode pedir retirada à moderação da comunidade.</p>
-      <a href="catalogo.html" class="fanarts-back" data-pt="Voltar ao catálogo de episódios →" data-en="Back to the episode catalog →">Voltar ao catálogo de episódios →</a>
+      <p data-pt="Envie apenas obras próprias ou autorizadas. Não envie dados pessoais de terceiros ou conteúdo ilegal. O nome artístico, título e link enviados poderão aparecer publicamente se a obra for aprovada; país ou região só será exibido mediante autorização específica. Os arquivos pendentes ficam em armazenamento privado; você pode solicitar retirada em Meus envios." data-en="Submit only your own or authorized work. Do not submit other people's personal details or illegal content. Artist name, title and link may be public upon approval; country or region appears only with specific permission. Pending files remain private; you can request withdrawal under My submissions.">Envie apenas obras próprias ou autorizadas. Não envie dados pessoais de terceiros ou conteúdo ilegal. O nome artístico, título e link enviados poderão aparecer publicamente se a obra for aprovada; país ou região só será exibido mediante autorização específica. Os arquivos pendentes ficam em armazenamento privado; você pode solicitar retirada em Meus envios.</p>
+      <a href="fanarts-regras.html" class="fanarts-back" data-pt="Regras completas e privacidade →" data-en="Full rules and privacy →">Regras completas e privacidade →</a>
+      <p><a href="catalogo.html" class="fanarts-back" data-pt="Voltar ao catálogo de episódios →" data-en="Back to the episode catalog →">Voltar ao catálogo de episódios →</a></p>
     </section>
   </main>
   <footer class="site-footer">CYBER-US · <span data-pt="Galeria de fanarts · publicação após revisão" data-en="Fanart gallery · publication after review">Galeria de fanarts · publicação após revisão</span> · <a href="index.html" data-pt="Voltar ao início" data-en="Back to home">Voltar ao início</a></footer>
