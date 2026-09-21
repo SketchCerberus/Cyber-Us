@@ -6,6 +6,25 @@
   if (!gallery || !empty || !window.supabase?.createClient) return;
   const pt=()=>document.documentElement.lang.startsWith('pt');
   const t=(br,en)=>pt()?br:en;
+  // The original Fanarts landing page remains operational during migration.
+  // Offer discoverable links without modifying the existing upload or moderation logic.
+  if (location.pathname.split('/').pop()==='fanarts.html') {
+    const nav=document.createElement('nav'); nav.className='fanarts-subnav';
+    nav.setAttribute('aria-label','Fanarts');
+    for (const [path,br,en] of [
+      ['fanarts.html','Visão geral','Overview'],
+      ['fanarts-galeria.html','Galeria','Gallery'],
+      ['fanarts-publicar.html','Publicar','Submit']
+    ]) {
+      const link=document.createElement('a'); link.href=path;
+      link.dataset.pt=br;link.dataset.en=en;link.textContent=t(br,en);
+      if (path==='fanarts.html') link.setAttribute('aria-current','page');
+      nav.append(link);
+    }
+    gallery.closest('main')?.prepend(nav);
+    const sheet=document.createElement('link');sheet.rel='stylesheet';sheet.href='fanarts-subpages.css';
+    document.head.append(sheet);
+  }
   const db=window.supabase.createClient('https://znenamrszhjsiztllcit.supabase.co',
     'sb_publishable_3VRFxwtDuYq4ETHs4xof8g_Fp3GRl6c',
     {auth:{flowType:'pkce',detectSessionInUrl:false,persistSession:true,autoRefreshToken:true}});
@@ -36,7 +55,7 @@
       title.textContent=t('Em breve, arte de todo lugar.','Art from everywhere, coming soon.');
       status.textContent='';
     }
-    grid?.querySelectorAll('.fanarts-gallery-work').forEach((figure,index)=>{
+    grid?.querySelectorAll('.fanarts-gallery-work').forEach(figure=>{
       const work=works.find(item=>item.submission_id===figure.dataset.submissionId);
       if (!work) return;
       const image=figure.querySelector('img');
@@ -109,6 +128,11 @@
     gallery.append(grid);
     copy();
   }
-  new MutationObserver(copy).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+  new MutationObserver(()=>{
+    copy();
+    document.querySelectorAll('.fanarts-subnav [data-pt][data-en]').forEach(node=>{
+      node.textContent=t(node.dataset.pt,node.dataset.en);
+    });
+  }).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
   load();
 })();
