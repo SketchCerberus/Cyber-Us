@@ -106,7 +106,8 @@
     const aboutHero = document.querySelector('.about-us-hero');
     if (aboutHero) {
       aboutHero.querySelector('.eyebrow').textContent = lang === 'pt' ? 'CYBER-US // SOBRE NÓS' : 'CYBER-US // ABOUT';
-      aboutHero.querySelector('.about-us-art small:first-child').textContent = lang === 'pt' ? 'HISTÓRIA EM ANDAMENTO · · ·' : 'STORY IN PROGRESS · · ·';
+      aboutHero.querySelector('.about-us-art small:first-child').textContent = lang === 'pt' ? 'CYBER-US / SINAL DO CRIADOR' : 'CYBER-US / CREATOR SIGNAL';
+      aboutHero.querySelector('.about-us-art small:last-child').textContent = lang === 'pt' ? 'HISTÓRIA EM ANDAMENTO · · ·' : 'STORY IN PROGRESS · · ·';
     }
 
     // Extras section labels now use the same data-pt/data-en flow as the rest
@@ -134,9 +135,8 @@
   }
   render();
 
-  // The Supabase-backed fanarts gallery owns the search and published cards.
-  // Do not inject the retired editorial showcase there: it creates a second search.
-  // Keep the legacy showcase available only on pages without the live gallery script.
+  // The Supabase-backed gallery handles the search and cards. The retired editorial
+  // showcase has its own search: never inject it alongside the live gallery.
   if (document.querySelector('.fanarts-signal') &&
       !document.querySelector('script[src="fanarts-gallery.js"]')) {
     const showcase = document.createElement('script');
