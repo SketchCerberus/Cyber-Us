@@ -21,13 +21,22 @@ test('gallery and publication routes have bilingual navigation and shared header
   assert.match(submit,/src="fanarts-my-submissions\.js"/);
 });
 
-test('original fanarts page links to subpages without removing its existing workflows',()=>{
-  const landing=read('fanarts.html');
+test('Fanarts overview does not duplicate the upload form and links to the submission page',()=>{
+  const overview=read('fanarts.html');
+  const submit=read('fanarts-publicar.html');
   const gallery=read('fanarts-gallery.js');
-  assert.match(landing,/src="fanarts-submit\.js"/);
-  assert.match(landing,/src="fanarts-gallery\.js"/);
-  assert.match(gallery,/fanarts-galeria\.html/);
-  assert.match(gallery,/fanarts-publicar\.html/);
+  assert.match(overview,/src="fanarts-gallery\.js"/);
+  assert.match(overview,/class="fanarts-subnav"/);
+  assert.match(overview,/href="fanarts-galeria\.html"/);
+  assert.match(overview,/href="fanarts-publicar\.html"/);
+  assert.match(overview,/data-pt="Ir para Publicar/);
+  assert.match(overview,/data-en="Go to Submit/);
+  assert.doesNotMatch(overview,/class="fanarts-form-preview"|class="fanarts-submission"|id="fanarts-image"/);
+  assert.doesNotMatch(overview,/src="fanarts-submit\.js"|src="fanarts-my-submissions\.js"/);
+  assert.match(submit,/class="fanarts-form-preview"/);
+  assert.match(submit,/src="fanarts-submit\.js"/);
+  assert.match(submit,/src="fanarts-my-submissions\.js"/);
+  assert.doesNotMatch(gallery,/gallery\.closest\('main'\)\?\.prepend\(nav\)/);
 });
 
 test('tags are public only after manual approval and are validated in database',()=>{
