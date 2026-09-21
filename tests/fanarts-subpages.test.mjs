@@ -19,6 +19,7 @@ test('gallery and publication routes have bilingual navigation and shared header
   assert.match(gallery,/src="fanarts-detail\.js"/);
   assert.match(submit,/src="fanarts-submit\.js"/);
   assert.match(submit,/src="fanarts-my-submissions\.js"/);
+  assert.match(submit,/data-pt="Nome do autor" data-en="Author name"/);
 });
 
 test('Fanarts overview does not duplicate the upload form and links to the submission page',()=>{
