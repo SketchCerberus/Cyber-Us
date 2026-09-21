@@ -4,11 +4,21 @@ on:
     paths:
       - 'fanarts*'
       - 'header-scroll.js'
+      - 'reader.js'
+      - 'community-panel.js'
+      - 'community-notifications.js'
+      - 'community-mentions.js'
+      - 'community-social.css'
       - 'moderacao.html'
       - 'moderation-fanart-comments.js'
       - 'moderation-fanart-reports.js'
+      - 'moderation-edit-history.js'
+      - 'moderation-featured-fanarts.js'
       - 'supabase/migrations/*fanart*'
+      - 'supabase/migrations/*community*'
+      - 'supabase/migrations/*moderation_recent*'
       - 'tests/fanarts*'
+      - 'tests/community-social*'
       - '.github/workflows/fanarts-checks.yml'
   workflow_dispatch:
 jobs:
@@ -28,9 +38,16 @@ jobs:
           node --check fanarts-submit.js
           node --check fanarts-spoilers.js
           node --check fanarts-reports.js
+          node --check fanarts-featured.js
           node --check fanarts-my-submissions.js
+          node --check community-panel.js
+          node --check community-notifications.js
+          node --check community-mentions.js
           node --check moderation-fanart-comments.js
           node --check moderation-fanart-reports.js
+          node --check moderation-edit-history.js
+          node --check moderation-featured-fanarts.js
+          node --check reader.js
           node --check header-scroll.js
-      - name: Run focused fanart and navigation tests
-        run: node --test tests/fanarts-subpages.test.mjs tests/fanarts-enhancements.test.mjs tests/fanarts-spoiler-behavior.test.mjs tests/fanarts-moderation.test.mjs tests/header-navigation.test.mjs tests/fanarts-publication.test.mjs
+      - name: Run focused fanart and community tests
+        run: node --test tests/community-social.test.mjs tests/fanarts-subpages.test.mjs tests/fanarts-enhancements.test.mjs tests/fanarts-spoiler-behavior.test.mjs tests/fanarts-moderation.test.mjs tests/header-navigation.test.mjs tests/fanarts-publication.test.mjs

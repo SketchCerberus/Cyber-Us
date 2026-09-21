@@ -19,15 +19,19 @@
   if (document.documentElement.lang === 'en') {
     panel.querySelectorAll('[data-en]').forEach(item => { item.textContent = item.dataset.en; });
   }
-  // Enhancement only: comment storage, votes, account and moderation stay unchanged.
   const scriptBase = document.currentScript?.src || document.baseURI;
-  const spoilersScript = document.createElement('script');
-  spoilersScript.src = new URL('comment-spoilers.js', scriptBase).href;
-  document.head.appendChild(spoilersScript);
-
-  // A separate, compact newsletter CTA appears only on the latest linked episode.
-  // The signup itself stays on the existing Brevo-backed newsletter page.
-  const newsletterScript = document.createElement('script');
-  newsletterScript.src = new URL('episode-newsletter.js', scriptBase).href;
-  document.head.appendChild(newsletterScript);
+  const socialStyle=document.createElement('link');socialStyle.rel='stylesheet';
+  socialStyle.href=new URL('community-social.css',scriptBase).href;document.head.append(socialStyle);
+  // Spoiler disclosure and newsletter remain independent of comments, votes and storage.
+  for(const file of ['comment-spoilers.js','episode-newsletter.js']){
+    const script=document.createElement('script');script.src=new URL(file,scriptBase).href;
+    document.head.append(script);
+  }
+  // Deferred Supabase has finished loading by DOMContentLoaded.
+  const enableMentions=()=>{
+    const script=document.createElement('script');
+    script.src=new URL('community-mentions.js',scriptBase).href;document.head.append(script);
+  };
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',enableMentions,{once:true});
+  else enableMentions();
 })();
