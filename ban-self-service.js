@@ -20,7 +20,8 @@
     rule_violation:['Violação de regras','Rule violation'],
     inappropriate_content:['Conteúdo impróprio','Inappropriate content'],
     harassment:['Assédio ou ofensas','Harassment or abuse'],
-    spam:['Spam','Spam'],other:['Outro','Other']
+    spam:['Spam','Spam'],other:['Outro','Other'],
+    fanart_violation:['Violação das regras de fanarts','Fanart rules violation']
   };
   const formatDate=value=>new Intl.DateTimeFormat(pt()?'pt-BR':'en',{dateStyle:'medium',timeStyle:'short'}).format(new Date(value));
   const container=el('div','ban-self-service');
