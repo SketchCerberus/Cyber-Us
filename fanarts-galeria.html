@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Galeria de fanarts aprovadas da comunidade Cyber-Us.">
+  <title>Cyber-Us — Galeria de fanarts</title>
+  <link rel="stylesheet" href="reader.css">
+  <link rel="stylesheet" href="fanarts.css">
+  <link rel="stylesheet" href="fanarts-showcase.css">
+  <link rel="stylesheet" href="header-scroll.css">
+  <link rel="stylesheet" href="fanarts-subpages.css">
+  <script defer src="reader.js"></script>
+  <script defer src="header-scroll.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
+  <script defer src="fanarts-gallery.js"></script>
+  <script defer src="fanarts-detail.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main" data-pt="Pular para o conteúdo" data-en="Skip to content">Pular para o conteúdo</a>
+  <header class="site-header">
+    <a class="logo" href="index.html" aria-label="Cyber-Us — início">CYBER <span>US</span></a>
+    <nav aria-label="Navegação principal">
+      <a href="fanarts.html">Fanarts</a>
+      <a class="account-access" href="comunidade.html" data-pt="Entrar / Cadastre-se" data-en="Sign in / Sign up">Entrar / Cadastre-se</a>
+      <button id="languageBtn" class="lang-btn" type="button" aria-label="Switch to English">EN</button>
+    </nav>
+  </header>
+  <main id="main" class="fanarts-page">
+    <nav class="fanarts-subnav" aria-label="Fanarts">
+      <a href="fanarts.html" data-pt="Visão geral" data-en="Overview">Visão geral</a>
+      <a href="fanarts-galeria.html" aria-current="page" data-pt="Galeria" data-en="Gallery">Galeria</a>
+      <a href="fanarts-publicar.html" data-pt="Publicar" data-en="Submit">Publicar</a>
+    </nav>
+    <section class="fanarts-gallery" id="gallery" aria-labelledby="gallery-title">
+      <div class="fanarts-section-heading">
+        <div>
+          <p class="eyebrow" data-pt="CYBER-US // GALERIA" data-en="CYBER-US // GALLERY">CYBER-US // GALERIA</p>
+          <h1 id="gallery-title" data-pt="Arte da comunidade." data-en="Community artwork.">Arte da comunidade.</h1>
+        </div>
+        <p data-pt="Explore obras aprovadas e escolha uma para visualizar. Nenhuma arte aparece antes da revisão manual." data-en="Explore approved artwork and select a piece to view. Nothing appears before manual review.">Explore obras aprovadas e escolha uma para visualizar. Nenhuma arte aparece antes da revisão manual.</p>
+      </div>
+      <div class="fanarts-empty" role="status">
+        <div class="fanarts-empty-tiles" aria-hidden="true"><span>01</span><span>02</span><span>03</span></div>
+        <div>
+          <h3 data-pt="Ainda não há fanarts publicadas." data-en="No fanart has been published yet.">Ainda não há fanarts publicadas.</h3>
+          <p data-pt="Quando uma obra for aprovada, ela aparecerá aqui. Você também pode enviar sua arte para revisão." data-en="Once a piece is approved, it will appear here. You can also submit your artwork for review.">Quando uma obra for aprovada, ela aparecerá aqui. Você também pode enviar sua arte para revisão.</p>
+          <p><a class="fanarts-back" href="fanarts-publicar.html" data-pt="Enviar minha arte →" data-en="Submit my artwork →">Enviar minha arte →</a></p>
+        </div>
+      </div>
+    </section>
+    <section class="fanarts-guidelines">
+      <p data-pt="Todas as obras são publicadas com autorização do artista. Região só aparece quando autorizada separadamente." data-en="Artwork is published with the artist's permission. Region appears only with separate consent.">Todas as obras são publicadas com autorização do artista. Região só aparece quando autorizada separadamente.</p>
+      <a class="fanarts-back" href="fanarts-regras.html" data-pt="Regras e privacidade →" data-en="Rules and privacy →">Regras e privacidade →</a>
+    </section>
+  </main>
+  <footer class="site-footer">CYBER-US · <a href="fanarts.html" data-pt="Voltar a Fanarts" data-en="Back to Fanarts">Voltar a Fanarts</a></footer>
+</body>
+</html>
