@@ -63,12 +63,17 @@
       const dismiss=local(document.createElement('button'),'Dispensar denúncia','Dismiss report');
       dismiss.type='button';dismiss.className='community-action';
       dismiss.addEventListener('click',async()=>{
-        if(!allowed||view.hidden||!window.confirm(t('Dispensar esta denúncia?','Dismiss this report?')))return;
+        if(!allowed||view.hidden)return;
+        const explanation=window.prompt(t('Motivo para dispensar a denúncia (3–500 caracteres):','Reason for dismissing the report (3–500 characters):'));
+        if(explanation===null)return;
+        const why=explanation.trim();
+        if(why.length<3||why.length>500){say('Informe um motivo de 3 a 500 caracteres.','Enter a reason between 3 and 500 characters.',true);return;}
+        if(!window.confirm(t('Dispensar esta denúncia e registrar o motivo?','Dismiss this report and record the reason?')))return;
         dismiss.disabled=true;
         const result=await db.from('fanart_comment_reports')
-          .update({status:'dismissed',handled_at:new Date().toISOString()}).eq('id',report.id).eq('status','open');
+          .update({status:'dismissed',resolution_reason:why}).eq('id',report.id).eq('status','open');
         if(result.error){say('Não foi possível dispensar a denúncia.','Could not dismiss report.',true);dismiss.disabled=false;return;}
-        await load();say('Denúncia dispensada.','Report dismissed.');
+        await load();say('Denúncia dispensada e motivo registrado.','Report dismissed and reason recorded.');
       });
       li.append(meta,reason,author,body,dismiss);
       if(item){
