@@ -39,6 +39,14 @@ test('Fanarts overview does not duplicate the upload form and links to the submi
   assert.doesNotMatch(gallery,/gallery\.closest\('main'\)\?\.prepend\(nav\)/);
 });
 
+test('tags use Malwer, never the incorrect Malware spelling',()=>{
+  for(const path of ['fanarts-submit.js','fanarts-gallery.js','supabase/migrations/20260921192000_fanart_tags.sql']) {
+    const content=read(path);
+    assert.match(content,/Malwer/,`${path} must use the character's canonical spelling`);
+    assert.doesNotMatch(content,/Malware/i,`${path} must not use the wrong spelling`);
+  }
+});
+
 test('tags are public only after manual approval and are validated in database',()=>{
   const migration=read('supabase/migrations/20260921192000_fanart_tags.sql');
   const upload=read('fanarts-submit.js');
