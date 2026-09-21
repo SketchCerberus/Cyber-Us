@@ -77,12 +77,25 @@
       list.appendChild(card);
     }
   }
-  window.addEventListener('cyberus:fanart-uploaded',load);
+  // This event fires only after the private image upload succeeds.
+  const thankYou=document.createElement('div');
+  thankYou.className='fanarts-thank-you';thankYou.hidden=true;
+  thankYou.setAttribute('role','status');thankYou.setAttribute('aria-live','polite');
+  const thankTitle=document.createElement('h2');
+  const thankMessage=document.createElement('p');
+  copy(thankTitle,'Obrigado por compartilhar sua arte!','Thank you for sharing your artwork!');
+  copy(thankMessage,'Sua fanart foi recebida e aguarda a aprovação da moderação. Ela ainda não está pública. Você pode acompanhar o andamento em Meus envios.','Your fanart was received and awaits moderator approval. It is not public yet. Track its status under My submissions.');
+  thankYou.append(thankTitle,thankMessage); anchor.after(thankYou);
+  window.addEventListener('cyberus:fanart-uploaded',()=>{
+    thankYou.hidden=false;
+    thankYou.scrollIntoView({behavior:'auto',block:'nearest'});
+    load();
+  });
   db.auth.onAuthStateChange(()=>setTimeout(load,0));
   new MutationObserver(()=>{
-    heading.textContent=t(heading.dataset.pt,heading.dataset.en);
-    info.textContent=t(info.dataset.pt,info.dataset.en);
-    status.textContent=t(status.dataset.pt||'',status.dataset.en||'');
+    for (const node of [heading,info,status,thankTitle,thankMessage]) {
+      node.textContent=t(node.dataset.pt||'',node.dataset.en||'');
+    }
     list.querySelectorAll('[data-pt][data-en]').forEach(node=>{node.textContent=t(node.dataset.pt,node.dataset.en);});
   }).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
   load();
