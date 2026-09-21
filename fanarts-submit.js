@@ -51,10 +51,12 @@
   const tagInputs=[];
   for (const [value,br,en] of [
     ['Auará','Auará','Auará'],['Kaubi','Kaubi','Kaubi'],['Óete','Óete','Óete'],
-    ['Sistema','Sistema','Sistema'],['Trojan','Trojan','Trojan'],['Malwer','Malwer','Malwer'],
+    ['Sistema','Sistema','Sistema'],['Trojan','Trojan','Trojan'],['Malware','Malware','Malware'],
     ['OC','OC (personagem original)','OC (original character)'],
     ['Ships','Ships / casais','Ships / pairings'],
-    ['Crossover','Crossover','Crossover'],['Grupo','Grupo','Group']
+    ['Crossover','Crossover','Crossover'],['Grupo','Grupo','Group'],
+    ['Swap','Swap','Swap'],['E se...','E se...','What if...'],
+    ['Fofo','Fofo','Cute'],['Sério','Sério','Serious'],['Chibi','Chibi','Chibi']
   ]) {
     const label=document.createElement('label');label.className='fanarts-check';
     const input=document.createElement('input');input.type='checkbox';input.value=value;

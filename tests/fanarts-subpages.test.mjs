@@ -39,34 +39,50 @@ test('Fanarts overview does not duplicate the upload form and links to the submi
   assert.doesNotMatch(gallery,/gallery\.closest\('main'\)\?\.prepend\(nav\)/);
 });
 
-test('search appears only on dedicated gallery, not the overview',()=>{
+test('only the live gallery search is injected on both gallery pages, not the legacy second search',()=>{
   const gallery=read('fanarts-gallery.js');
+  const reader=read('reader.js');
   const overview=read('fanarts.html');
   const full=read('fanarts-galeria.html');
-  assert.match(gallery,/const overview=location\.pathname\.split\('\/'\)\.pop\(\)==='fanarts\.html'/);
-  assert.match(gallery,/if \(!overview\) status\.before\(search\)/);
+  assert.match(gallery,/status\.before\(search\)/);
+  assert.doesNotMatch(gallery,/if \(!overview\) status\.before\(search\)/);
   assert.match(gallery,/searchInput\.addEventListener\('input',applyFilters\)/);
-  assert.match(overview,/href="fanarts-galeria\.html"/);
+  assert.match(reader,/!document\.querySelector\('script\[src="fanarts-gallery\.js"\]'\)/);
+  assert.match(reader,/showcase\.src = 'fanarts-showcase\.js'/);
+  assert.match(overview,/src="fanarts-gallery\.js"/);
   assert.match(full,/src="fanarts-gallery\.js"/);
-  assert.doesNotMatch(overview,/id="fanarts-search-query"/);
+  assert.doesNotMatch(overview,/src="fanarts-showcase\.js"|id="fanarts-search-input"/);
 });
 
-test('tags use Malwer, never the incorrect Malware spelling',()=>{
-  for(const path of ['fanarts-submit.js','fanarts-gallery.js','supabase/migrations/20260921192000_fanart_tags.sql']) {
-    const content=read(path);
-    assert.match(content,/Malwer/,`${path} must use the character's canonical spelling`);
-    assert.doesNotMatch(content,/Malware/i,`${path} must not use the wrong spelling`);
+test('submitted and published tags match the expanded database vocabulary',()=>{
+  const upload=read('fanarts-submit.js');
+  const gallery=read('fanarts-gallery.js');
+  const migration=read('supabase/migrations/20260921210500_correct_fanart_malware_tag.sql');
+  const tags=['Malware','Swap','E se...','Fofo','Sério','Chibi'];
+  for(const tag of tags) {
+    for(const file of [upload,gallery,migration]) {
+      assert.ok(file.includes(`'${tag}'`),`tag ${tag} missing from file`);
+    }
   }
+  assert.doesNotMatch(upload,/Malwer/);
+  assert.doesNotMatch(gallery,/Malwer/);
+  assert.match(migration,/array_replace\(tags, 'Malwer', 'Malware'\)/);
+  assert.match(upload,/\['E se\.\.\.','E se\.\.\.','What if\.\.\.'\]/);
+  assert.match(upload,/\['Fofo','Fofo','Cute'\]/);
+  assert.match(upload,/\['Sério','Sério','Serious'\]/);
+  assert.match(upload,/tagInputs\.filter\(input=>input\.checked\)\.length>8/);
+  assert.match(migration,/cardinality\(tags\) <= 8/g);
 });
 
 test('tags are public only after manual approval and are validated in database',()=>{
   const migration=read('supabase/migrations/20260921192000_fanart_tags.sql');
+  const correction=read('supabase/migrations/20260921210500_correct_fanart_malware_tag.sql');
   const upload=read('fanarts-submit.js');
   const gallery=read('fanarts-gallery.js');
   assert.match(migration,/fanart_gallery_copy_tags/);
   assert.match(migration,/s\.status = 'approved'/);
   assert.match(migration,/GRANT INSERT\(tags\)/);
-  assert.match(migration,/cardinality\(tags\) <= 8/g);
+  assert.match(correction,/fanart_public_tags_allowed CHECK/);
   assert.match(upload,/tagInputs\.filter/);
   assert.match(upload,/tags,extension/);
   assert.match(gallery,/from\('fanart_gallery'\)/);

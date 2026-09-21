@@ -135,8 +135,10 @@
   }
   render();
 
-  // Apenas a página de fanarts carrega a vitrine. Sem obras aprovadas, o quadro atual permanece.
-  if (document.querySelector('.fanarts-signal')) {
+  // The Supabase-backed gallery handles the search and cards. The retired editorial
+  // showcase has its own search: never inject it alongside the live gallery.
+  if (document.querySelector('.fanarts-signal') &&
+      !document.querySelector('script[src="fanarts-gallery.js"]')) {
     const showcase = document.createElement('script');
     showcase.src = 'fanarts-showcase.js';
     document.head.appendChild(showcase);

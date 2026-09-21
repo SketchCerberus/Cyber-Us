@@ -6,8 +6,7 @@
   if (!gallery || !empty || !window.supabase?.createClient) return;
   const pt=()=>document.documentElement.lang.startsWith('pt');
   const t=(br,en)=>pt()?br:en;
-  // The overview owns its navigation in HTML, even when Supabase is unavailable.
-  const overview=location.pathname.split('/').pop()==='fanarts.html';
+  // Overview navigation lives in HTML, even if Supabase is unavailable.
   const db=window.supabase.createClient('https://znenamrszhjsiztllcit.supabase.co',
     'sb_publishable_3VRFxwtDuYq4ETHs4xof8g_Fp3GRl6c',
     {auth:{flowType:'pkce',detectSessionInUrl:false,persistSession:true,autoRefreshToken:true}});
@@ -28,13 +27,13 @@
   searchLabel.textContent=t(searchLabel.dataset.pt,searchLabel.dataset.en);
   filterHint.textContent=t(filterHint.dataset.pt,filterHint.dataset.en);
   search.append(searchLabel,searchInput,filterHint,tagFilters);
-  // Only the dedicated gallery shows search and tag controls; overview links to it.
-  if (!overview) status.before(search);
+  // The legacy editorial showcase's extra search has been retired.
+  status.before(search);
   let works=[];
   let grid=null;
   const selectedTags=new Set();
   const normalize=value=>String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
-  const tagVocabulary=new Set(['Auará','Kaubi','Óete','Sistema','Trojan','Malwer','OC','Ships','Crossover','Grupo']);
+  const tagVocabulary=new Set(['Auará','Kaubi','Óete','Sistema','Trojan','Malware','OC','Ships','Crossover','Grupo','Swap','E se...','Fofo','Sério','Chibi']);
   function accent(work) {
     if (work.accent!=='random') return work.accent;
     const colors=['blue','red','green'];
