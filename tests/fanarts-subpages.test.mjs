@@ -39,6 +39,18 @@ test('Fanarts overview does not duplicate the upload form and links to the submi
   assert.doesNotMatch(gallery,/gallery\.closest\('main'\)\?\.prepend\(nav\)/);
 });
 
+test('search appears only on dedicated gallery, not the overview',()=>{
+  const gallery=read('fanarts-gallery.js');
+  const overview=read('fanarts.html');
+  const full=read('fanarts-galeria.html');
+  assert.match(gallery,/const overview=location\.pathname\.split\('\/'\)\.pop\(\)==='fanarts\.html'/);
+  assert.match(gallery,/if \(!overview\) status\.before\(search\)/);
+  assert.match(gallery,/searchInput\.addEventListener\('input',applyFilters\)/);
+  assert.match(overview,/href="fanarts-galeria\.html"/);
+  assert.match(full,/src="fanarts-gallery\.js"/);
+  assert.doesNotMatch(overview,/id="fanarts-search-query"/);
+});
+
 test('tags use Malwer, never the incorrect Malware spelling',()=>{
   for(const path of ['fanarts-submit.js','fanarts-gallery.js','supabase/migrations/20260921192000_fanart_tags.sql']) {
     const content=read(path);

@@ -7,6 +7,7 @@
   const pt=()=>document.documentElement.lang.startsWith('pt');
   const t=(br,en)=>pt()?br:en;
   // The overview owns its navigation in HTML, even when Supabase is unavailable.
+  const overview=location.pathname.split('/').pop()==='fanarts.html';
   const db=window.supabase.createClient('https://znenamrszhjsiztllcit.supabase.co',
     'sb_publishable_3VRFxwtDuYq4ETHs4xof8g_Fp3GRl6c',
     {auth:{flowType:'pkce',detectSessionInUrl:false,persistSession:true,autoRefreshToken:true}});
@@ -26,7 +27,9 @@
   const tagFilters=document.createElement('div');tagFilters.className='fanarts-tag-filters';
   searchLabel.textContent=t(searchLabel.dataset.pt,searchLabel.dataset.en);
   filterHint.textContent=t(filterHint.dataset.pt,filterHint.dataset.en);
-  search.append(searchLabel,searchInput,filterHint,tagFilters);status.before(search);
+  search.append(searchLabel,searchInput,filterHint,tagFilters);
+  // Only the dedicated gallery shows search and tag controls; overview links to it.
+  if (!overview) status.before(search);
   let works=[];
   let grid=null;
   const selectedTags=new Set();
