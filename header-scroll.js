@@ -12,6 +12,7 @@
   // A comunidade já está na main (PR #3). Dar acesso também pelo menu da home.
   if (document.querySelector('main > .hero') && !nav.querySelector('a[href="comunidade.html"]')) {
     const account = document.createElement('a');
+    account.className = 'account-access';
     account.href = 'comunidade.html';
     account.dataset.pt = 'Minha conta';
     account.dataset.en = 'My account';
@@ -132,6 +133,11 @@
     if (location.pathname === new URL(extras.href).pathname) extras.setAttribute('aria-current', 'page');
     nav.insertBefore(extras, nav.querySelector('.account-access') || nav.querySelector('.language-picker') || null);
   }
+
+  // Update the guest account entry to a verified public name/avatar after login.
+  const accountScript = document.createElement('script');
+  accountScript.src = new URL('header-account.js', base).href;
+  document.head.appendChild(accountScript);
 
   const themeStyles = document.createElement('link');
   themeStyles.rel = 'stylesheet';
