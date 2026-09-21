@@ -30,6 +30,9 @@
 .fanarts-gallery-work figcaption{display:flex;flex-direction:column;gap:.2rem;min-height:62px;padding:.75rem 1rem;border-top:2px solid var(--showcase-neon,#7dd3fc)}
 .fanarts-gallery-work figcaption strong{color:var(--showcase-neon,#7dd3fc);overflow-wrap:anywhere}
 .fanarts-gallery-work figcaption span{color:#e4eaf5;font-size:.85rem;overflow-wrap:anywhere}
+.fanarts-gallery-work figcaption a{color:var(--showcase-neon,#7dd3fc);text-underline-offset:.18rem}
+.fanarts-gallery-status{margin:1rem 0}
+.fanarts-gallery-status.error{color:#ff9aa0}
 @media(max-width:780px){.fanarts-showcase{height:clamp(250px,70vw,335px)}.fanarts-showcase-card{width:76%}}
 @media(max-width:390px){.fanarts-showcase-card{width:82%}}
 @media(prefers-reduced-motion:reduce){.fanarts-showcase-card,.fanarts-showcase-pause{transition:none}.fanarts-showcase.is-changing .fanarts-showcase-current{opacity:1;transform:translateX(-50%)}}

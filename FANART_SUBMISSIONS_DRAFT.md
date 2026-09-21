@@ -7,9 +7,9 @@
 - Supabase: migrações `20260921162205_fanart_submissions_private_queue.sql` e `20260921162320_fanart_owner_withdrawal_requests.sql` foram aplicadas em produção em 21/09/2026. O bucket `fanart-pending` é PRIVADO (5 MB, PNG/JPEG/WebP). Nenhuma política permite leitura dos arquivos pendentes para visitantes.
 - RLS permite que cada conta veja suas próprias submissões, envie com email confirmado, não banida e até 3 registros a cada 24 horas; protege `status` e `created_at` contra falsificação. A pessoa pode marcar sua própria obra pendente/aprovada como `withdrawal_requested`, nunca aprová-la.
 - Imagens são decodificadas e reexportadas no navegador após consentimento; máximo 4096 x 4096. O bucket restringe MIME e tamanho, mas validação de conteúdo no servidor ainda não é completa: a moderação deve tratar arquivos recebidos como não confiáveis.
-- Nenhuma obra é publicada automaticamente. A galeria continua vazia até receber arte real autorizada e aprovada.
+- Nenhuma obra é publicada sem análise. Ao clicar em **Aprovar**, o painel copia o arquivo revisado para o bucket público, registra somente os créditos autorizados e a obra entra automaticamente na galeria.
 
-## Administração: fila visual e publicação manual
+## Administração: fila visual e publicação após aprovação
 
 1. Entre na conta autorizada do site, abra **Moderação → Fanarts** e use a fila visual. A imagem é carregada por um endereço privado temporário, disponível apenas após a verificação de moderador no servidor. Como alternativa de diagnóstico, abra o projeto `Cyber-Us Community` no Supabase Dashboard (nunca use chave service_role no GitHub ou no site) e consulte:
 
@@ -25,7 +25,7 @@ order by (f.status = 'withdrawal_requested') desc, f.created_at asc;
 
 2. **Retirada é prioritária.** Para `withdrawal_requested`, remova eventuais imagens publicadas do repositório e entradas da galeria, remova o arquivo privado via **Storage API ou Dashboard** (não dê `DELETE` diretamente em `storage.objects`), e só depois remova o registro ou finalize o pedido. Não marque a retirada como concluída antes de retirar as cópias.
 3. Para `pending`, examine a prévia com cautela, confira autoria, conformidade com as regras, consentimento de exibição e campos publicáveis. Se a prévia falhar, o botão **Aprovar** fica bloqueado. Nunca reutilize o endereço assinado da prévia na galeria.
-4. **Aprovar** registra `approved` e a decisão no histórico privado, mas não publica automaticamente. A cópia revisada e autorizada ainda deve ser adicionada à galeria pelo processo editorial, respeitando crédito e região condicional. **Rejeitar** exige motivo, registra `rejected` e tenta excluir o arquivo pelo Storage API; se a exclusão falhar, o painel avisa que a limpeza manual é necessária.
+4. **Aprovar** copia a imagem para `fanart-public`, registra apenas título, nome artístico, link, destaque e região consentida em `fanart_gallery`, altera o envio para `approved` e publica a obra automaticamente. O ID da conta e a região sem consentimento não entram na tabela pública. **Rejeitar** exige motivo, registra `rejected` e tenta excluir o arquivo privado; se a limpeza falhar, o painel avisa.
 5. Revisite a fila com frequência e limpe arquivos pendentes sem registro, reservas sem upload e rejeições. Arquivos de Storage devem ser removidos pela API/Dashboard; apagar somente metadados via SQL não apaga bytes armazenados.
 6. A área de localização/banimento de contas continua separada da decisão sobre a obra. Rejeitar uma fanart não bane automaticamente o autor; use o banimento apenas quando a infração justificar uma punição para toda a comunidade.
 
