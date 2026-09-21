@@ -1,0 +1,13 @@
+/* Temporary account-based moderation until fanart submissions have verified authors. */
+.moderation-fanarts { margin:1.4rem 0;padding:1.15rem;border:1px solid var(--community-border,var(--line));border-radius:14px;background:var(--panel); }
+.moderation-fanarts[hidden],#moderationFanartsTab[hidden],.moderation-fanart-ban[hidden] { display:none!important; }
+.moderation-fanarts h2 { margin-top:0; }
+.moderation-fanart-lookup,.moderation-fanart-ban { max-width:650px; }
+.moderation-fanart-lookup { margin:1rem 0; }
+.moderation-fanart-ban { margin:1rem 0;padding:1rem;border:1px solid var(--community-border,var(--line));border-radius:10px; }
+.moderation-fanart-ban .community-hint { overflow-wrap:anywhere; }
+.moderation-fanart-category { font-weight:750;color:var(--cyan); }
+.moderation-fanarts .comment-meta { overflow-wrap:anywhere; }
+.moderation-fanarts .community-notice { overflow-wrap:anywhere; }
+.moderation-fanarts button { min-height:44px; }
+@media (max-width:600px) { .moderation-fanarts {padding:.8rem;} .moderation-fanart-ban {padding:.8rem;} }
