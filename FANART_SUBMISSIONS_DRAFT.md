@@ -1,25 +1,39 @@
-# Cyber-Us — implementação de envio de fanarts (RASCUNHO)
+# Cyber-Us — fanarts: envio inicial e moderação manual
 
-**Não mesclar na `main`, executar SQL de produção ou anunciar envios abertos sem aprovação do autor e testes.** Este branch modifica somente `fanarts.html`, adiciona `fanarts-submit.js` e prepara `supabase/fanart_submissions_draft.sql`. Os episódios, newsletter, contas, arte original e galeria editorial existente permanecem intocados. Não foram criados serviços pagos.
+## O que foi implementado
 
-## Fluxo preparado
+- `fanarts.html` agora carrega `fanarts-submit.js` e `fanarts-my-submissions.js`; oferece formulário bilíngue de envio, acompanhamento de status e pedido de retirada pela conta que enviou.
+- `fanarts-regras.html` apresenta as regras de uso, direitos de exibição limitada e aviso de privacidade. Região é opcional e exige consentimento separado para ser exibida.
+- Supabase: migrações `20260921162205_fanart_submissions_private_queue.sql` e `20260921162320_fanart_owner_withdrawal_requests.sql` foram aplicadas em produção em 21/09/2026. O bucket `fanart-pending` é PRIVADO (5 MB, PNG/JPEG/WebP). Nenhuma política permite leitura dos arquivos pendentes para visitantes.
+- RLS permite que cada conta veja suas próprias submissões, envie com email confirmado, não banida e até 3 registros a cada 24 horas; protege `status` e `created_at` contra falsificação. A pessoa pode marcar sua própria obra pendente/aprovada como `withdrawal_requested`, nunca aprová-la.
+- Imagens são decodificadas e reexportadas no navegador após consentimento; máximo 4096 x 4096. O bucket restringe MIME e tamanho, mas validação de conteúdo no servidor ainda não é completa: a moderação deve tratar arquivos recebidos como não confiáveis.
+- Nenhuma obra é publicada automaticamente. A galeria continua vazia até receber arte real autorizada e aprovada.
 
-1. Página bilíngue preserva estrutura existente e mostra formulário desativado por padrão (fail-closed). `fanarts-submit.js` ativa os campos somente para conta autenticada, e-mail confirmado, não banida e API de envios acessível.
-2. Artista informa nome, título, região opcional e consentimento separado para exibi-la, link HTTPS opcional, cor da moldura e confirma direitos de exibição limitada. Autoriza explicitamente reprocessar a imagem antes do envio.
-3. O navegador valida assinaturas PNG/JPEG/WebP, decodifica a imagem, exige tamanho original/processado de até 5 MB e máximo de 4096 x 4096 pixels, reexporta via canvas (PNG ou WebP) para retirar metadados embutidos e envia o novo arquivo. Reexportação pode alterar compressão, nunca deve ocorrer sem consentimento.
-4. API reserva registro com ID aleatório e status `pending`; upload vai para bucket `fanart-pending` **privado**, no caminho `user-id/uuid.ext`. O servidor limita 3 registros por usuário em 24 horas; RLS verifica proprietário, banimento, caminho e status. O bucket limita MIME/tamanho. Visitantes não têm acesso a arquivos pendentes; nenhum item entra na galeria automaticamente.
-5. `fanarts-showcase.js` continua com lista vazia de obras publicadas. Moderação deve inspecionar, verificar direitos, testar arquivo recebido e só então publicar uma cópia segura/autorizada pelo fluxo editorial. Não publicar o arquivo bruto privado nem expor URL assinada à galeria. O painel atual de moderação de fanarts serve para localizar/banir contas, **não** aprovar essas novas obras.
+## Administração: rotina obrigatória enquanto a publicação for manual
 
-## Configuração necessária antes do lançamento
+1. Abra o projeto `Cyber-Us Community` no Supabase Dashboard (nunca use chave service_role no GitHub ou no site). Em Database → SQL Editor, consulte a fila **sem incluir imagem em resultados públicos**:
 
-- Revisar/aprovar regras da galeria, aviso de privacidade e canal para retirada/denúncias (incluindo exclusão de imagem, registro e região). O texto da página é uma informação inicial, não substitui uma política completa.
-- Revisar SQL com responsável pelo banco, executar em ambiente de testes isolado (não no Supabase de produção), conferir funções existentes `public.is_banned()`, permissões por coluna, RLS e policy do storage. SQL ainda **não executado**.
-- Criar interface administrativa autenticada para a fila de obras e aprovação/rejeição com log, ou definir procedimento estrito no painel Supabase; criar limpeza programada de uploads/registros órfãos e de obras rejeitadas. As quotas podem ser consumidas por envios falhos; limpeza administrativa é necessária.
-- Conferir cotas e custos de Storage antes de liberar. O fluxo preparado não compra nada.
-- Testar em HTTP/HTTPS (não em `file://`) com contas de teste: visitante, e-mail não confirmado, conta banida, proprietário, moderador; envio válido, arquivo disfarçado, grande, imagem corrompida, 4º envio/24h, links não HTTPS, consentimento regional, saída da conta no meio do envio e acesso direto à API.
-- Confirmar via requisições diretas que `anon` e outros usuários não leem objetos pendentes, não forjam `status`, `created_at`, `user_id` nem salvam em caminho de terceiros. Confirmar que não existem policies permissivas de storage legadas que ampliem acesso ao bucket.
-- Conferir aspecto PT/EN, teclado, celular, mensagem de falha, qualidade visual da conversão e solicitações de exclusão. Fazer revisão final e solicitar autorização específica para publicar/mesclar.
+```sql
+select f.id, f.user_id, f.artist_name, f.title, f.region, f.show_region,
+       f.artist_link, f.accent, f.image_path, f.created_at, f.status,
+       (o.id is not null) as file_present
+from public.fanart_submissions f
+left join storage.objects o on o.bucket_id = 'fanart-pending' and o.name = f.image_path
+where f.status in ('withdrawal_requested', 'pending')
+order by (f.status = 'withdrawal_requested') desc, f.created_at asc;
+```
 
-## Limitações honestas
+2. **Retirada é prioritária.** Para `withdrawal_requested`, remova eventuais imagens publicadas do repositório e entradas da galeria, remova o arquivo privado via **Storage API ou Dashboard** (não dê `DELETE` diretamente em `storage.objects`), e só depois remova o registro ou finalize o pedido. Não marque a retirada como concluída antes de retirar as cópias.
+3. Para `pending`, confira `file_present`; sem arquivo, não aprove: peça reenvio/limpe a reserva manualmente. Com arquivo, examine com cautela, confira autoria e conformidade com as regras, consentimento de exibição e campos publicáveis. Não use URLs públicas ou assinadas para mostrar pendências à galeria.
+4. Para rejeitar, remova o arquivo do bucket privado pelo Dashboard/API e marque o registro como `rejected` (ou remova o registro caso adequado à política de retenção). Para aprovar, publique uma cópia revisada e autorizada no repositório público via processo editorial, confira crédito e região condicional, e altere `status` para `approved` **somente depois que a publicação real estiver pronta**. Não confunda o campo de status com um controle de segurança para arquivos públicos.
+5. Revisite a fila com frequência e limpe arquivos pendentes sem registro, reservas sem upload e rejeições. Arquivos de Storage devem ser removidos pela API/Dashboard; apagar somente metadados via SQL não apaga bytes armazenados.
+6. Moderação no site (`moderation-fanarts.js`) ainda serve para localizar/banir contas, não possui painel visual de revisão de imagens. Até essa interface existir, a revisão pelo Supabase Dashboard é manual.
 
-Este branch **prepara o fluxo de envio**, mas ainda não fornece um sistema completo de publicação e retirada nem testes ponta a ponta. O formulário permanece bloqueado enquanto a tabela privada não estiver disponível ou a pessoa não estiver autenticada. A aplicação do SQL em produção não foi realizada. O processamento no navegador não substitui a inspeção de arquivos no servidor; o bucket privado e a revisão editorial são barreiras indispensáveis. Se o upload falhar depois da reserva, a aplicação tenta excluir o registro; na política de segurança proposta, essa exclusão pelo visitante não é permitida, portanto a limpeza fica a cargo de um administrador e a tentativa consome a quota.
+## Limitações e verificações
+
+- SQL aplicado e verificadas políticas RLS, bucket privado e permissões por coluna. Sem credenciais de uma conta de teste da comunidade, não foi possível realizar um envio real nem testar o fluxo ponta a ponta no navegador. Teste antes de divulgar amplamente a funcionalidade.
+- O servidor limita MIME e bytes, mas não confirma cabeçalho/dimensões reais por conta própria; o navegador tenta isso antes de enviar. O moderador deve validar arquivos de forma segura antes de torná-los públicos.
+- O upload pode falhar depois de criar uma reserva; essa reserva consome quota e precisa de limpeza administrativa. Não conceder `DELETE` direto aos usuários sem manter o contador antiabuso separado.
+- Pedidos de retirada exigem ação manual da moderação; não há exclusão automática nem prazo garantido. Aviso de privacidade informa isso explicitamente.
+- Monitorar o espaço gratuito no Supabase Storage; nenhuma assinatura ou serviço pago foi contratado por esta mudança.
+- Testes futuros: email não confirmado, banimento, concorrência, upload inválido, upload interrompido, 4º envio em 24h, RLS com duas contas, ausência de leitura anônima, retirada de obra publicada, idiomas, teclado e celular.
