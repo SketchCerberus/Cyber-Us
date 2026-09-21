@@ -132,7 +132,7 @@
         item.append(el('strong','',author),
           el('p','comment-meta',`${comment.status} · ${date(comment.created_at)} · ${comment.author_id}`),
           el('p','comment-body',comment.deleted_by_author ? t('Removido pelo autor.','Removed by author.') : comment.body));
-        if (comment.parent_id) item.append(el('p','comment-meta',t('Resposta a um comentário','Reply to a comment')));
+        if (comment.parent_id) item.append(el('p','comment-meta',t('Resposta a um comentário','Reply to comment')));
         const actions = el('div','community-actions');
         for (const [next,labelPT,labelEN] of [['visible','Restaurar','Restore'],['hidden','Ocultar','Hide'],['removed','Remover','Remove']]) {
           if (next === comment.status) continue;
@@ -193,7 +193,8 @@
     const list = byId('moderationBans');
     list.replaceChildren(el('li','community-hint',t('Carregando…','Loading…')));
     try {
-      const result = await db.rpc('moderation_active_bans');
+      // This RPC checks is_moderator() server-side before reading private ban/auth history.
+      const result = await db.rpc('moderation_active_bans_with_history');
       if (result.error) throw result.error;
       if (!state.authorized) return;
       list.replaceChildren();
@@ -203,6 +204,20 @@
         item.append(el('strong','',ban.display_name || ban.user_id),
           el('p','comment-body',ban.reason),
           el('p','comment-meta',`${ban.user_id} · ${ban.expires_at ? date(ban.expires_at) : t('Permanente','Permanent')}`));
+        const days = Number(ban.days_banned);
+        const daysLabel = ban.days_banned == null || !Number.isFinite(days) ? '—'
+          : `${new Intl.NumberFormat(pt() ? 'pt-BR' : 'en-US', {minimumFractionDigits:2,maximumFractionDigits:2}).format(days)} ${t('dias','days')}`;
+        const stats = el('dl','moderation-ban-stats');
+        for (const [label,value] of [
+          [t('Vezes banido','Times banned'), String(ban.ban_count ?? '—')],
+          [t('Tempo banido (cumprido)','Time banned (served)'),daysLabel],
+          [t('Conta criada em','Account created'),ban.account_created_at ? date(ban.account_created_at) : '—']
+        ]) {
+          const field = el('div','moderation-ban-stat');
+          field.append(el('dt','',label),el('dd','',value));
+          stats.append(field);
+        }
+        item.append(stats);
         const revoke = el('button','community-action',t('Revogar banimento','Revoke ban'));
         revoke.type = 'button';
         revoke.addEventListener('click',async () => {

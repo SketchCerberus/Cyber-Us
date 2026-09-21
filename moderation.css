@@ -35,4 +35,9 @@
 .moderation-page .comment-item strong { vertical-align:middle; }
 .moderation-page .comment-meta { overflow-wrap:anywhere; }
 .moderation-page .community-more { width:100%; }
+/* Statistics remain readable on wide screens and collapse without horizontal overflow on mobile. */
+.moderation-ban-stats { display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:.65rem;margin:1rem 0;padding:0; }
+.moderation-ban-stat { min-width:0;padding:.8rem;border:1px solid var(--community-border,var(--line));border-radius:9px;background:var(--panel2,var(--panel)); }
+.moderation-ban-stat dt { color:var(--cyan);font-size:.875rem;font-weight:700; }
+.moderation-ban-stat dd { margin:.3rem 0 0;color:var(--text);font-weight:750;overflow-wrap:anywhere; }
 @media(max-width:600px) { .profile-heading-row { align-items:stretch; }.profile-heading-row .moderation-launch { width:100%; }.moderation-selection { padding:.8rem; }.moderation-languages { padding:.7rem; } }
