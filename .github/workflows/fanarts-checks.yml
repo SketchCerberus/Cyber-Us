@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - 'fanarts*'
+      - 'script.js'
       - 'comment-spoilers.js'
       - 'comment-spoilers.css'
       - 'header-scroll.js'
@@ -46,6 +47,8 @@ jobs:
           node-version: '22'
       - name: Check JavaScript syntax
         run: |
+          node --check script.js
+          node --check fanarts-teaser-carousel.js
           node --check fanarts-gallery.js
           node --check fanarts-detail.js
           node --check fanarts-submit.js
@@ -70,4 +73,4 @@ jobs:
           node --check reader.js
           node --check header-scroll.js
       - name: Run focused fanart and community tests
-        run: node --test tests/fanarts-carousel.test.mjs tests/comment-spoilers-submit.test.mjs tests/staff-hierarchy.test.mjs tests/staff-hierarchy-privacy.test.mjs tests/staff-approval-notifications.test.mjs tests/community-social.test.mjs tests/fanarts-subpages.test.mjs tests/fanarts-enhancements.test.mjs tests/fanarts-spoiler-behavior.test.mjs tests/fanarts-moderation.test.mjs tests/header-navigation.test.mjs tests/fanarts-publication.test.mjs
+        run: node --test tests/fanarts-teaser-carousel.test.mjs tests/fanarts-carousel.test.mjs tests/comment-spoilers-submit.test.mjs tests/staff-hierarchy.test.mjs tests/staff-hierarchy-privacy.test.mjs tests/staff-approval-notifications.test.mjs tests/community-social.test.mjs tests/fanarts-subpages.test.mjs tests/fanarts-enhancements.test.mjs tests/fanarts-spoiler-behavior.test.mjs tests/fanarts-moderation.test.mjs tests/header-navigation.test.mjs tests/fanarts-publication.test.mjs
