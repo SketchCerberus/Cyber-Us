@@ -146,4 +146,10 @@
     sdkScript.addEventListener('error', guest, { once: true });
     // On unavailable services the original guest link remains usable.
   }
+
+  // Keep the notifications UI separate from the account badge's auth/profile logic.
+  // The bell reuses the SDK above and is shown only after its own session check.
+  const notifications = document.createElement('script');
+  notifications.src = new URL('header-notifications.js', scriptBase).href;
+  document.head.appendChild(notifications);
 })();
