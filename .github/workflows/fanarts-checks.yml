@@ -10,6 +10,8 @@ on:
       - 'reader.js'
       - 'community-panel.js'
       - 'community-notifications.js'
+      - 'community-staff-appeals.js'
+      - 'moderation-hierarchy.js'
       - 'community-mentions.js'
       - 'community-social.css'
       - 'moderacao.html'
@@ -19,9 +21,11 @@ on:
       - 'moderation-featured-fanarts.js'
       - 'supabase/migrations/*fanart*'
       - 'supabase/migrations/*community*'
+      - 'supabase/migrations/*staff*'
       - 'supabase/migrations/*moderation_recent*'
       - 'tests/fanarts*'
       - 'tests/community-social*'
+      - 'tests/staff-hierarchy*'
       - 'tests/header-navigation*'
       - '.github/workflows/fanarts-checks.yml'
   workflow_dispatch:
@@ -46,6 +50,8 @@ jobs:
           node --check fanarts-my-submissions.js
           node --check community-panel.js
           node --check community-notifications.js
+          node --check community-staff-appeals.js
+          node --check moderation-hierarchy.js
           node --check header-notifications.js
           node --check header-account.js
           node --check community-mentions.js
@@ -56,4 +62,4 @@ jobs:
           node --check reader.js
           node --check header-scroll.js
       - name: Run focused fanart and community tests
-        run: node --test tests/community-social.test.mjs tests/fanarts-subpages.test.mjs tests/fanarts-enhancements.test.mjs tests/fanarts-spoiler-behavior.test.mjs tests/fanarts-moderation.test.mjs tests/header-navigation.test.mjs tests/fanarts-publication.test.mjs
+        run: node --test tests/staff-hierarchy.test.mjs tests/community-social.test.mjs tests/fanarts-subpages.test.mjs tests/fanarts-enhancements.test.mjs tests/fanarts-spoiler-behavior.test.mjs tests/fanarts-moderation.test.mjs tests/header-navigation.test.mjs tests/fanarts-publication.test.mjs
