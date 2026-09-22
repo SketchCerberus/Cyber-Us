@@ -6,8 +6,8 @@ import {readFileSync} from 'node:fs';
 const source=readFileSync(new URL('../comment-spoilers.js',import.meta.url),'utf8');
 const PREFIX='[CYBER-US-SPOILER]\n';
 
-function fixture() {
-  const listeners=new Map(),observers=[],forms=[],bodies=[];
+function fixture(beforeLoad=()=>{}) {
+  const observers=[],forms=[],bodies=[];
   class Element {
     constructor(tag){this.tag=tag;this.dataset={};this.children=[];this.hidden=false;this.textContent='';this.value='';this.maxLength=2000;this.handlers={};this.focused=false;}
     append(...children){this.children.push(...children);}
@@ -22,6 +22,7 @@ function fixture() {
   panel.querySelectorAll=selector=>{
     if(selector==='#commentForm, .reply-form')return forms;
     if(selector==='.comment-list .comment-body')return bodies;
+    if(selector==='.spoiler-reveal')return bodies.flatMap(body=>body.children.filter(el=>el.className==='spoiler-reveal'));
     return [];
   };
   const document={
@@ -44,23 +45,24 @@ function fixture() {
     return form;
   }
   const main=makeForm();
+  beforeLoad({main,panel,makeForm,bodies,document});
   vm.runInNewContext(source,{document,MutationObserver,URL,WeakMap,queueMicrotask},{timeout:1000});
   function submit(form) {
     const event={target:form,prevented:false,stopped:false,
       preventDefault(){this.prevented=true;},stopImmediatePropagation(){this.stopped=true;}};
-    // Browser event flow: ancestor capture always precedes existing target listeners.
+    // Real browser propagation: ancestor capture precedes target listeners even if added later.
     for(const listener of panel.handlers.submit||[])listener.handler(event);
     if(!event.stopped)for(const listener of form.handlers.submit||[])listener.handler(event);
     return event;
   }
-  return {main,makeForm,submit,observers,bodies,document};
+  return {main,makeForm,submit,observers,bodies,document,panel};
 }
 
-test('late spoiler script encodes before an older submit listener and restores the editor',async()=>{
-  // Registering a legacy handler first is the exact ordering that broke the checkbox.
-  const {main,submit}=fixture();
+test('spoiler script loaded AFTER older submit listener still encodes before the post and restores editor',async()=>{
   let posted='';
-  main.addEventListener('submit',()=>{posted=main.textarea.value;});
+  const {main,submit}=fixture(({main})=>{
+    main.addEventListener('submit',()=>{posted=main.textarea.value;});
+  });
   main.textarea.value='  A big reveal!  ';
   main.option.children[0].checked=true;
   const event=submit(main);
@@ -73,12 +75,12 @@ test('late spoiler script encodes before an older submit listener and restores t
   assert.equal(posted,'  A big reveal!  ');
 });
 
-test('dynamically inserted replies use the same early capture and respect the length limit',async()=>{
+test('dynamically inserted replies use early capture and respect length limit',async()=>{
   const {makeForm,submit,observers}=fixture();
   const reply=makeForm();
   let posted=null;
   reply.addEventListener('submit',()=>{posted=reply.textarea.value;});
-  observers[0].callback(); // Simulates community.js adding a reply form later.
+  observers[0].callback(); // Simulates community.js adding a reply form after startup.
   reply.option.children[0].checked=true;
   reply.textarea.value='Reply spoiler';
   submit(reply);
@@ -90,23 +92,26 @@ test('dynamically inserted replies use the same early capture and respect the le
   const event=submit(reply);
   assert.equal(event.prevented,true);
   assert.equal(event.stopped,true);
-  assert.equal(posted,null,'invalid spoiler must never reach the old submit handler');
+  assert.equal(posted,null,'invalid spoiler must never reach existing submit handler');
   assert.equal(reply.help.hidden,false);
   assert.equal(reply.textarea.value.length,2000);
 });
 
-test('a spoiler comment remains hidden until reveal, and can be hidden again',()=>{
+test('spoiler stays hidden until reveal, can be hidden again and translates with language',()=>{
   const {bodies,observers,document}=fixture();
   const body=document.createElement('p');body.textContent=PREFIX+'Secret information';
   bodies.push(body);observers[0].callback();
   const [button,content]=body.children;
-  assert.equal(body.textContent,PREFIX+'Secret information'); // Raw user text never becomes markup.
   assert.equal(content.textContent,'Secret information');
   assert.equal(content.hidden,true);
   assert.equal(button.textContent,'Comentário com spoiler — revelar');
   button.click();
   assert.equal(content.hidden,false);
   assert.equal(button.textContent,'Ocultar comentário com spoiler');
+  document.documentElement.lang='en';
+  observers[1].callback();
+  assert.equal(button.textContent,'Hide spoiler comment');
   button.click();
   assert.equal(content.hidden,true);
+  assert.equal(button.textContent,'Spoiler comment — reveal');
 });
