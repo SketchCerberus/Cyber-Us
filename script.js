@@ -117,3 +117,20 @@ document.querySelector('.site-header nav a[href="#comic"]')?.setAttribute('href'
 document.querySelector('.hero-buttons a[href="#comic"]')?.setAttribute('href', 'catalogo.html');
 
 applyLanguage();
+
+// Homepage only: load the public gallery SDK and the decorative featured-art background.
+// If the network is unavailable, leave the original illustrated teaser untouched.
+if (document.querySelector('.fanarts-teaser-art')) {
+  const startFeaturedBackdrop = () => {
+    const script = document.createElement('script');
+    script.src = 'fanarts-teaser-carousel.js';
+    document.head.append(script);
+  };
+  if (window.supabase?.createClient) startFeaturedBackdrop();
+  else {
+    const sdk = document.createElement('script');
+    sdk.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js';
+    sdk.onload = startFeaturedBackdrop;
+    document.head.append(sdk);
+  }
+}

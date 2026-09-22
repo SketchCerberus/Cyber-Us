@@ -1,0 +1,10 @@
+/* Homepage only: unobtrusive featured art sits behind the original, fixed lettering. */
+.fanarts-teaser-art.has-featured-backdrop{position:relative;isolation:isolate}
+.fanarts-teaser-slides{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.fanarts-teaser-slide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity 1.2s ease}
+.fanarts-teaser-slide.is-active{opacity:1}
+.fanarts-teaser-art.has-featured-backdrop::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(115deg,rgba(5,9,16,.88),rgba(5,9,16,.72) 55%,rgba(5,9,16,.84))}
+.fanarts-teaser-art.has-featured-backdrop>span,.fanarts-teaser-art.has-featured-backdrop>strong{position:relative;z-index:2;text-shadow:0 2px 14px rgba(0,0,0,.8)}
+.fanarts-teaser-art.has-featured-backdrop>strong{overflow-wrap:normal}
+@media(max-width:800px){.fanarts-teaser-slide{background-position:center}.fanarts-teaser-art.has-featured-backdrop::before{background:rgba(5,9,16,.77)}}
+@media(prefers-reduced-motion:reduce){.fanarts-teaser-slide{transition:none}}
