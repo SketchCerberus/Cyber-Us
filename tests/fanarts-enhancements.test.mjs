@@ -35,6 +35,26 @@ test('preview is local, bilingual, revokes object URLs and does not bypass revie
   assert.doesNotMatch(upload,/innerHTML\s*=/);
 });
 
+test('preview frame follows blue, red and green selection using published gallery palette',()=>{
+  const page=read('fanarts-publicar.html');
+  const frame=read('fanarts-preview-frame.css');
+  const upload=read('fanarts-submit.js');
+  const gallery=read('fanarts-showcase.css');
+  assert.match(page,/href="fanarts-preview-frame\.css\?v=20260922-frame"/);
+  assert.match(upload,/previewCard\.dataset\.accent=accent\.value/);
+  assert.match(upload,/field\.addEventListener\('change',renderPreview\)/);
+  for(const [name,hex] of [['blue','#72e5ff'],['red','#ff647d'],['green','#79f7ab']]){
+    assert.match(frame,new RegExp(`\\.fanarts-upload-preview\\[data-accent="${name}"\\]\\{--preview-neon:${hex}\\}`));
+    assert.ok(gallery.includes(`--showcase-neon:${hex}`),`${name} must match the real gallery`);
+  }
+  assert.match(frame,/\.fanarts-upload-preview-image\{/);
+  assert.match(frame,/\.fanarts-upload-preview figcaption\{/);
+  assert.match(frame,/\.fanarts-upload-preview\[data-accent="random"\]\{/);
+  assert.match(frame,/linear-gradient\(125deg,#72e5ff,#ff647d,#79f7ab\) border-box/);
+  assert.match(upload,/previewCard\.hidden=true/);
+  assert.match(upload,/form\.reset\(\)/);
+});
+
 test('spoiler protection covers overview, gallery and expanded details until explicit reveal',()=>{
   const overview=read('fanarts.html'),galleryPage=read('fanarts-galeria.html');
   const gallery=read('fanarts-gallery.js'),spoiler=read('fanarts-spoilers.js'),css=read('fanarts-enhancements.css');
