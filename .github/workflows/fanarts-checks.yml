@@ -12,6 +12,7 @@ on:
       - 'community-notifications.js'
       - 'community-staff-appeals.js'
       - 'moderation-hierarchy.js'
+      - 'moderation-hierarchy-link.js'
       - 'community-mentions.js'
       - 'community-social.css'
       - 'moderacao.html'
@@ -53,6 +54,7 @@ jobs:
           node --check community-notifications.js
           node --check community-staff-appeals.js
           node --check moderation-hierarchy.js
+          node --check moderation-hierarchy-link.js
           node --check header-notifications.js
           node --check header-account.js
           node --check community-mentions.js
