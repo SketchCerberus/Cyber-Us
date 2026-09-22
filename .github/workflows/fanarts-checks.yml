@@ -26,6 +26,7 @@ on:
       - 'tests/fanarts*'
       - 'tests/community-social*'
       - 'tests/staff-hierarchy*'
+      - 'tests/staff-approval*'
       - 'tests/header-navigation*'
       - '.github/workflows/fanarts-checks.yml'
   workflow_dispatch:
@@ -62,4 +63,4 @@ jobs:
           node --check reader.js
           node --check header-scroll.js
       - name: Run focused fanart and community tests
-        run: node --test tests/staff-hierarchy.test.mjs tests/staff-hierarchy-privacy.test.mjs tests/community-social.test.mjs tests/fanarts-subpages.test.mjs tests/fanarts-enhancements.test.mjs tests/fanarts-spoiler-behavior.test.mjs tests/fanarts-moderation.test.mjs tests/header-navigation.test.mjs tests/fanarts-publication.test.mjs
+        run: node --test tests/staff-hierarchy.test.mjs tests/staff-hierarchy-privacy.test.mjs tests/staff-approval-notifications.test.mjs tests/community-social.test.mjs tests/fanarts-subpages.test.mjs tests/fanarts-enhancements.test.mjs tests/fanarts-spoiler-behavior.test.mjs tests/fanarts-moderation.test.mjs tests/header-navigation.test.mjs tests/fanarts-publication.test.mjs
