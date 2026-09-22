@@ -1,0 +1,61 @@
+/* A single private inbox in the shared header, immediately after the account. */
+.site-header .header-notifications[hidden],
+.site-header .header-notifications-panel[hidden],
+.site-header .header-notifications-badge[hidden]{display:none!important}
+.site-header .header-notifications{position:relative;display:inline-flex;align-items:center;flex:0 0 auto;min-width:0}
+.site-header .header-notifications-bell{
+  position:relative;display:inline-flex;align-items:center;justify-content:center;
+  flex:0 0 44px;min-width:44px;min-height:44px;padding:.45rem;
+  border:1px solid var(--line,rgba(255,255,255,.2));border-radius:12px;
+  background:var(--panel2,#171c26);color:var(--text,#f4f5f7);
+  font:inherit;cursor:pointer
+}
+.site-header .header-notifications-bell:hover,
+.site-header .header-notifications-bell[aria-expanded='true']{
+  border-color:var(--cyan,#7dd3fc)
+}
+.site-header .header-notifications-icon{font-size:1.3rem;line-height:1}
+.site-header .header-notifications-badge{
+  position:absolute;top:-6px;right:-7px;min-width:19px;height:19px;
+  padding:0 4px;display:inline-flex;justify-content:center;align-items:center;
+  border-radius:999px;background:var(--accent,#e63946);color:#fff;
+  font-size:.66rem;line-height:1;font-weight:800;border:2px solid var(--bg,#090b10)
+}
+.site-header .header-notifications-panel{
+  position:absolute;top:calc(100% + 12px);right:0;z-index:115;
+  width:min(380px,calc(100vw - 2rem));max-height:min(72dvh,520px);
+  overflow-y:auto;overscroll-behavior:contain;
+  padding:1rem;border:1px solid var(--line,rgba(255,255,255,.2));
+  border-radius:14px;background:var(--panel,#11151d);color:var(--text,#f4f5f7);
+  box-shadow:0 20px 40px rgba(0,0,0,.5)
+}
+.site-header .header-notifications-heading{display:flex;justify-content:space-between;align-items:center;gap:.5rem;margin-bottom:.65rem}
+.site-header .header-notifications-heading h2{margin:0;font-size:1rem;line-height:1.4}
+.site-header .header-notifications-actions{display:flex;align-items:center;gap:.35rem}
+.site-header .header-notifications-actions button{
+  min-height:40px;min-width:40px;padding:.35rem .5rem;
+  border:1px solid var(--line,rgba(255,255,255,.2));border-radius:8px;
+  background:var(--panel2,#171c26);color:var(--text,#f4f5f7);
+  font:inherit;font-size:.83rem;cursor:pointer
+}
+.site-header .header-notifications-actions button:disabled{opacity:.6;cursor:wait}
+.site-header .header-notifications-close{font-size:1.25rem!important}
+.site-header .header-notifications-status{margin:.4rem 0 .75rem;color:var(--muted,#a8adb8);font-size:.85rem;overflow-wrap:anywhere}
+.site-header .header-notifications-list{list-style:none;margin:0;padding:0;display:grid;gap:.55rem}
+.site-header .header-notification-item{
+  margin:0;padding:.65rem;border:1px solid var(--line,rgba(255,255,255,.2));
+  border-radius:9px;overflow-wrap:anywhere;background:var(--panel2,#171c26)
+}
+.site-header .header-notification-item.is-unread{border-left:4px solid var(--cyan,#7dd3fc)}
+.site-header .header-notification-link{display:block;color:var(--cyan,#7dd3fc);font-weight:700;text-decoration:none;font-size:.9rem}
+.site-header a.header-notification-link:hover{text-decoration:underline}
+.site-header .header-notification-date{display:block;margin-top:.35rem;color:var(--muted,#a8adb8);font-size:.75rem}
+@media(max-width:1100px){
+  .site-header.scroll-header.menu-open > nav .header-notifications{width:100%;display:flex;flex-direction:column;align-items:stretch;margin:.4rem 0}
+  .site-header.scroll-header.menu-open > nav .header-notifications-bell{align-self:flex-start;flex:0 0 auto}
+  /* The compact nav scrolls; keeping the inbox in flow prevents it being clipped. */
+  .site-header.scroll-header.menu-open > nav .header-notifications-panel{
+    position:static;width:100%;max-width:none;max-height:min(55dvh,450px);
+    margin-top:.5rem;box-shadow:none
+  }
+}
