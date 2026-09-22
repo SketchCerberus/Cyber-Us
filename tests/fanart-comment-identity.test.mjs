@@ -15,6 +15,13 @@ test('fanart comment form never requests a free-form name',()=>{
   assert.doesNotMatch(client,/article\.dataset\.authorId/);
 });
 
+test('gallery loads the account-linked comment form with a versioned script URL',()=>{
+  const gallery=read('fanarts-galeria.html');
+  assert.match(gallery,/src="fanarts-detail\.js\?v=20260922-profile-identity"/);
+  assert.doesNotMatch(gallery,/src="fanarts-detail\.js"/);
+  assert.doesNotMatch(gallery,/id="fanart-comment-name"/);
+});
+
 test('database overrides forged display names, migrates old comments and follows profile changes',()=>{
   const sql=read('supabase/migrations/20260922142647_fanart_comments_use_profile_username.sql');
   assert.match(sql,/ALTER TABLE public\.fanart_comments ALTER COLUMN display_name SET DEFAULT 'Leitor'/);
