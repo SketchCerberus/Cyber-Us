@@ -17,6 +17,7 @@
   const tr = (portuguese, english) => pt() ? portuguese : english;
   const optionText = () => tr('Este comentário contém spoilers', 'This comment contains spoilers');
   const lengthError = () => tr('Reduza o texto: a marcação de spoiler também conta no limite de 2.000 caracteres.', 'Shorten the text: the spoiler marker also counts toward the 2,000-character limit.');
+  const editors = new WeakMap();
 
   function decorateForm(form) {
     if (form.dataset.spoilersEditorReady) return;
@@ -40,35 +41,38 @@
     help.hidden = true;
     submit.insertAdjacentElement('beforebegin', option);
     option.insertAdjacentElement('afterend', help);
+    editors.set(form, { textarea, checkbox, help });
 
     const clearError = () => { help.hidden = true; help.textContent = ''; };
     checkbox.addEventListener('change', clearError);
     textarea.addEventListener('input', clearError);
-
-    // Capture runs before community.js reads the textarea in its existing submit
-    // handler, even when its listener was installed first. Restore the editor in
-    // a microtask so failed submissions never leave the storage marker visible.
-    form.addEventListener('submit', event => {
-      if (!checkbox.checked) return;
-      const original = textarea.value;
-      const body = original.trim();
-      if (!body) return; // Let the existing empty-comment validation run normally.
-      const limit = textarea.maxLength > 0 ? textarea.maxLength : 2000;
-      if (body.length + SPOILER_PREFIX.length > limit) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        help.hidden = false;
-        help.textContent = lengthError();
-        textarea.focus();
-        return;
-      }
-      const encoded = SPOILER_PREFIX + body;
-      textarea.value = encoded;
-      queueMicrotask(() => {
-        if (textarea.value === encoded) textarea.value = original;
-      });
-    }, true);
   }
+
+  // A form's capture listener does NOT run before an older listener on that same
+  // target. Capture the submit on its ancestor instead, before community.js can
+  // read the textarea, regardless of script load / listener registration order.
+  panel.addEventListener('submit', event => {
+    const editor = editors.get(event.target);
+    if (!editor || !editor.checkbox.checked) return;
+    const { textarea, help } = editor;
+    const original = textarea.value;
+    const body = original.trim();
+    if (!body) return; // Let the existing empty-comment validation run normally.
+    const limit = textarea.maxLength > 0 ? textarea.maxLength : 2000;
+    if (body.length + SPOILER_PREFIX.length > limit) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      help.hidden = false;
+      help.textContent = lengthError();
+      textarea.focus();
+      return;
+    }
+    const encoded = SPOILER_PREFIX + body;
+    textarea.value = encoded;
+    queueMicrotask(() => {
+      if (textarea.value === encoded) textarea.value = original;
+    });
+  }, true);
 
   let nextId = 0;
   function syncReveal(button, content) {
