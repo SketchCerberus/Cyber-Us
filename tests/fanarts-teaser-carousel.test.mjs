@@ -49,10 +49,11 @@ test('homepage slideshow only uses featured works without spoiler tags, with fix
   const works=[artwork(1),artwork(2,['Spoiler']),artwork(3,[],false),artwork(4,[' Humor ']),
     artwork(5,['sPoIlEr']),{image_path:'../invalid.png',tags:[],featured:true}];
   const ui=await setup(works);
-  assert.deepEqual(ui.query.map(Array.from),[
+  // The mock records options created in a VM, so compare normalized JSON instead of cross-realm prototypes.
+  assert.equal(JSON.stringify(ui.query),JSON.stringify([
     ['from','fanart_gallery'],['select','image_path,tags,featured'],['eq','featured',true],
     ['order','featured_at',{ascending:false}],['limit',6]
-  ]);
+  ]));
   assert.equal(ui.paths.length,2,'spoiler and non-featured images must not even be requested');
   assert.equal(ui.panel.children.length,4);
   assert.equal(ui.panel.children[0].tag,'span','keep the first label in place for translations');
