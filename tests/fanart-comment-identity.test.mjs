@@ -16,7 +16,7 @@ test('fanart comment form never requests a free-form name',()=>{
 });
 
 test('database overrides forged display names, migrates old comments and follows profile changes',()=>{
-  const sql=read('supabase/migrations/20260922143500_fanart_comments_use_profile_username.sql');
+  const sql=read('supabase/migrations/20260922142647_fanart_comments_use_profile_username.sql');
   assert.match(sql,/ALTER TABLE public\.fanart_comments ALTER COLUMN display_name SET DEFAULT 'Leitor'/);
   assert.match(sql,/NEW\.author_id IS DISTINCT FROM auth\.uid\(\)/);
   assert.match(sql,/FROM public\.profiles AS p/);
