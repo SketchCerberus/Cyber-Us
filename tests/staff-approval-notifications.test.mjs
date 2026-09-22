@@ -29,4 +29,10 @@ test('single existing bell deep-links both approval messages without exposing pr
  assert.match(bell,/staff_request: t\(/);
  assert.match(bell,/staff_role_appeal: t\(/);
  assert.doesNotMatch(bell,/select\('[^']*staff_request_id/);
+ const navigation=read('moderation-hierarchy-link.js');
+ const page=read('moderacao.html');
+ assert.match(page,/moderation-hierarchy-link\.js/);
+ assert.match(navigation,/location\.hash !== '#staffHierarchyView'/);
+ assert.match(navigation,/!tab \|\| tab\.hidden \|\| !workspace \|\| workspace\.hidden/);
+ assert.match(navigation,/tab\.click\(\)/);
 });
