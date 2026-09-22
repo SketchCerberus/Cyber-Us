@@ -8,6 +8,7 @@
   <title>Cyber-Us — Criar conta</title>
   <link rel="stylesheet" href="reader.css">
   <link rel="stylesheet" href="community.css">
+  <link rel="stylesheet" href="community-username.css?v=20260922-unique">
   <link rel="stylesheet" href="header-scroll.css">
   <script defer src="reader.js"></script>
   <script defer src="header-scroll.js"></script>
@@ -16,6 +17,7 @@
   <script defer src="community-captcha.js"></script>
   <script defer src="community-avatar.js"></script>
   <script defer src="community.js"></script>
+  <script defer src="community-username.js?v=20260922-unique"></script>
 </head>
 <body data-community-page="account">
   <a class="skip" href="#main" data-pt="Pular para o conteúdo" data-en="Skip to content">Pular para o conteúdo</a>
@@ -34,13 +36,14 @@
           <label for="signupEmail" data-pt="E-mail" data-en="Email">E-mail</label><input id="signupEmail" type="email" name="email" autocomplete="email" maxlength="254" required>
           <label for="signupPassword" data-pt="Senha (mínimo de 8 caracteres)" data-en="Password (at least 8 characters)">Senha (mínimo de 8 caracteres)</label><input id="signupPassword" type="password" name="password" minlength="8" autocomplete="new-password" required>
           <label for="signupPasswordConfirm" data-pt="Repita a senha" data-en="Repeat password">Repita a senha</label><input id="signupPasswordConfirm" type="password" name="password_confirmation" minlength="8" autocomplete="new-password" required>
+          <p class="community-hint" data-pt="Após confirmar seu e-mail, escolha um @usuário exclusivo na página do perfil. O site avisa se já estiver em uso." data-en="After verifying your email, choose a unique @username on your profile page. The site checks whether it is taken.">Após confirmar seu e-mail, escolha um @usuário exclusivo na página do perfil. O site avisa se já estiver em uso.</p>
           <div id="signupFormCaptcha" class="community-captcha" aria-label="Verificação antibots"></div>
           <button class="action" type="submit" data-pt="Criar conta" data-en="Create account">Criar conta</button>
         </form>
         <nav class="account-links" aria-label="Conta"><a href="comunidade.html" data-pt="Já tenho conta — entrar" data-en="Already have an account — sign in">Já tenho conta — entrar</a></nav>
       </section>
     </div>
-    <section id="memberAccount" class="community-box" aria-labelledby="memberHeading" hidden><h2 id="memberHeading" data-pt="Seu perfil" data-en="Your profile">Seu perfil</h2><p id="memberEmail"></p><p id="banStatus" class="community-notice" hidden></p><form id="profileForm" class="community-form"><label for="profileName" data-pt="Nome público" data-en="Public name">Nome público</label><input id="profileName" name="display_name" minlength="1" maxlength="60" required><label for="profileUsername" data-pt="Usuário (3–24 letras minúsculas, números ou _)" data-en="Username (3–24 lowercase letters, numbers or _)">Usuário (3–24 letras minúsculas, números ou _)</label><input id="profileUsername" name="username" minlength="3" maxlength="24" pattern="[a-z0-9_]{3,24}" autocomplete="username"><button class="action" type="submit" data-pt="Salvar perfil" data-en="Save profile">Salvar perfil</button></form><button id="logoutBtn" class="community-link" type="button" data-pt="Sair da conta" data-en="Sign out">Sair da conta</button></section>
+    <section id="memberAccount" class="community-box" aria-labelledby="memberHeading" hidden><h2 id="memberHeading" data-pt="Seu perfil" data-en="Your profile">Seu perfil</h2><p id="memberEmail"></p><p id="banStatus" class="community-notice" hidden></p><form id="profileForm" class="community-form"><label for="profileName" data-pt="Nome público" data-en="Public name">Nome público</label><input id="profileName" name="display_name" minlength="1" maxlength="60" required><label for="profileUsername" data-pt="@Usuário exclusivo (3–24 letras minúsculas, números ou _)" data-en="Unique @username (3–24 lowercase letters, numbers or _)">@Usuário exclusivo (3–24 letras minúsculas, números ou _)</label><input id="profileUsername" name="username" minlength="3" maxlength="24" pattern="[a-z0-9_]{3,24}" autocomplete="username" required><button class="action" type="submit" data-pt="Salvar perfil" data-en="Save profile">Salvar perfil</button></form><button id="logoutBtn" class="community-link" type="button" data-pt="Sair da conta" data-en="Sign out">Sair da conta</button></section>
     <section id="moderationPanel" class="community-box moderation-panel" aria-labelledby="moderationHeading" hidden><h2 id="moderationHeading" data-pt="Painel de moderação" data-en="Moderation panel">Painel de moderação</h2><p data-pt="Acesso exclusivo à equipe autorizada. Ações exigem motivo e são registradas." data-en="Authorized staff only. Actions require a reason and are logged.">Acesso exclusivo à equipe autorizada. Ações exigem motivo e são registradas.</p><button id="reloadModeration" class="action alt" type="button" data-pt="Atualizar moderação" data-en="Refresh moderation">Atualizar moderação</button><h3 data-pt="Comentários do episódio 1" data-en="Episode 1 comments">Comentários do episódio 1</h3><ol id="moderationComments" class="comment-list"></ol><h3 data-pt="Banimentos ativos" data-en="Active bans">Banimentos ativos</h3><ol id="activeBans" class="comment-list"></ol></section>
     <p class="community-hint" data-pt="Nunca compartilhe sua senha. O autor pode moderar comentários e banir contas que descumprirem as regras da comunidade." data-en="Never share your password. The creator can moderate comments and ban accounts that break community rules.">Nunca compartilhe sua senha. O autor pode moderar comentários e banir contas que descumpram as regras da comunidade.</p>
   </main>
