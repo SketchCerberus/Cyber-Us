@@ -17,6 +17,7 @@ test('notification preferences are off by default, user-owned and configurable',
   assert.match(client,/mention\.checked/);
   assert.match(client,/settings\.addEventListener\('submit'/);
   assert.match(client,/no emails are sent/i);
+  assert.match(client,/Preferências de notificações/);
   assert.doesNotMatch(client,/community-notification-list|\.select\('id,kind,episode_slug/);
 });
 
@@ -86,7 +87,7 @@ test('mention finder searches public names and unique handles without exposing p
   const finder=read('community-mentions.js');
   const css=read('community-mention-finder.css');
   assert.match(finder,/\.select\('username,display_name'\)/);
-  assert.match(finder,/\.ilike\('display_name','%'\+nameTerm\+'%'\)/);
+  assert.match(finder,/\.ilike\('display_name','%'\+name\+'%'\)/);
   assert.match(finder,/people\.set\(person\.username,person\)/);
   assert.match(finder,/@'\+person\.username/);
   assert.match(finder,/const eligible='#commentBody, \.reply-form textarea, #fanart-comment-body'/);
@@ -95,7 +96,9 @@ test('mention finder searches public names and unique handles without exposing p
   assert.match(finder,/finder\.addEventListener\('keydown'/);
   assert.match(finder,/event\.key==='Escape'/);
   assert.match(finder,/input\.maxLength>0/);
-  assert.match(finder,/new URL\('community-mention-finder\.css',scriptBase\)/);
+  assert.match(finder,/const separator=!token/);
+  assert.match(finder,/search\.placeholder=t\(search\.dataset\.pt,search\.dataset\.en\)/);
+  assert.match(finder,/new URL\('community-mention-finder\.css',base\)/);
   assert.doesNotMatch(finder,/\.select\('[^']*(?:author_id|email)/);
   assert.doesNotMatch(finder,/innerHTML\s*=|service_role|sb_secret_/);
   assert.match(css,/\.community-mention-finder\[hidden\]/);
