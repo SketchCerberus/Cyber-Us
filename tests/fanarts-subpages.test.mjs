@@ -16,7 +16,7 @@ test('gallery and publication routes have bilingual navigation and shared header
     assert.match(page,/fanarts-publicar\.html/);
   }
   assert.match(gallery,/src="fanarts-gallery\.js"/);
-  assert.match(gallery,/src="fanarts-detail\.js"/);
+  assert.match(gallery,/src="fanarts-detail\.js(?:\?v=[\w-]+)?"/);
   assert.match(submit,/src="fanarts-submit\.js"/);
   assert.match(submit,/src="fanarts-my-submissions\.js"/);
   assert.match(submit,/data-pt="Nome do autor" data-en="Author name"/);
