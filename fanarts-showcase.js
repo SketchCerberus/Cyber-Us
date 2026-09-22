@@ -52,7 +52,7 @@
           if (!work || !work.spoiler) return;
           revealed.add(work.submission_id);
           render();
-          controls.querySelector('.fanarts-carousel-next')?.focus({ preventScroll: true });
+          schedule();
         });
       }
       placeholder.hidden = true;
@@ -70,17 +70,6 @@
       stage.append(figure);
     }
 
-    const controls = make('div', 'fanarts-carousel-controls');
-    const previous = make('button', 'fanarts-carousel-previous');
-    const next = make('button', 'fanarts-carousel-next');
-    const pause = make('button', 'fanarts-carousel-pause');
-    for (const button of [previous, next, pause]) {
-      button.type = 'button';
-      button.setAttribute('aria-controls', stage.id);
-    }
-    const progress = make('span', 'fanarts-carousel-progress');
-    progress.setAttribute('aria-live', 'off');
-    controls.append(previous, progress, next, pause);
     const stylesheet = document.createElement('link');
     stylesheet.rel = 'stylesheet';
     stylesheet.href = new URL('fanarts-carousel.css', document.currentScript?.src || document.baseURI).href;
@@ -95,11 +84,10 @@
     }
     let position = 0;
     let timer = null;
-    let paused = false;
     let hovered = false;
     let focused = false;
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const isBlocked = () => paused || hovered || focused || document.hidden || reducedMotion.matches || works.length < 2;
+    const isBlocked = () => hovered || focused || document.hidden || reducedMotion.matches || works.length < 2;
     function schedule() {
       window.clearTimeout(timer);
       timer = null;
@@ -137,13 +125,7 @@
       show('current', works[order[position]]);
       show('previous', length > 2 ? works[order[(position - 1 + length) % length]] : null);
       show('next', length > 1 ? works[order[(position + 1) % length]] : null);
-      progress.textContent = `${position + 1} / ${length}`;
-      previous.textContent = t('← Anterior', '← Previous');
-      next.textContent = t('Próxima →', 'Next →');
-      pause.textContent = paused ? t('Continuar', 'Resume') : t('Pausar', 'Pause');
-      pause.setAttribute('aria-pressed', String(paused));
       stage.setAttribute('aria-label', t('Carrossel de fanarts aprovadas', 'Approved fanart carousel'));
-      controls.hidden = length < 2;
     }
     function go(delta) {
       if (works.length < 2) return;
@@ -151,13 +133,8 @@
       render();
       schedule();
     }
-    previous.addEventListener('click', () => go(-1));
-    next.addEventListener('click', () => go(1));
-    pause.addEventListener('click', () => { paused = !paused; render(); schedule(); });
     stage.addEventListener('mouseenter', () => { hovered = true; schedule(); });
     stage.addEventListener('mouseleave', () => { hovered = false; schedule(); });
-    controls.addEventListener('mouseenter', () => { hovered = true; schedule(); });
-    controls.addEventListener('mouseleave', () => { hovered = false; schedule(); });
     signal.addEventListener('focusin', () => { focused = true; schedule(); });
     signal.addEventListener('focusout', event => {
       if (!signal.contains(event.relatedTarget)) { focused = false; schedule(); }
@@ -170,7 +147,7 @@
     originalBottom.hidden = true;
     signal.removeAttribute('aria-hidden');
     signal.classList.add('has-showcase');
-    originalOrbit.after(stage, controls);
+    originalOrbit.after(stage);
     schedule();
   }
   load();

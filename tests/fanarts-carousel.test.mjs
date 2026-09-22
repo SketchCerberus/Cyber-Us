@@ -33,9 +33,7 @@ async function setup(data=works, reduced=false) {
     get src(){return this.getAttribute('src');}
     addEventListener(name,listener){this.events[name]=listener;}
     click(){this.events.click?.({});}
-    focus(){this.focused=true;}
     contains(node){return this===node||this.children.includes(node);}
-    querySelector(selector){return this.children.find(node=>'.'+node.className===selector)||null;}
   }
   const signal=new Element('div');
   signal.setAttribute('aria-hidden','true');
@@ -70,7 +68,13 @@ async function setup(data=works, reduced=false) {
   return {signal,orbit,bottom,stage,controls,observers,scheduled,queryLog,doc};
 }
 
-test('the carousel uses approved public rows, starts covered and navigates both ways',async()=>{
+function tick(ui) {
+  const next=ui.scheduled.values().next().value;
+  assert.equal(typeof next,'function','autoplay timer should exist');
+  next();
+}
+
+test('carousel uses approved rows, retains spoiler reveal and rotates without controls',async()=>{
   const ui=await setup();
   const {signal,orbit,bottom,stage,controls,queryLog}=ui;
   assert.deepEqual(queryLog.map(String),['fanart_gallery','submission_id,title,artist_name,image_path,accent,tags']);
@@ -78,48 +82,42 @@ test('the carousel uses approved public rows, starts covered and navigates both 
   assert.equal(orbit.hidden,true);
   assert.equal(bottom.hidden,true);
   assert.equal(stage.children.length,3);
-  const current=stage.children[1]; // The actual center card, between previous and next.
+  assert.equal(controls,undefined,'no carousel navigation/pause button row');
+  assert.doesNotMatch(source,/fanarts-carousel-(?:previous|next|pause|controls)/);
+  const current=stage.children[1];
   const [image,reveal,caption]=current.children;
   const [title]=caption.children;
-  const [prev,progress,next,pause]=controls.children;
   assert.equal(image.hidden,true);
-  assert.equal(image.getAttribute('src'),null,'spoiler must not even load the image before reveal');
+  assert.equal(image.getAttribute('src'),null,'spoiler image must not load before reveal');
   assert.equal(title.textContent,'');
   assert.equal(caption.hidden,true);
   assert.equal(reveal.hidden,false);
   assert.equal(reveal.textContent,'Spoiler · Revelar imagem');
-  assert.equal(progress.textContent,'1 / 3');
   reveal.click();
   assert.equal(image.hidden,false);
   assert.equal(image.src,'https://cdn.example.test/'+first+'.webp');
   assert.equal(title.textContent,'Segredo');
   assert.equal(caption.hidden,false);
-  next.click();
+  assert.equal(ui.scheduled.size,1);
+  tick(ui);
   assert.equal(title.textContent,'Arte pública');
-  assert.equal(progress.textContent,'2 / 3');
-  prev.click();
+  tick(ui);
+  assert.equal(title.textContent,'Terceira arte');
+  tick(ui);
   assert.equal(title.textContent,'Segredo');
-  pause.click();
-  assert.equal(pause.getAttribute('aria-pressed'),'true');
-  assert.equal(ui.scheduled.size,0);
-  next.click(); // Manual navigation must work even while paused.
-  assert.equal(title.textContent,'Arte pública');
 });
 
-test('language switching and reduced motion preserve manual controls and spoiler masking',async()=>{
+test('language switching and reduced motion preserve spoiler masking without autoplay',async()=>{
   const ui=await setup(works,true);
-  assert.equal(ui.orbit.afterNodes.length,2); // Exactly one carousel stage and one control row.
-  const [stage,controls]=ui.orbit.afterNodes;
-  assert.equal(ui.scheduled.size,0,'reduced-motion users should not get autoplay');
-  const current=stage.children[1];
+  assert.equal(ui.orbit.afterNodes.length,1,'only the carousel stage is inserted');
+  const current=ui.stage.children[1];
+  assert.equal(ui.scheduled.size,0,'reduced-motion users do not get autoplay');
   ui.doc.documentElement.lang='en';
   ui.observers[0].callback();
   assert.equal(current.children[1].textContent,'Spoiler · Reveal artwork');
-  assert.equal(controls.children[2].textContent,'Next →');
-  controls.children[2].click();
-  assert.equal(current.children[2].children[0].textContent,'Arte pública');
+  assert.equal(current.children[0].getAttribute('src'),null);
   assert.equal(ui.scheduled.size,0);
-  assert.match(readFileSync(new URL('../fanarts-carousel.css', import.meta.url),'utf8'),/img\[hidden\].*|figcaption\[hidden\]/);
+  assert.match(readFileSync(new URL('../fanarts-carousel.css', import.meta.url),'utf8'),/figcaption\[hidden\]/);
 });
 
 test('empty public gallery retains the placeholder instead of a broken carousel',async()=>{
