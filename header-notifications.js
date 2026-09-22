@@ -75,6 +75,8 @@
     renderInbox();
   }
   function target(item) {
+    if (item.kind === 'staff_request' || item.kind === 'staff_role_appeal')
+      return new URL('moderacao.html#staffHierarchyView', base).href;
     if (/^(episodio-0[1-5]|marco-zero)$/.test(item.episode_slug || ''))
       return new URL(`episodios/${item.episode_slug}.html#communityHeading`, base).href;
     if (uuid.test(item.fanart_submission_id || ''))
@@ -104,9 +106,15 @@
       if (!item.read_at) li.classList.add('is-unread');
       const href = target(item);
       const link = make(href ? 'a' : 'span', 'header-notification-link');
-      link.textContent = item.kind === 'reply'
-        ? t('Alguém respondeu ao seu comentário.', 'Someone replied to your comment.')
-        : t('Seu @usuário foi mencionado em um comentário.', 'Your @username was mentioned in a comment.');
+      const labels = {
+        reply: t('Alguém respondeu ao seu comentário.', 'Someone replied to your comment.'),
+        mention: t('Seu @usuário foi mencionado em um comentário.', 'Your @username was mentioned in a comment.'),
+        staff_request: t('Há uma solicitação de moderação aguardando sua aprovação.',
+          'A moderation request is waiting for your approval.'),
+        staff_role_appeal: t('Um moderador recorreu da remoção do cargo.',
+          'A moderator appealed removal of their role.')
+      };
+      link.textContent = labels[item.kind] || t('Nova notificação.', 'New notification.');
       if (href) {
         link.href = href;
         link.addEventListener('click', async event => {
