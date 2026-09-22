@@ -62,7 +62,8 @@
         backdrop.append(slide);
         return slide;
       });
-      panel.prepend(backdrop);
+      // Keep the first and last spans in place: script.js uses them for PT/EN labels.
+      panel.insertBefore(backdrop, panel.querySelector('strong'));
       panel.classList.add('has-featured-backdrop');
       let current = 0;
       const schedule = () => {
