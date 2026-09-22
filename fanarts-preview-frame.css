@@ -1,0 +1,34 @@
+/* Preview-only skin: use the same exact accent palette as the published gallery.
+   The upload controller already updates the preview's data-accent on every selection. */
+.fanarts-submit-workspace .fanarts-upload-preview{
+  --preview-neon:#7dd3fc;
+  border:2px solid var(--preview-neon);
+  background:#0c1119;
+  box-shadow:0 0 22px color-mix(in srgb,var(--preview-neon) 13%,transparent);
+  transition:border-color .18s ease,box-shadow .18s ease;
+}
+.fanarts-submit-workspace .fanarts-upload-preview[data-accent="blue"]{--preview-neon:#72e5ff}
+.fanarts-submit-workspace .fanarts-upload-preview[data-accent="red"]{--preview-neon:#ff647d}
+.fanarts-submit-workspace .fanarts-upload-preview[data-accent="green"]{--preview-neon:#79f7ab}
+.fanarts-submit-workspace .fanarts-upload-preview h3,
+.fanarts-submit-workspace .fanarts-upload-preview figcaption strong{color:var(--preview-neon)}
+.fanarts-submit-workspace .fanarts-upload-preview-image{
+  border-color:var(--preview-neon);
+  background:#090d15;
+}
+.fanarts-submit-workspace .fanarts-upload-preview figcaption{
+  border-top:2px solid var(--preview-neon);
+  margin-top:.85rem;
+  padding-top:.85rem;
+}
+/* Random has no single final color until submission gets an ID. A multicolor
+   outline communicates the choice without falsely predicting the final frame. */
+.fanarts-submit-workspace .fanarts-upload-preview[data-accent="random"]{
+  border-color:transparent;
+  background:linear-gradient(#0c1119,#0c1119) padding-box,
+             linear-gradient(125deg,#72e5ff,#ff647d,#79f7ab) border-box;
+}
+.fanarts-submit-workspace .fanarts-upload-preview[data-accent="random"] figcaption{
+  border-image:linear-gradient(90deg,#72e5ff,#ff647d,#79f7ab) 1;
+}
+@media(prefers-reduced-motion:reduce){.fanarts-submit-workspace .fanarts-upload-preview{transition:none}}
