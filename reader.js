@@ -156,7 +156,8 @@
       const script=document.createElement('script');script.src=new URL(file,base).href;
       document.head.append(script);
     });
-    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',load,{once:true});
-    else load();
+    // An interactive document may still be executing deferred scripts (including Supabase).
+    if(document.readyState==='complete') load();
+    else document.addEventListener('DOMContentLoaded',load,{once:true});
   }
 }());
