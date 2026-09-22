@@ -49,7 +49,7 @@ test('role-removal appeals remain available after revocation and only creator re
  assert.match(enforcement,/staff_pending_role_appeals/);
  assert.match(enforcement,/staff_decide_role_appeal/);
  assert.match(enforcement,/appeal_restore/);
- assert.match(enforcement,/UNIQUE REFERENCES community_private\.staff_actions/);
+ assert.match(base,/action_id bigint NOT NULL UNIQUE REFERENCES community_private\.staff_actions/);
  assert.match(enforcement,/IS DISTINCT FROM 'creator'/);
 });
 test('new management and appeals surfaces are bilingual and isolated to their pages',()=>{
