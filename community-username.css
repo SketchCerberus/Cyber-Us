@@ -1,0 +1,5 @@
+/* Clear, accessible validation without disclosing account details. */
+.community-form .community-username-status{margin:-.2rem 0 .45rem;padding:.65rem .8rem;border:1px solid var(--community-border);border-radius:8px;background:var(--panel2);color:var(--muted);font-size:.9rem;line-height:1.45}
+.community-form .community-username-status[data-state="available"]{border-color:#79f7ab;color:#79f7ab}
+.community-form .community-username-status[data-state="taken"],.community-form .community-username-status[data-state="error"]{border-color:#ff9aa0;color:#ff9aa0}
+.community-form #username-help{margin:0 0 .1rem;line-height:1.5}
