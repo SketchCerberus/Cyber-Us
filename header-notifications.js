@@ -59,6 +59,7 @@
   let countRequest = 0;
   let unreadCount = 0;
   let entries = [];
+  let inboxState = 'idle';
   let db = null;
   const message = (br, en) => { status.textContent = t(br, en); };
   function syncLanguage() {
@@ -82,8 +83,17 @@
   }
   function renderInbox() {
     list.replaceChildren();
-    if (!user || !entries.length) {
-      if (user && !panel.hidden) message('Nenhuma notificação ainda.', 'No notifications yet.');
+    if (!user || panel.hidden) return;
+    if (inboxState === 'loading') {
+      message('Carregando notificações…', 'Loading notifications…');
+      return;
+    }
+    if (inboxState === 'error') {
+      message('Não foi possível carregar as notificações.', 'Could not load notifications.');
+      return;
+    }
+    if (!entries.length) {
+      message('Nenhuma notificação ainda.', 'No notifications yet.');
       return;
     }
     const unread = entries.filter(item => !item.read_at).length;
@@ -155,18 +165,20 @@
     const owner = user.id;
     refresh.disabled = true;
     entries = [];
-    list.replaceChildren();
-    message('Carregando notificações…', 'Loading notifications…');
+    inboxState = 'loading';
+    renderInbox();
     const result = await db.from('community_notifications')
       .select('id,kind,episode_slug,fanart_submission_id,created_at,read_at')
       .order('created_at', {ascending: false}).limit(30);
     if (ticket !== inboxRequest || user?.id !== owner || panel.hidden) return;
     refresh.disabled = false;
     if (result.error) {
-      message('Não foi possível carregar as notificações.', 'Could not load notifications.');
+      inboxState = 'error';
+      renderInbox();
       return;
     }
     entries = result.data || [];
+    inboxState = 'ready';
     renderInbox();
     await refreshUnread();
   }
@@ -185,6 +197,10 @@
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && !panel.hidden) closePanel(true);
   });
+  const compactMenu = document.querySelector('body > .site-header .mobile-nav-toggle');
+  compactMenu?.addEventListener('click', () => {
+    if (!compactMenu.closest('.site-header')?.classList.contains('menu-open')) closePanel();
+  });
   new MutationObserver(syncLanguage).observe(document.documentElement,
     {attributes: true, attributeFilter: ['lang']});
 
@@ -199,6 +215,7 @@
       user = null;
       unreadCount = 0;
       entries = [];
+      inboxState = 'idle';
       badge.hidden = true;
       closePanel();
       shell.hidden = true;
