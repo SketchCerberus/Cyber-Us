@@ -106,8 +106,7 @@
     const aboutHero = document.querySelector('.about-us-hero');
     if (aboutHero) {
       aboutHero.querySelector('.eyebrow').textContent = lang === 'pt' ? 'CYBER-US // SOBRE NÓS' : 'CYBER-US // ABOUT';
-      aboutHero.querySelector('.about-us-art small:first-child').textContent = lang === 'pt' ? 'CYBER-US / SINAL DO CRIADOR' : 'CYBER-US / CREATOR SIGNAL';
-      aboutHero.querySelector('.about-us-art small:last-child').textContent = lang === 'pt' ? 'HISTÓRIA EM ANDAMENTO · · ·' : 'STORY IN PROGRESS · · ·';
+      aboutHero.querySelector('.about-us-art small:first-child').textContent = lang === 'pt' ? 'HISTÓRIA EM ANDAMENTO · · ·' : 'STORY IN PROGRESS · · ·';
     }
 
     // Extras section labels now use the same data-pt/data-en flow as the rest
@@ -152,9 +151,10 @@
     modules.push('fanarts-featured.js');
     if(document.querySelector('script[src="fanarts-detail.js"]'))modules.push('community-mentions.js');
   }
-  if(document.body.dataset.communityPage==='account')modules.push('community-notifications.js');
+  if(document.body.dataset.communityPage==='account')
+    modules.push('community-notifications.js','community-staff-appeals.js');
   if(document.getElementById('moderationWorkspace')){
-    modules.push('moderation-edit-history.js','moderation-featured-fanarts.js');
+    modules.push('moderation-edit-history.js','moderation-featured-fanarts.js','moderation-hierarchy.js');
   }
   if(modules.length){
     const css=document.createElement('link');css.rel='stylesheet';
