@@ -47,4 +47,10 @@
   else if (system.addListener) system.addListener(onSystemChange);
   new MutationObserver(sync).observe(root, { attributes: true, attributeFilter: ['lang'] });
   sync();
+
+  // Reuse these same controls at the beginning of the menu on narrow screens.
+  // Load only after the theme button exists so it can move without losing its listener.
+  const mobileUtilities = document.createElement('script');
+  mobileUtilities.src = new URL('header-mobile-utilities.js', document.currentScript?.src || document.baseURI).href;
+  document.head.appendChild(mobileUtilities);
 })();

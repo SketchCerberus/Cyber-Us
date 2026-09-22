@@ -1,0 +1,59 @@
+/* Compact header: identity and personal settings come before site navigation. */
+@media(max-width:1100px){
+  .site-header.scroll-header.menu-open > nav > .mobile-nav-utilities{
+    box-sizing:border-box;display:grid;grid-template-columns:44px minmax(0,1fr) minmax(0,1fr);
+    align-items:center;gap:.6rem;width:100%;max-width:520px;min-width:0;
+    padding:.7rem;margin:.2rem 0 .7rem;border:1px solid var(--line,rgba(255,255,255,.18));
+    border-radius:12px;background:var(--panel2,#171c26);
+  }
+  .site-header.scroll-header .mobile-nav-utilities > .account-access{
+    display:flex;grid-column:1/-1;grid-row:1;align-items:center;justify-content:flex-start;
+    width:100%;max-width:none;min-width:0;min-height:44px;overflow:hidden;
+    padding:.5rem .65rem;white-space:nowrap;
+  }
+  .site-header.scroll-header .mobile-nav-utilities > .account-access .header-account-name{
+    min-width:0;overflow:hidden;text-overflow:ellipsis;
+  }
+  .site-header.scroll-header.menu-open > nav > .mobile-nav-utilities > .header-notifications{
+    grid-column:1;grid-row:2;display:flex;flex-direction:column;align-items:stretch;
+    width:100%;min-width:0;margin:0;
+  }
+  .site-header.scroll-header.menu-open > nav > .mobile-nav-utilities .header-notifications-bell{
+    align-self:flex-start;flex:0 0 44px;width:44px;height:44px;
+  }
+  .site-header.scroll-header .mobile-nav-utilities > .theme-toggle{
+    grid-column:2;grid-row:2;display:flex;justify-content:center;
+    width:100%;min-width:0;min-height:44px;margin:0;
+    padding:.35rem .25rem;font-size:clamp(.76rem,2.7vw,.88rem);
+  }
+  .site-header.scroll-header.menu-open > nav > .mobile-nav-utilities > .language-picker{
+    grid-column:3;grid-row:2;width:100%;min-width:0;max-width:100%;
+    margin:0;align-self:stretch;
+  }
+  .site-header.scroll-header.menu-open > nav > .mobile-nav-utilities > .language-picker > .lang-btn{
+    width:100%;min-width:0;min-height:44px;padding:.35rem .2rem;
+    font-size:clamp(.73rem,2.7vw,.88rem);white-space:nowrap;
+  }
+  /* Let the language choices and private inbox expand inside the scrollable menu. */
+  .site-header.scroll-header.menu-open > nav > .mobile-nav-utilities > .language-picker > [role='group']{
+    position:static!important;right:auto!important;top:auto!important;
+    box-sizing:border-box;min-width:0!important;width:100%;margin-top:.45rem;box-shadow:none!important;
+  }
+  .site-header.scroll-header.menu-open > nav > .mobile-nav-utilities.has-open-notifications > .header-notifications{
+    grid-column:1/-1;grid-row:2;
+  }
+  .site-header.scroll-header .mobile-nav-utilities.has-open-notifications > .theme-toggle,
+  .site-header.scroll-header .mobile-nav-utilities.has-open-notifications > .language-picker{
+    grid-row:3;
+  }
+  .site-header.scroll-header.menu-open > nav > .mobile-nav-utilities .header-notifications-panel{
+    box-sizing:border-box;width:100%;max-width:100%;min-width:0;
+    position:static;max-height:min(55dvh,450px);margin-top:.55rem;box-shadow:none;
+  }
+  html[data-theme='light'] .site-header.scroll-header .mobile-nav-utilities{
+    background:var(--panel2,#e7edf5);border-color:var(--line);
+  }
+  html[data-theme='light'] .site-header.scroll-header .mobile-nav-utilities > .account-access{
+    color:var(--text,#172334);
+  }
+}
