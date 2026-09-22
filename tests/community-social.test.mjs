@@ -17,6 +17,8 @@ test('notification preferences are off by default, user-owned and configurable',
   assert.match(client,/mention\.checked/);
   assert.match(client,/settings\.addEventListener\('submit'/);
   assert.match(client,/no emails are sent/i);
+  assert.match(client,/Preferências de notificações/);
+  assert.doesNotMatch(client,/community-notification-list|\.select\('id,kind,episode_slug/);
 });
 
 test('notifications have owner-only access, no direct insertion and server-checked opt-in',()=>{
@@ -29,10 +31,38 @@ test('notifications have owner-only access, no direct insertion and server-check
   assert.match(sql,/pref\.replies/);
   assert.match(sql,/pref\.mentions/);
   assert.match(sql,/ON CONFLICT DO NOTHING/);
-  const client=read('community-notifications.js');
+  const client=read('header-notifications.js');
   assert.match(client,/\.select\('id,kind,episode_slug,fanart_submission_id,created_at,read_at'\)/);
   assert.doesNotMatch(client,/select\('[^']*recipient_id/);
-  assert.match(client,/\.update\(\{read_at:new Date\(\)\.toISOString\(\)\}\)/);
+  assert.match(client,/\.update\(\{read_at: new Date\(\)\.toISOString\(\)\}\)/);
+  assert.match(client,/\.select\('id', \{count: 'exact', head: true\}\)\.is\('read_at', null\)/);
+  assert.match(client,/shell\.hidden = true/);
+  assert.match(client,/db\.auth\.getUser\(\)/);
+  assert.match(client,/user\?\.id !== owner/);
+  assert.doesNotMatch(client,/service_role|sb_secret_|innerHTML/);
+});
+
+test('one accessible bell follows the account on every header and works on mobile',()=>{
+  const badge=read('header-account.js');
+  const bell=read('header-notifications.js');
+  const styles=read('header-notifications.css');
+  const navigation=read('header-scroll.js');
+  assert.match(navigation,/nav\.replaceChildren\(\.\.\.links,account/);
+  assert.match(navigation,/header-account\.js/);
+  assert.match(badge,/new URL\('header-notifications\.js', scriptBase\)/);
+  assert.match(bell,/account\.after\(shell\)/);
+  assert.match(bell,/document\.getElementById\('headerNotifications'\)/);
+  assert.match(bell,/aria-expanded/);
+  assert.match(bell,/aria-controls/);
+  assert.match(bell,/Escape/);
+  assert.match(bell,/header-notifications\.css/);
+  assert.match(bell,/episodios\/\$\{item\.episode_slug\}\.html#communityHeading/);
+  assert.match(bell,/fanarts-galeria\.html\?art=/);
+  assert.match(bell,/window\.addEventListener\('focus'/);
+  assert.match(styles,/\.header-notifications-panel\[hidden\]/);
+  assert.match(styles,/@media\(max-width:1100px\)/);
+  assert.match(styles,/position:static/);
+  assert.match(styles,/focus-visible|header-notifications-bell/);
 });
 
 test('reply notifications and server-resolved mentions cover episodes and fanarts without mass-mention guesses',()=>{
