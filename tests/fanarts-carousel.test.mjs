@@ -78,7 +78,7 @@ test('the carousel uses approved public rows, starts covered and navigates both 
   assert.equal(orbit.hidden,true);
   assert.equal(bottom.hidden,true);
   assert.equal(stage.children.length,3);
-  const current=stage.children[2];
+  const current=stage.children[1]; // The actual center card, between previous and next.
   const [image,reveal,caption]=current.children;
   const [title]=caption.children;
   const [prev,progress,next,pause]=controls.children;
@@ -108,11 +108,10 @@ test('the carousel uses approved public rows, starts covered and navigates both 
 
 test('language switching and reduced motion preserve manual controls and spoiler masking',async()=>{
   const ui=await setup(works,true);
-  const [,,stageControls]=ui.orbit.afterNodes||[];
-  assert.equal(stageControls,undefined); // Exactly one carousel stage and one control row.
+  assert.equal(ui.orbit.afterNodes.length,2); // Exactly one carousel stage and one control row.
   const [stage,controls]=ui.orbit.afterNodes;
   assert.equal(ui.scheduled.size,0,'reduced-motion users should not get autoplay');
-  const current=stage.children[2];
+  const current=stage.children[1];
   ui.doc.documentElement.lang='en';
   ui.observers[0].callback();
   assert.equal(current.children[1].textContent,'Spoiler · Reveal artwork');
