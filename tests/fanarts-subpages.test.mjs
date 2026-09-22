@@ -40,18 +40,23 @@ test('Fanarts overview does not duplicate the upload form and links to the submi
   assert.doesNotMatch(gallery,/gallery\.closest\('main'\)\?\.prepend\(nav\)/);
 });
 
-test('only the live gallery search is injected on both gallery pages, not the legacy second search',()=>{
+test('the live gallery owns search and the overview carousel loads after deferred Supabase',()=>{
   const gallery=read('fanarts-gallery.js');
+  const carousel=read('fanarts-showcase.js');
   const reader=read('reader.js');
   const overview=read('fanarts.html');
   const full=read('fanarts-galeria.html');
   assert.match(gallery,/status\.before\(search\)/);
-  assert.doesNotMatch(gallery,/if \(!overview\) status\.before\(search\)/);
   assert.match(gallery,/searchInput\.addEventListener\('input',applyFilters\)/);
-  assert.match(reader,/!document\.querySelector\('script\[src="fanarts-gallery\.js"\]'\)/);
-  assert.match(reader,/showcase\.src = 'fanarts-showcase\.js'/);
+  assert.match(reader,/if\(document\.querySelector\('\.fanarts-signal'\)\)modules\.push\('fanarts-showcase\.js'\)/);
+  assert.match(reader,/DOMContentLoaded/);
+  assert.doesNotMatch(reader,/showcase\.src\s*=/);
   assert.match(overview,/src="fanarts-gallery\.js"/);
+  assert.match(overview,/src="fanarts-spoilers\.js"/);
+  assert.match(overview,/supabase\.min\.js/);
   assert.match(full,/src="fanarts-gallery\.js"/);
+  assert.match(carousel,/from\('fanart_gallery'\)/);
+  assert.doesNotMatch(carousel,/approvedFanarts|installTagSearch|fanarts-search-input/);
   assert.doesNotMatch(overview,/src="fanarts-showcase\.js"|id="fanarts-search-input"/);
 });
 
