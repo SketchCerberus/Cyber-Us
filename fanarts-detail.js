@@ -32,10 +32,9 @@
   commentHeading.dataset.pt='Comentários';commentHeading.dataset.en='Comments';
   const comments=document.createElement('div');comments.className='fanarts-comments';
   const form=document.createElement('form');form.className='fanarts-comment-form';
-  const nameLabel=document.createElement('label');nameLabel.htmlFor='fanart-comment-name';
-  nameLabel.dataset.pt='Nome público';nameLabel.dataset.en='Public display name';
-  const name=document.createElement('input');name.id='fanart-comment-name';
-  name.required=true;name.maxLength=60;name.autocomplete='nickname';
+  const identityHint=document.createElement('p');identityHint.className='fanarts-hint';
+  identityHint.dataset.pt='Seu nome de usuário será usado automaticamente. Se ainda não tiver um, será usado o nome do perfil.';
+  identityHint.dataset.en='Your username is used automatically. If you have not set one, your profile name is used.';
   const bodyLabel=document.createElement('label');bodyLabel.htmlFor='fanart-comment-body';
   bodyLabel.dataset.pt='Seu comentário';bodyLabel.dataset.en='Your comment';
   const body=document.createElement('textarea');body.id='fanart-comment-body';
@@ -43,15 +42,15 @@
   const consent=document.createElement('label');consent.className='fanarts-check';
   const consentInput=document.createElement('input');consentInput.type='checkbox';consentInput.required=true;
   const consentText=document.createElement('span');
-  consentText.dataset.pt='Autorizo a publicação deste nome e comentário. Não incluirei informações pessoais de terceiros.';
-  consentText.dataset.en='I agree to publish this name and comment. I will not include other people’s private information.';
+  consentText.dataset.pt='Autorizo a publicação deste comentário com o nome do meu perfil. Não incluirei informações pessoais de terceiros.';
+  consentText.dataset.en='I agree to publish this comment with my profile name. I will not include other people’s private information.';
   consent.append(consentInput,consentText);
   const submit=document.createElement('button');submit.type='submit';submit.className='fanarts-view-work';
   submit.dataset.pt='Enviar comentário';submit.dataset.en='Post comment';
   const commentNote=document.createElement('p');commentNote.className='fanarts-hint';
   commentNote.dataset.pt='Para votar ou comentar, entre com uma conta de e-mail confirmado. Até 10 comentários por hora; comentários podem ser removidos pela moderação.';
   commentNote.dataset.en='Sign in with a verified email to vote or comment. Up to 10 comments per hour; moderation may remove comments.';
-  form.append(nameLabel,name,bodyLabel,body,consent,submit,commentNote);
+  form.append(identityHint,bodyLabel,body,consent,submit,commentNote);
   community.append(communityHeading,interactionStatus,votes,commentHeading,comments,form);
   header.append(title,close);detail.append(header,image,credit,community);gallery.after(detail);
   let selected=null,request=0,voteCounts={upvotes:0,downvotes:0};
@@ -73,7 +72,7 @@
     });
     up.textContent=t(up.dataset.pt,up.dataset.en)+` (${voteCounts.upvotes})`;
     down.textContent=t(down.dataset.pt,down.dataset.en)+` (${voteCounts.downvotes})`;
-    for(const node of [communityHeading,commentHeading,nameLabel,bodyLabel,consentText,submit,commentNote])
+    for(const node of [communityHeading,commentHeading,identityHint,bodyLabel,consentText,submit,commentNote])
       node.textContent=t(node.dataset.pt,node.dataset.en);
     if(interactionStatus.dataset.pt)interactionStatus.textContent=t(interactionStatus.dataset.pt,interactionStatus.dataset.en);
     comments.querySelectorAll('[data-pt][data-en]').forEach(node=>node.textContent=t(node.dataset.pt,node.dataset.en));
@@ -157,10 +156,11 @@
     const user=await access();
     if(token!==request||selected?.dataset.submissionId!==id)return;
     if(!user){setStatus('Entre com uma conta verificada e não suspensa para comentar.','Sign in with a verified, unsuspended account to comment.',true);return;}
-    const display_name=name.value.trim(),message=body.value.trim();
-    if(!display_name||display_name.length>60||!message||message.length>1000||!consentInput.checked)return;
+    const message=body.value.trim();
+    if(!message||message.length>1000||!consentInput.checked)return;
     submit.disabled=true;
-    const {error}=await db.from('fanart_comments').insert({submission_id:id,author_id:user.id,display_name,body:message});
+    // The server retrieves the account's username, never a caller-provided name.
+    const {error}=await db.from('fanart_comments').insert({submission_id:id,author_id:user.id,body:message});
     submit.disabled=false;
     if(token!==request)return;
     if(error){setStatus('Não foi possível enviar. Verifique o limite de comentários e tente novamente.','Could not post. Check the comment limit and try again.',true);return;}
