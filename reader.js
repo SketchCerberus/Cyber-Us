@@ -152,9 +152,10 @@
     modules.push('fanarts-featured.js');
     if(document.querySelector('script[src="fanarts-detail.js"]'))modules.push('community-mentions.js');
   }
-  if(document.body.dataset.communityPage==='account')modules.push('community-notifications.js');
+  if(document.body.dataset.communityPage==='account')
+    modules.push('community-notifications.js','community-staff-appeals.js');
   if(document.getElementById('moderationWorkspace')){
-    modules.push('moderation-edit-history.js','moderation-featured-fanarts.js');
+    modules.push('moderation-edit-history.js','moderation-featured-fanarts.js','moderation-hierarchy.js');
   }
   if(modules.length){
     const css=document.createElement('link');css.rel='stylesheet';

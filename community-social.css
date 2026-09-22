@@ -27,4 +27,13 @@
 .moderation-featured{margin-top:2rem;padding-top:1rem;border-top:1px solid var(--line)}
 .moderation-featured-list{display:grid;gap:.7rem;padding-left:1.2rem}
 .moderation-featured-list .comment-item{overflow-wrap:anywhere}
-@media(max-width:600px){.community-notification-section{padding:1rem}.fanarts-featured-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,165px),1fr))}.fanarts-featured-card img,.fanarts-featured-hidden{height:160px}}
+.staff-hierarchy{margin:1rem 0;min-width:0}
+.staff-hierarchy h3{margin:1.6rem 0 .7rem}
+.staff-hierarchy .staff-assign-form{max-width:560px;padding:1rem;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.staff-hierarchy .staff-assign-form select{width:100%;min-height:44px;font:inherit;padding:.6rem;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text)}
+.staff-hierarchy .staff-assign-form label{display:grid;gap:.35rem}
+.staff-hierarchy .comment-item{min-width:0}
+.staff-hierarchy .community-actions button{min-height:44px}
+.staff-appeal-section{margin-top:1.5rem}
+.staff-appeal-section textarea{width:100%}
+@media(max-width:600px){.community-notification-section{padding:1rem}.fanarts-featured-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,165px),1fr))}.fanarts-featured-card img,.fanarts-featured-hidden{height:160px}.staff-hierarchy .staff-assign-form{padding:.8rem}.staff-hierarchy .community-actions button{flex:1 1 auto}}
