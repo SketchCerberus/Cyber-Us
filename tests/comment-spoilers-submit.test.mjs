@@ -14,7 +14,10 @@ function fixture(beforeLoad=()=>{}) {
     addEventListener(type,handler,capture=false){(this.handlers[type]??=[]).push({handler,capture});}
     insertAdjacentElement(_position,element){this.inserted=element;}
     setAttribute(key,value){this[key]=value;}
-    replaceChildren(...children){this.children=children;}
+    replaceChildren(...children){
+      this.children=children;
+      children.forEach((child,index)=>{child.nextElementSibling=children[index+1]||null;});
+    }
     focus(){this.focused=true;}
     click(){for(const listener of this.handlers.click||[])listener.handler();}
   }
