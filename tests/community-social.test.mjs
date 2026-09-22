@@ -76,11 +76,33 @@ test('reply notifications and server-resolved mentions cover episodes and fanart
   assert.match(sql,/episode_notify_comment_edit AFTER UPDATE OF body/);
   assert.match(sql,/fanart_notify_comment_edit AFTER UPDATE OF body/);
   const mentions=read('community-mentions.js');
-  assert.match(mentions,/\.like\('username',prefix\+'%'\)/);
-  assert.match(mentions,/input\.setRangeText\(replacement/);
+  assert.match(mentions,/\.like\('username',term\.toLowerCase\(\)\+'%'\)/);
+  assert.match(mentions,/input\.setRangeText\(mention/);
   assert.match(mentions,/reply-form textarea/);
   assert.match(mentions,/#fanart-comment-body/);
   assert.doesNotMatch(mentions,/innerHTML|service_role|sb_secret_/);
+});
+
+test('mention finder searches public names and unique handles without exposing private identities',()=>{
+  const finder=read('community-mentions.js');
+  const css=read('community-mention-finder.css');
+  assert.match(finder,/\.select\('username,display_name'\)/);
+  assert.match(finder,/\.ilike\('display_name','%'\+name\+'%'\)/);
+  assert.match(finder,/people\.set\(person\.username,person\)/);
+  assert.match(finder,/@'\+person\.username/);
+  assert.match(finder,/const eligible='#commentBody, \.reply-form textarea, #fanart-comment-body'/);
+  assert.match(finder,/toggle\.dataset\.pt='Encontrar alguém para mencionar'/);
+  assert.match(finder,/toggle\.setAttribute\('aria-expanded'/);
+  assert.match(finder,/finder\.addEventListener\('keydown'/);
+  assert.match(finder,/event\.key==='Escape'/);
+  assert.match(finder,/input\.maxLength>0/);
+  assert.match(finder,/const separator=!token/);
+  assert.match(finder,/search\.placeholder=t\(search\.dataset\.pt,search\.dataset\.en\)/);
+  assert.match(finder,/new URL\('community-mention-finder\.css',base\)/);
+  assert.doesNotMatch(finder,/\.select\('[^']*(?:author_id|email)/);
+  assert.doesNotMatch(finder,/innerHTML\s*=|service_role|sb_secret_/);
+  assert.match(css,/\.community-mention-finder\[hidden\]/);
+  assert.match(css,/@media\(max-width:520px\)/);
 });
 
 test('editing either comment type archives previous body privately for moderators',()=>{

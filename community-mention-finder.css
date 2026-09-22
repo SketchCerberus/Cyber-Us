@@ -1,0 +1,12 @@
+/* Find a mention by public profile name without knowing the unique handle first. */
+.community-mention-finder-toggle{display:inline-flex;align-items:center;min-height:44px;margin:0 0 .5rem;padding:.48rem .75rem;border:1px solid var(--line);border-radius:9px;background:var(--panel2);color:var(--cyan);font:inherit;font-size:.88rem;font-weight:750;cursor:pointer}
+.community-mention-finder-toggle:hover{border-color:var(--cyan)}
+.community-mention-finder-toggle:focus-visible,.community-mention-finder input:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+.community-mention-finder{display:grid;gap:.55rem;max-width:100%;padding:1rem;margin:0 0 1rem;border:1px solid var(--line);border-radius:12px;background:var(--panel2);box-sizing:border-box}
+.community-mention-finder[hidden]{display:none!important}
+.community-mention-finder label{font-size:.88rem;font-weight:750}
+.community-mention-finder input{box-sizing:border-box;width:100%;max-width:100%;min-height:44px;border:1px solid var(--line);border-radius:8px;padding:.5rem .7rem;background:var(--bg);color:var(--text);font:inherit}
+.community-mention-finder .community-mention-suggestions{display:flex;flex-wrap:wrap;gap:.45rem}
+.community-mention-finder .community-mention-suggestions:empty{display:none}
+.community-mention-finder .community-hint{margin:.1rem 0;line-height:1.5}
+@media(max-width:520px){.community-mention-finder-toggle{width:100%;justify-content:center}.community-mention-finder{padding:.75rem}.community-mention-finder .community-mention-choice{width:100%;text-align:left}}
