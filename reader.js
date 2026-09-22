@@ -135,15 +135,6 @@
   }
   render();
 
-  // The Supabase-backed gallery handles the search and cards. The retired editorial
-  // showcase has its own search: never inject it alongside the live gallery.
-  if (document.querySelector('.fanarts-signal') &&
-      !document.querySelector('script[src="fanarts-gallery.js"]')) {
-    const showcase = document.createElement('script');
-    showcase.src = 'fanarts-showcase.js';
-    document.head.appendChild(showcase);
-  }
-
   // Load only the modules relevant to this page after all deferred Supabase scripts.
   // Resolve against reader.js because episode pages are one directory deeper.
   const base=new URL('.',document.currentScript?.src||document.baseURI);
@@ -152,6 +143,7 @@
     modules.push('fanarts-featured.js');
     if(document.querySelector('script[src="fanarts-detail.js"]'))modules.push('community-mentions.js');
   }
+  if(document.querySelector('.fanarts-signal'))modules.push('fanarts-showcase.js');
   if(document.body.dataset.communityPage==='account')
     modules.push('community-notifications.js','community-staff-appeals.js');
   if(document.getElementById('moderationWorkspace')){
@@ -164,7 +156,8 @@
       const script=document.createElement('script');script.src=new URL(file,base).href;
       document.head.append(script);
     });
-    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',load,{once:true});
-    else load();
+    // An interactive document may still be executing deferred scripts (including Supabase).
+    if(document.readyState==='complete') load();
+    else document.addEventListener('DOMContentLoaded',load,{once:true});
   }
 }());

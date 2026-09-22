@@ -1,0 +1,22 @@
+/* Active, Supabase-backed carousel; retain the existing showcase card styles. */
+.fanarts-signal.has-showcase{justify-content:center;gap:.8rem}
+.fanarts-showcase{flex:0 0 auto}
+.fanarts-showcase-card img[hidden],
+.fanarts-showcase-card .fanarts-carousel-reveal[hidden],
+.fanarts-showcase-card .fanarts-carousel-placeholder[hidden],
+.fanarts-showcase-card figcaption[hidden],
+.fanarts-carousel-controls[hidden]{display:none!important}
+.fanarts-showcase-card{position:absolute}
+.fanarts-carousel-reveal,.fanarts-carousel-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:1rem;background:repeating-linear-gradient(135deg,#12202b 0 16px,#192a36 16px 32px);color:#d4f8ff;text-align:center;font-weight:800;font:inherit}
+.fanarts-carousel-reveal{border:0;cursor:pointer;font-weight:800}
+.fanarts-carousel-placeholder{font-size:.85rem}
+.fanarts-carousel-reveal:focus-visible{outline:3px solid var(--cyan,#7dd3fc);outline-offset:-5px}
+.fanarts-showcase-card figcaption{min-height:72px}
+.fanarts-carousel-open{color:var(--showcase-neon,#7dd3fc);font-size:.85rem;font-weight:750;text-underline-offset:.2rem}
+.fanarts-carousel-controls{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:.4rem;z-index:4}
+.fanarts-carousel-controls button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.4rem .6rem;border:1px solid var(--cyan,#7dd3fc);border-radius:9px;background:var(--panel,#11151d);color:var(--text,#fff);font:inherit;font-size:.84rem;font-weight:700;cursor:pointer}
+.fanarts-carousel-controls button:hover{background:var(--panel2,#1d2938)}
+.fanarts-carousel-controls button:focus-visible{outline:3px solid var(--cyan,#7dd3fc);outline-offset:2px}
+.fanarts-carousel-progress{min-width:3rem;text-align:center;color:var(--text,#fff);font-size:.85rem;font-variant-numeric:tabular-nums}
+@media(max-width:390px){.fanarts-signal.has-showcase{padding:1rem}.fanarts-carousel-controls{gap:.25rem}.fanarts-carousel-controls button{padding:.3rem .45rem;font-size:.78rem}}
+@media(prefers-reduced-motion:reduce){.fanarts-showcase-card{transition:none}}
