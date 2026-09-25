@@ -4,7 +4,7 @@ All six episode pages (including replies), fanart comments, gallery cards and ex
 
 ## Database and compatibility
 
-Migration `20260925012948_community_reports.sql` was applied to Cyber-Us Community. The filename matches the version returned by Supabase's migration history. It adds a private RLS-protected ledger and invoker API wrappers around narrowly authorized private functions. It does not change comment editing, submission approval, authentication settings or upload storage policies.
+Migrations `20260925012948_community_reports.sql` and `20260925013844_community_reports_retention.sql` were applied to Cyber-Us Community. The filenames match the versions returned by Supabase's migration history. They add a private RLS-protected ledger and invoker API wrappers around narrowly authorized private functions. They do not change comment editing, submission approval, authentication settings or upload storage policies.
 
 - Verified, non-anonymous, non-banned accounts can report another person's public content.
 - Guests, owners, hidden/deleted targets and pending artwork are rejected on the server.
@@ -12,7 +12,7 @@ Migration `20260925012948_community_reports.sql` was applied to Cyber-Us Communi
 - Existing fanart reports are backfilled; legacy inserts and dismissals mirror into the ledger. New resolutions synchronize the legacy queue. Cached clients remain usable.
 - The staff queue returns no reporter, author-account or moderator-account IDs. Staff hierarchy applies on reads and writes; only the creator handles reports targeting staff.
 - Evidence is a snapshot at submission time. Decisions require a reason, are terminal and stamp actor/time on the server. Evidence and decisions survive content deletion; the ledger has no cascading content/user foreign keys. Reporter UUIDs are retained only in the private ledger for deduplication/audit.
-- Artwork moderation requires a private Storage backup before removing its gallery row. It uses the existing two-month trash retention and daily public-file cleanup retry. It never auto-approves or exposes pending artwork. A failed/uncertain request retains its private backup for safe retry.
+- Artwork moderation requires a private Storage backup before removing its gallery row. It uses the existing two-month trash retention and daily public-file cleanup retry. It never auto-approves or exposes pending artwork. A failed/uncertain request retains its private backup for safe retry. Permanent-purge jobs defer comments/artwork with unresolved reports; expiry resumes after decisions, while report evidence and audit remain private.
 
 ## Verification
 

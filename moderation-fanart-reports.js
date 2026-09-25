@@ -40,7 +40,7 @@
     const reason=el('p');reason.textContent=report.reason;
     const evidence=el('blockquote');evidence.textContent=report.evidence;
     const context=el('p');context.textContent=report.context;
-    li.append(title,meta,reason,evidence,context);
+    li.append(title,meta,reason,el('p','Conteúdo no momento da denúncia:','Content at the time of the report:'),evidence,context);
     if(report.kind==='fanart'&&/^[0-9a-f-]{36}\.(jpg|png|webp)$/i.test(report.context)){
       const image=el('img');image.alt=t('Obra denunciada','Reported artwork');image.loading='lazy';
       image.src=db.storage.from('fanart-public').getPublicUrl(report.context).data.publicUrl;

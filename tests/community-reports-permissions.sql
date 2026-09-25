@@ -121,6 +121,28 @@ BEGIN
  -- Evidence survives deletion (no content FK cascade).
  DELETE FROM public.comments WHERE id=reply;
  IF NOT EXISTS(SELECT 1 FROM community_private.content_reports WHERE target_id=reply::text AND evidence='Report fixture reply') THEN RAISE EXCEPTION 'Evidence lost'; END IF;
+ -- Expired trash must stay while any new-style report remains open.
+ UPDATE public.comments SET status='removed' WHERE id=root;
+ UPDATE public.comments SET purge_after=now()-interval '1 day' WHERE id=root;
+ UPDATE public.fanart_comments SET purge_after=now()-interval '1 day' WHERE id=fc;
+ UPDATE public.fanart_submissions SET purge_after=now()-interval '1 day' WHERE id=art;
+ INSERT INTO community_private.content_reports(kind,target_id,reporter_id,target_author,reason,evidence,context) VALUES
+ ('episode_comment',root::text,staff_member,author,'spam','retention root','episodio-01'),
+ ('fanart_comment',fc::text,staff_member,author,'spam','retention comment',art::text),
+ ('fanart',art::text,staff_member,author,'spam','retention artwork',art::text||'.png');
+ PERFORM * FROM community_private.purge_expired_comments();
+ IF NOT EXISTS(SELECT 1 FROM public.comments WHERE id=root) OR NOT EXISTS(SELECT 1 FROM public.fanart_comments WHERE id=fc) THEN RAISE EXCEPTION 'Open report evidence purged'; END IF;
+ SET LOCAL ROLE service_role;
+ IF EXISTS(SELECT 1 FROM public.trash_due_fanarts() WHERE id=art) THEN RAISE EXCEPTION 'Unresolved artwork scheduled for purge'; END IF;
+ IF public.trash_finalize_fanart(art) THEN RAISE EXCEPTION 'Unresolved artwork purged'; END IF;
+ RESET ROLE;
+ UPDATE community_private.content_reports SET status='dismissed',handled_at=now(),handled_by=creator,resolution_reason='Retention test complete' WHERE reporter_id=staff_member;
+ SET LOCAL ROLE service_role;
+ IF NOT EXISTS(SELECT 1 FROM public.trash_due_fanarts() WHERE id=art) THEN RAISE EXCEPTION 'Resolved artwork not eligible'; END IF;
+ RESET ROLE;
+ PERFORM * FROM community_private.purge_expired_comments();
+ IF EXISTS(SELECT 1 FROM public.comments WHERE id=root) OR EXISTS(SELECT 1 FROM public.fanart_comments WHERE id=fc) THEN RAISE EXCEPTION 'Resolved expired comments not purged'; END IF;
+ IF NOT EXISTS(SELECT 1 FROM community_private.content_reports WHERE reporter_id=staff_member AND target_id=fc::text AND evidence='retention comment') THEN RAISE EXCEPTION 'Audit lost after purge'; END IF;
 END $$;
 ROLLBACK;
 SELECT 'PASS: reporting roles, privacy, duplicates, legacy compatibility, global quota, hierarchy, decisions, retention and rollback' AS result;
