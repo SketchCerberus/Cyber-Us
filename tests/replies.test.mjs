@@ -5,13 +5,13 @@ import {readFileSync} from 'node:fs';
 const source=readFileSync(new URL('../community.js',import.meta.url),'utf8');
 function setup({user='owner',banned=false,fail=false}={}) {
   const elements=[],calls=[],notices=[];
-  const node=(tag,cls,text)=>{const e={tag,className:cls,textContent:text,children:[],events:{},value:'',attributes:{},append(...items){this.children.push(...items);},replaceChildren(...items){this.children=items;},setAttribute(k,v){this.attributes[k]=v;},addEventListener(k,fn){this.events[k]=fn;},focus(){},querySelectorAll(){return this.children.filter(x=>x.tag==='button');}};elements.push(e);return e;};
+  const node=(tag,cls,text)=>{const e={dataset:{},tag,className:cls,textContent:text,children:[],events:{},value:'',attributes:{},append(...items){this.children.push(...items);},replaceChildren(...items){this.children=items;},setAttribute(k,v){this.attributes[k]=v;},addEventListener(k,fn){this.events[k]=fn;},focus(){},querySelectorAll(){return this.children.filter(x=>x.tag==='button');}};elements.push(e);return e;};
   const list=node('ul'),more=node('button');
   const root={id:'root',author_id:'owner',body:'original',created_at:'2026-01-01',parent_id:null,deleted_by_author:false};
   const reply={id:'reply',author_id:'other',body:'reply',created_at:'2026-01-02',parent_id:'root',deleted_by_author:false};
   const state={user:user?{id:user}:null,banned,offset:0};
   const db={from(table){const filters={};const q={select(){return q;},in(){return Promise.resolve({data:[]});},eq(k,v){filters[k]=v;return q;},is(k,v){filters[k]=v;return q;},order(){return q;},range(a,b){calls.push({op:'read',filters,a,b});return Promise.resolve({data:filters.parent_id?[reply]:[root]});},insert(row){calls.push({op:'insert',row});return Promise.resolve({error:fail?new Error('failed'):null});}};return q;},async rpc(name,args){calls.push({op:'rpc',name,args});if(fail)return{error:new Error('failed')};root.deleted_by_author=true;root.body='[removed by author]';return{data:true};}};
-  const context={node,db,state,avatars:null,t:a=>a,dateText:a=>a,episodeRoot:{dataset:{communityEpisode:'episodio-01'}},byId:id=>id==='commentList'?list:more,notice:(_,s)=>notices.push(s),errorText:e=>e.message,window:{confirm:()=>true},busy:(f,v)=>f.querySelectorAll().forEach(b=>b.disabled=v)};
+  const context={node,db,state,avatars:null,pt:()=>true,t:a=>a,dateText:a=>a,episodeRoot:{dataset:{communityEpisode:'episodio-01'}},byId:id=>id==='commentList'?list:more,notice:(_,s)=>notices.push(s),errorText:e=>e.message,window:{confirm:()=>true},busy:(f,v)=>f.querySelectorAll().forEach(b=>b.disabled=v)};
   vm.runInNewContext(source.slice(source.indexOf('  const commentFields'),source.indexOf('  function installEpisodeForms()')),context);
   return {context,elements,calls,notices,list,state,root,load:()=>context.loadComments(false),find:text=>elements.find(e=>e.textContent===text),async fire(e,event='click'){await e.events[event]({preventDefault(){}});await new Promise(r=>setImmediate(r));}};
 }

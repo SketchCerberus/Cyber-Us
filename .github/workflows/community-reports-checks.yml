@@ -1,0 +1,40 @@
+name: Community reports checks
+on:
+  pull_request:
+    paths:
+      - 'community.js'
+      - 'community-reports.css'
+      - 'fanarts-reports.js'
+      - 'fanarts-detail.js'
+      - 'moderation-fanart-reports.js'
+      - 'episodios/*.html'
+      - 'fanarts-galeria.html'
+      - 'moderacao.html'
+      - 'supabase/migrations/*community_reports*'
+      - 'tests/community-reports*'
+      - 'tests/replies.test.mjs'
+      - '.github/workflows/community-reports-checks.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  reports:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax and integration contracts
+        run: |
+          node --check community.js
+          node --check fanarts-detail.js
+          node --check fanarts-reports.js
+          node --check moderation-fanart-reports.js
+          node --test tests/community-reports.test.mjs tests/replies.test.mjs tests/fanarts-enhancements.test.mjs tests/fanart-comment-identity.test.mjs
+      - name: Install pinned browser test dependency
+        run: npm install --no-save --ignore-scripts playwright@1.62.1
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Reporting browser flows and responsive layouts
+        run: node --test tests/community-reports.browser.mjs

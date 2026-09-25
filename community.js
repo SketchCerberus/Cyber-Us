@@ -391,6 +391,7 @@
     const people = new Map((profiles.data || []).map(p => [p.id, p]));
     for (const comment of data) {
       const item = node('li', 'comment-item');
+      if (!comment.deleted_by_author) item.dataset.reportId = comment.id;
       const header = node('div', 'comment-header');
       const person = people.get(comment.author_id);
       if (!comment.deleted_by_author && avatars) header.append(avatars.image(person));

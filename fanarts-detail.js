@@ -174,6 +174,7 @@
     const id=card.dataset.submissionId;
     if(!/^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/i.test(id||''))return;
     selected=card;
+    detail.dataset.submissionId=id;
     title.textContent=caption.querySelector('strong')?.textContent||'';
     syncCredit(card);
     image.src=original.src;image.alt=original.alt;
