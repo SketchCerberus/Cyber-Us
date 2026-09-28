@@ -81,8 +81,8 @@ test('comment reports expose public comment IDs only, require login and remain p
   assert.match(detail,/article\.dataset\.commentId=String\(item\.id\)/);
   assert.doesNotMatch(detail,/article\.dataset\.authorId/);
   assert.match(client,/db\.auth\.getUser\(\)/);
-  assert.match(client,/db\.rpc\('is_banned'\)/);
-  assert.match(client,/\.insert\(\{comment_id:id,reason:/);
+  assert.match(client,/db\.rpc\('submit_content_report'/);
+  assert.match(client,/p_kind:kind,p_target_id:id,p_reason:selected/);
   assert.doesNotMatch(client,/author_id|reporter_id|innerHTML\s*=/);
   assert.match(sql,/ALTER TABLE public\.fanart_comment_reports ENABLE ROW LEVEL SECURITY/);
   assert.match(sql,/REVOKE ALL ON public\.fanart_comment_reports FROM PUBLIC,anon,authenticated/);
@@ -99,11 +99,11 @@ test('staff can triage reports only in the existing moderated workspace',()=>{
   const server=read('moderation-fanart-reports.js');
   const log=read('supabase/migrations/20260921194500_fanart_comment_moderation.sql');
   assert.match(html,/src="moderation-fanart-reports\.js"/);
-  assert.match(server,/moderationFanartsView/);
-  assert.match(server,/db\.rpc\('is_moderator'\)/);
-  assert.match(server,/\.eq\('status','open'\)/);
-  assert.match(server,/status:'dismissed'/);
-  assert.match(server,/db\.rpc\('moderate_fanart_comment'/);
+  assert.match(server,/moderationWorkspace/);
+  assert.match(server,/db\.rpc\('list_content_reports'/);
+  assert.match(server,/p_status:filter.value/);
+  assert.match(server,/'dismiss','Dispensar denúncia'/);
+  assert.match(server,/db\.rpc\('resolve_content_report'/);
   assert.match(log,/fanart_comment_moderation_log/);
   assert.doesNotMatch(server,/innerHTML\s*=/);
 });

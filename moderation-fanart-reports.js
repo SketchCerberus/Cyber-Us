@@ -1,105 +1,105 @@
-/* Staff report queue; public access is blocked by fanart_comment_reports RLS. */
+/* Unified private report queue. RPCs enforce staff hierarchy and return no account IDs. */
 (() => {
   'use strict';
-  const view=document.getElementById('moderationFanartsView');
-  const tab=document.getElementById('moderationFanartsTab');
-  if(!view||!tab||!window.supabase?.createClient)return;
-  const db=window.supabase.createClient('https://znenamrszhjsiztllcit.supabase.co',
-    'sb_publishable_3VRFxwtDuYq4ETHs4xof8g_Fp3GRl6c',
+  const workspace=document.getElementById('moderationWorkspace');
+  if(!workspace||!window.supabase?.createClient)return;
+  const db=window.supabase.createClient('https://znenamrszhjsiztllcit.supabase.co','sb_publishable_3VRFxwtDuYq4ETHs4xof8g_Fp3GRl6c',
     {auth:{flowType:'pkce',detectSessionInUrl:false,persistSession:true,autoRefreshToken:true}});
-  const pt=()=>document.documentElement.lang.startsWith('pt');
-  const t=(br,en)=>pt()?br:en;
-  const local=(node,br,en)=>{node.dataset.pt=br;node.dataset.en=en;node.textContent=t(br,en);return node;};
-  const section=document.createElement('section');section.className='moderation-fanart-reports';
-  const heading=document.createElement('div');heading.className='moderation-selection-heading';
-  const title=local(document.createElement('h3'),'Denúncias de comentários','Comment reports');
-  title.id='fanart-reports-heading';section.setAttribute('aria-labelledby',title.id);
-  const refresh=local(document.createElement('button'),'Atualizar denúncias','Refresh reports');
-  refresh.type='button';refresh.className='community-action';heading.append(title,refresh);
-  const hint=local(document.createElement('p'),'Denúncias são privadas. Dispense denúncias sem infração ou remova comentários com motivo registrado. Até 100 denúncias abertas recentes.',
-    'Reports are private. Dismiss unfounded reports or remove comments with an audited reason. Showing up to 100 recent open reports.');
-  hint.className='community-hint';
-  const status=document.createElement('p');status.className='community-notice';status.setAttribute('role','status');status.setAttribute('aria-live','polite');
-  const list=document.createElement('ol');list.className='moderation-fanart-report-list';
-  section.append(heading,hint,status,list);view.append(section);
-  let allowed=false,ticket=0;
-  const say=(br,en,error=false)=>{status.dataset.pt=br;status.dataset.en=en;status.textContent=t(br,en);status.classList.toggle('error',error);};
-  async function checkStaff(){
-    const current=++ticket;allowed=false;
-    const auth=await db.auth.getUser();
-    if(current!==ticket||auth.error||!auth.data?.user)return false;
-    const permission=await db.rpc('is_moderator');
-    if(current!==ticket)return false;
-    allowed=!permission.error&&permission.data===true;
-    return allowed;
-  }
-  async function load(){
-    const current=++ticket;list.replaceChildren();
-    if(!allowed||view.hidden)return;
-    refresh.disabled=true;say('Carregando denúncias…','Loading reports…');
-    const reports=await db.from('fanart_comment_reports')
-      .select('id,comment_id,reason,status,created_at').eq('status','open')
-      .order('created_at',{ascending:false}).limit(100);
-    if(current!==ticket||!allowed){refresh.disabled=false;return;}
-    if(reports.error){refresh.disabled=false;say('Não foi possível carregar denúncias.','Could not load reports.',true);return;}
-    const ids=[...new Set((reports.data||[]).map(row=>row.comment_id))];
-    const comments=ids.length?await db.from('fanart_comments')
-      .select('id,submission_id,display_name,body').in('id',ids):{data:[],error:null};
-    if(current!==ticket||!allowed){refresh.disabled=false;return;}
-    refresh.disabled=false;
-    if(comments.error){say('Não foi possível carregar comentários denunciados.','Could not load reported comments.',true);return;}
-    const byId=new Map((comments.data||[]).map(item=>[item.id,item]));
-    const rows=reports.data||[];
-    if(!rows.length){say('Nenhuma denúncia em aberto.','No open reports.');return;}
-    say(`${rows.length} denúncia(s) em aberto.`,`${rows.length} open report(s).`);
-    for(const report of rows){
-      const item=byId.get(report.comment_id);
-      const li=document.createElement('li');
-      const meta=document.createElement('p');meta.className='comment-meta';
-      meta.textContent=`#${report.id} · ${new Intl.DateTimeFormat(pt()?'pt-BR':'en',{dateStyle:'medium',timeStyle:'short'}).format(new Date(report.created_at))}`;
-      const reason=document.createElement('p');reason.className='comment-body';reason.textContent=`${t('Motivo','Reason')}: ${report.reason}`;
-      const author=document.createElement('strong');author.textContent=item?.display_name||t('Comentário removido','Removed comment');
-      const body=document.createElement('p');body.className='comment-body';body.textContent=item?.body||t('Este comentário não está mais disponível.','This comment is no longer available.');
-      const dismiss=local(document.createElement('button'),'Dispensar denúncia','Dismiss report');
-      dismiss.type='button';dismiss.className='community-action';
-      dismiss.addEventListener('click',async()=>{
-        if(!allowed||view.hidden)return;
-        const explanation=window.prompt(t('Motivo para dispensar a denúncia (3–500 caracteres):','Reason for dismissing the report (3–500 characters):'));
-        if(explanation===null)return;
-        const why=explanation.trim();
-        if(why.length<3||why.length>500){say('Informe um motivo de 3 a 500 caracteres.','Enter a reason between 3 and 500 characters.',true);return;}
-        if(!window.confirm(t('Dispensar esta denúncia e registrar o motivo?','Dismiss this report and record the reason?')))return;
-        dismiss.disabled=true;
-        const result=await db.from('fanart_comment_reports')
-          .update({status:'dismissed',resolution_reason:why}).eq('id',report.id).eq('status','open');
-        if(result.error){say('Não foi possível dispensar a denúncia.','Could not dismiss report.',true);dismiss.disabled=false;return;}
-        await load();say('Denúncia dispensada e motivo registrado.','Report dismissed and reason recorded.');
-      });
-      li.append(meta,reason,author,body,dismiss);
-      if(item){
-        const remove=local(document.createElement('button'),'Remover comentário','Remove comment');
-        remove.type='button';remove.className='community-action danger';
-        remove.addEventListener('click',async()=>{
-          if(!allowed||view.hidden)return;
-          const explanation=window.prompt(t('Motivo da remoção (3–500 caracteres):','Reason for removal (3–500 characters):'));
-          if(explanation===null)return;
-          const why=explanation.trim();
-          if(why.length<3||why.length>500){say('Informe um motivo de 3 a 500 caracteres.','Enter a reason between 3 and 500 characters.',true);return;}
-          if(!window.confirm(t('Remover este comentário e registrar a ação?','Remove this comment and audit the action?')))return;
-          remove.disabled=true;
-          const result=await db.rpc('moderate_fanart_comment',{p_comment_id:item.id,p_reason:why});
-          if(result.error||result.data!==true){say('Não foi possível remover o comentário.','Could not remove comment.',true);remove.disabled=false;return;}
-          await load();say('Comentário removido e ação registrada.','Comment removed and action logged.');
-        });li.append(remove);
-      }
-      list.append(li);
+  const t=(br,en)=>document.documentElement.lang.startsWith('pt')?br:en;
+  const el=(tag,br,en)=>{const n=document.createElement(tag);if(br!==undefined){n.dataset.pt=br;n.dataset.en=en;n.textContent=t(br,en);}return n;};
+  const panel=el('details');panel.className='content-report-queue';
+  const heading=el('summary','Denúncias da comunidade','Community reports');
+  const hint=el('p','Comentários, respostas e obras. Denúncias sobre membros da equipe ficam restritas ao criador.','Comments, replies and artwork. Reports about staff are restricted to the creator.');
+  const filterLabel=el('label','Situação das denúncias','Report status');
+  const filter=el('select');filter.id='report-status-filter';filterLabel.htmlFor=filter.id;
+  for(const [value,br,en] of [['open','Em aberto','Open'],['dismissed','Dispensadas','Dismissed'],['resolved','Conteúdo moderado','Content moderated']]){const o=el('option',br,en);o.value=value;filter.append(o);}
+  const refresh=el('button','Atualizar denúncias','Refresh reports');refresh.type='button';
+  const status=el('p');status.setAttribute('role','status');status.setAttribute('aria-live','polite');
+  const list=el('ol');
+  const more=el('button','Carregar mais','Load more');more.type='button';more.hidden=true;
+  panel.append(heading,hint,filterLabel,filter,refresh,status,list,more);workspace.prepend(panel);
+  let ticket=0,cursor=null,loading=false;
+  const say=(br,en)=>{status.dataset.pt=br;status.dataset.en=en;status.textContent=t(br,en);};
+  async function removeArtwork(report){
+    const current=await db.from('fanart_gallery').select('image_path').eq('submission_id',report.target_id).maybeSingle();
+    if(current.error)throw current.error;
+    if(!current.data)return null; // Already removed: the server still audits resolution.
+    const path=current.data.image_path;
+    const copy=await db.storage.from('fanart-public').copy(path,path,{destinationBucket:'fanart-trash'});
+    if(copy.error){
+      // A prior attempt may have saved the backup before a network interruption.
+      const existing=await db.storage.from('fanart-trash').download(path);
+      if(existing.error||!existing.data)throw copy.error;
     }
+    return path;
   }
-  tab.addEventListener('click',async()=>{if(await checkStaff()&&!view.hidden)load();});
-  refresh.addEventListener('click',async()=>{if(await checkStaff()&&!view.hidden)load();});
-  db.auth.onAuthStateChange(()=>{allowed=false;++ticket;list.replaceChildren();});
-  new MutationObserver(()=>{
-    section.querySelectorAll('[data-pt][data-en]').forEach(node=>node.textContent=t(node.dataset.pt,node.dataset.en));
-    if(allowed&&!view.hidden)load();
-  }).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+  function render(report){
+    const li=el('li');
+    const title=el('h3',report.kind==='fanart'?'Obra da galeria':report.kind==='episode_comment'?'Comentário de episódio / resposta':'Comentário de fanart',report.kind==='fanart'?'Gallery artwork':report.kind==='episode_comment'?'Episode comment / reply':'Fanart comment');
+    const meta=el('p');meta.textContent=`#${report.id} · ${new Date(report.created_at).toLocaleString(document.documentElement.lang)}`;
+    const reason=el('p');reason.textContent=report.reason;
+    const evidence=el('blockquote');evidence.textContent=report.evidence;
+    const context=el('p');context.textContent=report.context;
+    li.append(title,meta,reason,el('p','Conteúdo no momento da denúncia:','Content at the time of the report:'),evidence,context);
+    if(report.kind==='fanart'&&/^[0-9a-f-]{36}\.(jpg|png|webp)$/i.test(report.context)){
+      const image=el('img');image.alt=t('Obra denunciada','Reported artwork');image.loading='lazy';
+      image.src=db.storage.from('fanart-public').getPublicUrl(report.context).data.publicUrl;
+      image.addEventListener('error',async()=>{if(image.dataset.retried)return;image.dataset.retried='true';
+        const signed=await db.storage.from('fanart-trash').createSignedUrl(report.context,300);
+        if(signed.data?.signedUrl)image.src=signed.data.signedUrl;else image.hidden=true;});li.append(image);
+    }
+    if(report.status!=='open'){
+      const decision=el('p');decision.textContent=report.resolution_reason;li.append(decision);return li;
+    }
+    const form=el('form');
+    const label=el('label','Motivo da decisão (3–500 caracteres)','Decision reason (3–500 characters)');
+    const input=el('textarea');input.id=`report-decision-${report.id}`;label.htmlFor=input.id;input.required=true;input.minLength=3;input.maxLength=500;
+    const actionLabel=el('label','Decisão','Decision');
+    const action=el('select');action.id=`report-action-${report.id}`;actionLabel.htmlFor=action.id;
+    for(const [value,br,en] of [['dismiss','Dispensar denúncia','Dismiss report'],['remove',report.kind==='fanart'?'Retirar obra e guardar na lixeira':'Remover comentário',report.kind==='fanart'?'Remove artwork and keep in trash':'Remove comment']]){const o=el('option',br,en);o.value=value;action.append(o);}
+    const submit=el('button','Confirmar decisão','Confirm decision');submit.type='submit';
+    const feedback=el('p');feedback.setAttribute('role','status');
+    form.append(label,input,actionLabel,action,submit,feedback);li.append(form);
+    form.addEventListener('submit',async event=>{
+      event.preventDefault();if(submit.disabled||!form.reportValidity()||input.value.trim().length<3)return;
+      const why=input.value.trim(),decision=action.value,identity=ticket;
+      submit.disabled=true;input.disabled=true;action.disabled=true;
+      let path=null,committed=false;
+      try{
+        if(decision==='remove'&&report.kind==='fanart')path=await removeArtwork(report);
+        if(identity!==ticket||workspace.hidden)return;
+        const result=await db.rpc('resolve_content_report',{p_id:report.id,p_action:decision,p_reason:why});
+        if(result.error)throw result.error;
+        if(result.data!==true){feedback.textContent=t('A denúncia já foi tratada. Atualize a fila.','Report already handled. Refresh the queue.');return;}
+        committed=true;
+        if(path){const cleanup=await db.storage.from('fanart-public').remove([path]);if(cleanup.error){
+          await load(false);say('Decisão registrada. A limpeza do arquivo público falhou; a rotina diária tentará novamente.','Decision recorded. Public file cleanup failed; the daily job will retry.');return;}}
+        await load(false);say('Decisão registrada com auditoria.','Decision recorded with an audit trail.');
+      }catch(_){feedback.textContent=committed?t('Decisão registrada, mas houve falha na atualização. Atualize a fila.','Decision recorded, but refresh failed. Reload the queue.'):
+        t('Não foi possível confirmar a decisão. Atualize a fila antes de tentar novamente.','Could not confirm the decision. Refresh before retrying.');}
+      finally{submit.disabled=false;input.disabled=false;action.disabled=false;}
+      // Retain any private backup on failure: another moderator may be using it.
+    });
+    return li;
+  }
+  async function load(append=false){
+    if(loading||!panel.open||workspace.hidden)return;
+    loading=true;refresh.disabled=true;more.disabled=true;const current=++ticket;
+    if(!append){cursor=null;list.replaceChildren();}more.hidden=true;
+    say('Carregando denúncias…','Loading reports…');
+    try{
+      const result=await db.rpc('list_content_reports',{p_before:cursor,p_status:filter.value});
+      if(current!==ticket)return;
+      if(result.error)throw result.error;
+      const rows=result.data||[];for(const row of rows)list.append(render(row));
+      cursor=rows.at(-1)?.id||cursor;more.hidden=rows.length<50;
+      say(list.children.length?'Denúncias carregadas.':'Nenhuma denúncia nesta situação.',list.children.length?'Reports loaded.':'No reports with this status.');
+    }catch(_){if(current===ticket)say('Não foi possível carregar as denúncias. Verifique seu acesso e tente novamente.','Could not load reports. Check your access and try again.');}
+    finally{loading=false;refresh.disabled=false;more.disabled=false;}
+  }
+  panel.addEventListener('toggle',()=>{if(panel.open)load(false);});refresh.addEventListener('click',()=>load(false));
+  filter.addEventListener('change',()=>{++ticket;loading=false;load(false);});more.addEventListener('click',()=>load(true));
+  db.auth.onAuthStateChange(()=>{++ticket;list.replaceChildren();panel.open=false;cursor=null;});
+  new MutationObserver(()=>{panel.querySelectorAll('[data-pt][data-en]').forEach(n=>n.textContent=t(n.dataset.pt,n.dataset.en));})
+    .observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
 })();
