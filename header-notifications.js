@@ -212,11 +212,8 @@
   new MutationObserver(syncLanguage).observe(document.documentElement,
     {attributes: true, attributeFilter: ['lang']});
 
-  function start(sdk) {
-    db = sdk.createClient('https://znenamrszhjsiztllcit.supabase.co',
-      'sb_publishable_3VRFxwtDuYq4ETHs4xof8g_Fp3GRl6c',
-      {auth: {flowType: 'pkce', detectSessionInUrl: false, persistSession: true,
-        autoRefreshToken: false}});
+  function start(client) {
+    db = client;
     async function verify() {
       const ticket = ++identity;
       ++countRequest;
@@ -242,13 +239,9 @@
     });
     verify();
   }
-  if (window.supabase?.createClient) start(window.supabase);
-  else {
-    // header-account.js creates the shared SDK tag on pages without a pinned SDK.
-    const sdk = document.querySelector('script[src*="@supabase/supabase-js@"]');
-    sdk?.addEventListener('load', () => {
-      if (window.supabase?.createClient) start(window.supabase);
-    }, {once: true});
-  }
+  // The account badge owns SDK loading and the single header client.
+  window.CyberUsHeaderClient?.then(client => {
+    if (client) start(client);
+  });
   syncLanguage();
 })();
