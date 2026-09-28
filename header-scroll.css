@@ -17,7 +17,7 @@ html{scroll-padding-top:5rem}
 .site-header.scroll-header a:focus-visible,.site-header.scroll-header button:focus-visible{
   outline:3px solid #7dd3fc;outline-offset:3px;
 }
-.site-header.scroll-header nav a[aria-current="page"]{color:#f4f5f7;font-weight:800}
+.site-header.scroll-header nav a[aria-current="page"]{color:var(--text,#f4f5f7);font-weight:800}
 .site-header.scroll-header nav a[aria-current="page"]::after{
   content:"";display:block;height:2px;margin-top:.2rem;border-radius:2px;background:var(--accent,#e63946)
 }

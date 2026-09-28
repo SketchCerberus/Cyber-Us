@@ -76,11 +76,16 @@
     else link.textContent = pt() ? guestPT : guestEN;
   }).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
 
+  // Resolve once so header widgets share the same authentication client.
+  let resolveHeaderClient;
+  window.CyberUsHeaderClient = new Promise(resolve => { resolveHeaderClient = resolve; });
+
   function start(sdk) {
-    // Separate read-only client: do not process auth callbacks or sign users in/out here.
+    // Shared header client: do not process auth callbacks or sign users in/out here.
     const db = sdk.createClient(project, publishableKey, {
       auth: { persistSession: true, autoRefreshToken: false, detectSessionInUrl: false }
     });
+    resolveHeaderClient(db);
     async function refresh() {
       const current = ++request;
       try {
@@ -141,9 +146,9 @@
     }
     sdkScript.addEventListener('load', () => {
       if (window.supabase?.createClient) start(window.supabase);
-      else guest(); // Restore the sign-in link if the SDK did not initialize.
+      else { resolveHeaderClient(null); guest(); } // Keep the sign-in link usable.
     }, { once: true });
-    sdkScript.addEventListener('error', guest, { once: true });
+    sdkScript.addEventListener('error', () => { resolveHeaderClient(null); guest(); }, { once: true });
     // On unavailable services the original guest link remains usable.
   }
 
