@@ -5,7 +5,7 @@
   if (!gallery) return;
   const pt=()=>document.documentElement.lang.startsWith('pt');
   const t=(a,b)=>pt()?a:b;
-  const db=window.supabase?.createClient?.('https://znenamrszhjsiztllcit.supabase.co',
+  const db=window.CyberUsGetClient?.() || window.supabase?.createClient?.('https://znenamrszhjsiztllcit.supabase.co',
     'sb_publishable_3VRFxwtDuYq4ETHs4xof8g_Fp3GRl6c',
     {auth:{flowType:'pkce',detectSessionInUrl:false,persistSession:true,autoRefreshToken:true}});
   const detail=document.createElement('section');
@@ -31,6 +31,12 @@
   const commentHeading=document.createElement('h3');
   commentHeading.dataset.pt='Comentários';commentHeading.dataset.en='Comments';
   const comments=document.createElement('div');comments.className='fanarts-comments';
+  const moreComments=document.createElement('button');moreComments.type='button';moreComments.className='fanarts-view-work';moreComments.hidden=true;
+  moreComments.dataset.pt='Carregar mais comentários';moreComments.dataset.en='Load more comments';
+  let commentOffset=0;
+  moreComments.addEventListener('click',()=>{
+    if(selected&&!moreComments.disabled)loadComments(selected.dataset.submissionId,request,true);
+  });
   const form=document.createElement('form');form.className='fanarts-comment-form';
   const identityHint=document.createElement('p');identityHint.className='fanarts-hint';
   identityHint.dataset.pt='Seu nome de usuário será usado automaticamente. Se ainda não tiver um, será usado o nome do perfil.';
@@ -51,7 +57,7 @@
   commentNote.dataset.pt='Para votar ou comentar, entre com uma conta de e-mail confirmado. Até 10 comentários por hora; comentários podem ser removidos pela moderação.';
   commentNote.dataset.en='Sign in with a verified email to vote or comment. Up to 10 comments per hour; moderation may remove comments.';
   form.append(identityHint,bodyLabel,body,consent,submit,commentNote);
-  community.append(communityHeading,interactionStatus,votes,commentHeading,comments,form);
+  community.append(communityHeading,interactionStatus,votes,commentHeading,comments,moreComments,form);
   header.append(title,close);detail.append(header,image,credit,community);gallery.after(detail);
   let selected=null,request=0,voteCounts={upvotes:0,downvotes:0};
   function setStatus(br,en,error=false) {
@@ -99,22 +105,31 @@
     up.textContent=t(up.dataset.pt,up.dataset.en)+` (${voteCounts.upvotes})`;
     down.textContent=t(down.dataset.pt,down.dataset.en)+` (${voteCounts.downvotes})`;
   }
-  async function loadComments(id,token) {
+  async function loadComments(id,token,append=false) {
     if(!db)return;
-    const {data,error}=await db.from('fanart_comments')
+    moreComments.disabled=true;
+    const start=append?commentOffset:0;
+    let result;
+    try {result=await db.from('fanart_comments')
       .select('id,display_name,body,created_at').eq('submission_id',id)
-      .order('created_at',{ascending:false}).limit(30);
+      .order('created_at',{ascending:false}).order('id',{ascending:false}).range(start,start+29);
+    }catch(error){result={error};}
     if(token!==request)return;
-    comments.replaceChildren();
-    if(error){form.hidden=true;setStatus('Comentários indisponíveis.','Comments are unavailable.',true);return;}
+    const {data,error}=result;
+    moreComments.disabled=false;
+    if(error){moreComments.hidden=false;setStatus('Comentários indisponíveis. Tente novamente.','Comments are unavailable. Please retry.',true);return;}
+    if(!append)comments.replaceChildren();
+    commentOffset=start+(data?.length||0);moreComments.hidden=(data?.length||0)<30;
     form.hidden=false;
     if(!data?.length){
+      if(append)return;
       const empty=document.createElement('p');empty.className='fanarts-hint';
       empty.dataset.pt='Ainda não há comentários. Seja a primeira pessoa a comentar.';
       empty.dataset.en='No comments yet. Be the first to comment.';
       empty.textContent=t(empty.dataset.pt,empty.dataset.en);comments.append(empty);return;
     }
     for(const item of data){
+      if([...comments.children].some(node=>node.dataset.commentId===String(item.id)))continue;
       const article=document.createElement('article');article.className='fanarts-comment';
       // Only the public comment ID is surfaced for reporting; NEVER author_id.
       article.dataset.commentId=String(item.id);
@@ -128,6 +143,7 @@
   async function loadInteractions() {
     if(!selected)return;
     const token=++request,id=selected.dataset.submissionId;
+    commentOffset=0;moreComments.hidden=true;comments.replaceChildren();
     setStatus('Carregando interações…','Loading interactions…');
     if(!db){votes.hidden=form.hidden=true;setStatus('Interações indisponíveis.','Interactions unavailable.',true);return;}
     votes.hidden=form.hidden=false;

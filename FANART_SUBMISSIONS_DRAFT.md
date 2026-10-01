@@ -1,3 +1,5 @@
+> Estado atual (30/09/2026): newsletter e publicação de fanarts têm páginas e fluxos disponíveis. Referências abaixo a inscrição/envio fechado descrevem etapas históricas. Consulte SITE_STATUS.md para limitações verificadas; a newsletter incorporada permanece em português.
+
 # Cyber-Us — fanarts: envio privado e fila de moderação
 
 ## O que foi implementado

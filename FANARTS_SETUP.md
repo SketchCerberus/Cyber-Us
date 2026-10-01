@@ -1,3 +1,5 @@
+> Estado atual (30/09/2026): newsletter e publicação de fanarts têm páginas e fluxos disponíveis. Referências abaixo a inscrição/envio fechado descrevem etapas históricas. Consulte SITE_STATUS.md para limitações verificadas; a newsletter incorporada permanece em português.
+
 # Cyber-Us // Fanarts — estrutura e requisitos para lançamento
 
 Esta branch implementa **somente o esqueleto visual** da galeria. Não publicar nem integrar à `main` sem autorização explícita. A implementação é independente do PR #3 (comunidade), que permanece em pausa, e não altera Supabase, newsletter, armazenamento ou serviços pagos.

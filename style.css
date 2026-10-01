@@ -211,7 +211,7 @@ footer strong { color: var(--text); margin-right: 14px; }
   footer { flex-direction: column; }
 }
 
-/* New newsletter teaser; no email collection is enabled until the service is configured. */
+/* Newsletter invitation; subscriptions are handled by the external form. */
 .newsletter-teaser{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(230px,.8fr);align-items:center;gap:clamp(1.5rem,5vw,4rem);scroll-margin-top:5rem}
 .newsletter-teaser>div:first-child>p:not(.eyebrow){max-width:600px;color:var(--muted);font-size:1.06rem}
 .newsletter-teaser .button{margin-top:.85rem}
@@ -223,7 +223,7 @@ footer strong { color: var(--text); margin-right: 14px; }
 @media(max-width:800px){.newsletter-teaser{grid-template-columns:1fr}.newsletter-teaser-art{min-height:205px}.footer-links{flex-wrap:wrap}}
 @media(prefers-reduced-motion:reduce){.button{transition:none}}
 
-/* Fanart gallery teaser: links only, no submission or image collection. */
+/* Fanart gallery invitation; uploads live on the dedicated Submit page. */
 .fanarts-teaser{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(230px,.9fr);align-items:center;gap:clamp(1.5rem,5vw,4rem);scroll-margin-top:5rem}
 .fanarts-teaser-copy>p:not(.eyebrow){max-width:625px;color:var(--muted)}
 .fanarts-teaser .button{margin-top:.8rem}
@@ -241,3 +241,11 @@ footer strong { color: var(--text); margin-right: 14px; }
 .site-header .account-access:hover{background:var(--accent);color:#fff}
 .site-header .account-access:focus-visible{outline:3px solid #7dd3fc;outline-offset:3px}
 @media(max-width:650px){.site-header nav{width:100%;gap:.6rem .85rem}.site-header .account-access{display:inline-flex}}
+
+/* A keyboard shortcut and real artwork from the published first episode. */
+.skip{position:absolute;left:1rem;top:-5rem;z-index:100;padding:.65rem 1rem;background:var(--accent-2);color:var(--bg)}
+.skip:focus{top:1rem}
+.hero-art{display:block;overflow:hidden;min-height:0;aspect-ratio:5/6}
+.hero-art img{display:block;width:100%;height:100%;object-fit:cover;object-position:top}
+.hero-art:focus-visible,.skip:focus-visible{outline:3px solid var(--accent-2);outline-offset:4px}
+@media(max-width:800px){.hero-art{max-width:440px;width:100%;margin:auto;min-height:0}}

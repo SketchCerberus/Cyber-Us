@@ -1,10 +1,11 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
+  <script defer src="supabase-client.js"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Galeria de fanarts Cyber-Us. Envio sujeito a autenticação e revisão.">
-  <title>Cyber-Us — Galeria de Fanarts</title>
+  <meta name="description" content="Compartilhe fanarts de Cyber-Us e conheça a arte da comunidade. Publicação após revisão." data-description-pt="Compartilhe fanarts de Cyber-Us e conheça a arte da comunidade. Publicação após revisão." data-description-en="Share Cyber-Us fanart and explore community artwork. Publication follows review.">
+  <title data-title-pt="Cyber-Us — Fanarts" data-title-en="Cyber-Us — Fanarts">Cyber-Us — Fanarts</title>
   <link rel="stylesheet" href="reader.css">
   <link rel="stylesheet" href="fanarts.css">
   <link rel="stylesheet" href="fanarts-showcase.css">
@@ -16,12 +17,24 @@
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
   <script defer src="fanarts-gallery.js"></script>
   <script defer src="fanarts-spoilers.js"></script>
+  <script defer src="site-meta.js"></script>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://sketchcerberus.github.io/Cyber-Us/fanarts.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Cyber-Us">
+  <meta property="og:url" content="https://sketchcerberus.github.io/Cyber-Us/fanarts.html">
+  <meta property="og:title" content="Cyber-Us — Fanarts">
+  <meta property="og:description" content="Compartilhe fanarts de Cyber-Us e conheça a arte da comunidade. Publicação após revisão." data-description-pt="Compartilhe fanarts de Cyber-Us e conheça a arte da comunidade. Publicação após revisão." data-description-en="Share Cyber-Us fanart and explore community artwork. Publication follows review.">
+  <meta property="og:image" content="https://sketchcerberus.github.io/Cyber-Us/assets/episodes/ep01/en/001.jpg">
+  <meta property="og:image:alt" content="Cyber-Us — official comic artwork">
+  <meta property="og:locale" content="pt_BR">
+  <meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
   <a class="skip" href="#main" data-pt="Pular para o conteúdo" data-en="Skip to content">Pular para o conteúdo</a>
   <header class="site-header">
-    <a class="logo" href="index.html" aria-label="Cyber-Us — início">CYBER <span>US</span></a>
-    <nav aria-label="Navegação principal">
+    <a class="logo" href="index.html" aria-label="Cyber-Us — início" data-label-pt="Cyber-Us — início" data-label-en="Cyber-Us — home">CYBER <span>US</span></a>
+    <nav aria-label="Navegação principal" data-label-pt="Navegação principal" data-label-en="Main navigation">
       <a href="index.html" data-pt="Início" data-en="Home">Início</a>
       <a href="catalogo.html" data-pt="Episódios" data-en="Episodes">Episódios</a>
       <a href="newsletter.html">Newsletter</a>

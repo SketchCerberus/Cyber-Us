@@ -2,7 +2,7 @@
 (() => {
   'use strict';
   if(!window.supabase?.createClient)return;
-  const db=window.supabase.createClient('https://znenamrszhjsiztllcit.supabase.co','sb_publishable_3VRFxwtDuYq4ETHs4xof8g_Fp3GRl6c',
+  const db=window.CyberUsGetClient?.() || window.supabase.createClient('https://znenamrszhjsiztllcit.supabase.co','sb_publishable_3VRFxwtDuYq4ETHs4xof8g_Fp3GRl6c',
     {auth:{flowType:'pkce',detectSessionInUrl:false,persistSession:true,autoRefreshToken:true}});
   const t=(br,en)=>document.documentElement.lang.startsWith('pt')?br:en;
   const local=(tag,br,en)=>{const n=document.createElement(tag);n.dataset.pt=br;n.dataset.en=en;n.textContent=t(br,en);return n;};

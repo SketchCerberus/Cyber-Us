@@ -3,7 +3,7 @@
   'use strict';
   const workspace=document.getElementById('moderationWorkspace');
   if(!workspace||!window.supabase?.createClient)return;
-  const db=window.supabase.createClient('https://znenamrszhjsiztllcit.supabase.co',
+  const db=window.CyberUsGetClient?.() || window.supabase.createClient('https://znenamrszhjsiztllcit.supabase.co',
     'sb_publishable_3VRFxwtDuYq4ETHs4xof8g_Fp3GRl6c',
     {auth:{flowType:'pkce',detectSessionInUrl:false,persistSession:true,autoRefreshToken:true}});
   const pt=()=>document.documentElement.lang.startsWith('pt');

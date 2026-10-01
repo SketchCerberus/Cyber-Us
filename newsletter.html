@@ -1,21 +1,34 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
+  <script defer src="supabase-client.js"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Newsletter oficial da Cyber-Us: novidades da HQ, episódios e bastidores. Inscrições gratuitas com confirmação por e-mail.">
-  <title>Cyber-Us — Newsletter</title>
+  <meta name="description" content="Assine a newsletter de Cyber-Us para receber novidades e bastidores, com confirmação por e-mail." data-description-pt="Assine a newsletter de Cyber-Us para receber novidades e bastidores, com confirmação por e-mail." data-description-en="Subscribe to Cyber-Us episode news and behind-the-scenes updates, with email confirmation.">
+  <title data-title-pt="Cyber-Us — Newsletter" data-title-en="Cyber-Us — Newsletter">Cyber-Us — Newsletter</title>
   <link rel="stylesheet" href="reader.css">
   <link rel="stylesheet" href="newsletter.css">
   <link rel="stylesheet" href="header-scroll.css">
   <script defer src="reader.js"></script>
   <script defer src="header-scroll.js"></script>
+  <script defer src="site-meta.js"></script>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://sketchcerberus.github.io/Cyber-Us/newsletter.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Cyber-Us">
+  <meta property="og:url" content="https://sketchcerberus.github.io/Cyber-Us/newsletter.html">
+  <meta property="og:title" content="Cyber-Us — Newsletter">
+  <meta property="og:description" content="Assine a newsletter de Cyber-Us para receber novidades e bastidores, com confirmação por e-mail." data-description-pt="Assine a newsletter de Cyber-Us para receber novidades e bastidores, com confirmação por e-mail." data-description-en="Subscribe to Cyber-Us episode news and behind-the-scenes updates, with email confirmation.">
+  <meta property="og:image" content="https://sketchcerberus.github.io/Cyber-Us/assets/episodes/ep01/en/001.jpg">
+  <meta property="og:image:alt" content="Cyber-Us — official comic artwork">
+  <meta property="og:locale" content="pt_BR">
+  <meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
   <a class="skip" href="#main" data-pt="Pular para o conteúdo" data-en="Skip to content">Pular para o conteúdo</a>
   <header class="site-header">
-    <a class="logo" href="index.html" aria-label="Cyber-Us — início">CYBER <span>US</span></a>
-    <nav aria-label="Navegação principal">
+    <a class="logo" href="index.html" aria-label="Cyber-Us — início" data-label-pt="Cyber-Us — início" data-label-en="Cyber-Us — home">CYBER <span>US</span></a>
+    <nav aria-label="Navegação principal" data-label-pt="Navegação principal" data-label-en="Main navigation">
       <a href="index.html" data-pt="Início" data-en="Home">Início</a>
       <a href="catalogo.html" data-pt="Episódios" data-en="Episodes">Episódios</a>
       <a class="account-access" href="comunidade.html" data-pt="Entrar / Cadastre-se" data-en="Sign in / Sign up">Entrar / Cadastre-se</a>
@@ -47,7 +60,8 @@
         <p id="newsletter-availability" class="newsletter-muted" data-pt="Inscreva-se no formulário da Transmissão de Cyber-Us e confirme pelo link enviado ao seu e-mail." data-en="Subscribe using the Transmissão de Cyber-Us form and confirm through the link sent to your email.">Inscreva-se no formulário da Transmissão de Cyber-Us e confirme pelo link enviado ao seu e-mail.</p>
       </div>
       <div class="newsletter-form-preview" aria-describedby="newsletter-availability">
-        <iframe class="newsletter-embed" title="Inscrição — Transmissão de Cyber-Us" src="https://5e82b572.sibforms.com/v2/serve/MUIFABNLnsSJ9EBt64KiNlXkY5DWp_ymh0vM6ZA3CKPU1jGvbfcUamSeN8-fWOlrPyzup5wBOngTemHKj4k3wG9wg8JY5qgOQIOI85MvAH0VKFv0RQOS-bC-5_aFI11mFc-06yoghr6tVP1G3CeQOx127NtTbsyuWm3IiMOnS-LGxpwyyTunrp7SzkTexcXndxCqFjm7wEmx7Of6xg==" loading="eager" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+        <p class="newsletter-muted" data-pt="O formulário de inscrição abaixo está em português." data-en="The form below is currently in Portuguese. Enter your email and choose ASSINAR (Subscribe), then confirm using the link sent to your inbox.">O formulário de inscrição abaixo está em português.</p>
+        <iframe class="newsletter-embed" title="Inscrição — Transmissão de Cyber-Us" data-frame-title-pt="Inscrição — Transmissão de Cyber-Us" data-frame-title-en="Subscribe — Transmissão de Cyber-Us (Portuguese form)" src="https://5e82b572.sibforms.com/v2/serve/MUIFABNLnsSJ9EBt64KiNlXkY5DWp_ymh0vM6ZA3CKPU1jGvbfcUamSeN8-fWOlrPyzup5wBOngTemHKj4k3wG9wg8JY5qgOQIOI85MvAH0VKFv0RQOS-bC-5_aFI11mFc-06yoghr6tVP1G3CeQOx127NtTbsyuWm3IiMOnS-LGxpwyyTunrp7SzkTexcXndxCqFjm7wEmx7Of6xg==" loading="eager" referrerpolicy="strict-origin-when-cross-origin"></iframe>
         <a class="newsletter-signup-link" href="https://5e82b572.sibforms.com/serve/MUIFABNLnsSJ9EBt64KiNlXkY5DWp_ymh0vM6ZA3CKPU1jGvbfcUamSeN8-fWOlrPyzup5wBOngTemHKj4k3wG9wg8JY5qgOQIOI85MvAH0VKFv0RQOS-bC-5_aFI11mFc-06yoghr6tVP1G3CeQOx127NtTbsyuWm3IiMOnS-LGxpwyyTunrp7SzkTexcXndxCqFjm7wEmx7Of6xg==" data-pt="Abrir formulário em outra página →" data-en="Open form on a separate page →">Abrir formulário em outra página →</a>
         <p class="newsletter-muted" data-pt="Preencha o formulário acima e confirme sua inscrição por e-mail. Se ele não carregar, use o link para abrir em outra página." data-en="Complete the form above and confirm your subscription by email. If it does not load, use the link to open it on a separate page.">Preencha o formulário acima e confirme sua inscrição por e-mail. Se ele não carregar, use o link para abrir em outra página.</p>
         <details class="newsletter-privacy">

@@ -4,7 +4,7 @@
   const queue=document.getElementById('moderationFanartQueue');
   const view=document.getElementById('moderationFanartsView');
   if(!queue||!view||!window.supabase?.createClient)return;
-  const db=window.supabase.createClient('https://znenamrszhjsiztllcit.supabase.co','sb_publishable_3VRFxwtDuYq4ETHs4xof8g_Fp3GRl6c',{auth:{flowType:'pkce',detectSessionInUrl:false,persistSession:true,autoRefreshToken:true}});
+  const db=window.CyberUsGetClient?.() || window.supabase.createClient('https://znenamrszhjsiztllcit.supabase.co','sb_publishable_3VRFxwtDuYq4ETHs4xof8g_Fp3GRl6c',{auth:{flowType:'pkce',detectSessionInUrl:false,persistSession:true,autoRefreshToken:true}});
   const t=(br,en)=>document.documentElement.lang.startsWith('pt')?br:en;
   const status=document.getElementById('moderationFanartQueueStatus');
   const notify=(br,en,error=false)=>{if(status){status.textContent=t(br,en);status.classList.toggle('error',error);}};

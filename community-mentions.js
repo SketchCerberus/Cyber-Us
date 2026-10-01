@@ -4,7 +4,7 @@
   if(!window.supabase?.createClient)return;
   const base=document.currentScript?.src||document.baseURI;
   const css=document.createElement('link');css.rel='stylesheet';css.href=new URL('community-mention-finder.css',base).href;document.head.append(css);
-  const db=window.supabase.createClient('https://znenamrszhjsiztllcit.supabase.co',
+  const db=window.CyberUsGetClient?.() || window.supabase.createClient('https://znenamrszhjsiztllcit.supabase.co',
     'sb_publishable_3VRFxwtDuYq4ETHs4xof8g_Fp3GRl6c',
     {auth:{flowType:'pkce',detectSessionInUrl:false,persistSession:true,autoRefreshToken:true}});
   const pt=()=>document.documentElement.lang.startsWith('pt');

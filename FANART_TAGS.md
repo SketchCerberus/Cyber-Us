@@ -1,16 +1,9 @@
-# Fanart tags
+# Tags de fanarts
 
-Add `tags: ['Nome do personagem', 'Arte digital', 'Neon']` to each approved entry
-in `approvedFanarts` in fanarts-showcase.js. Keep up to eight tags per artwork,
-each with up to 32 characters. Duplicates ignore case and accents. No artwork or
-artist was invented to populate the gallery.
+O formulário publica as tags permitidas junto com a submissão. A galeria consulta obras publicadas no Supabase, em lotes de 100, e oferece Carregar mais.
 
-Search matches artist names and tags without requiring accents or matching case.
-Click tags in the filter bar or beneath an artwork. Multiple selected tags must
-all match. Clear filters restores the gallery. Artwork without tags still appears
-in the full gallery and artist searches. Filters affect the gallery, not the
-decorative rotating showcase. The empty gallery explains why search is disabled.
+Busca por artista, título e tags ignora caixa e acentos. Várias tags selecionadas devem coincidir; os filtros permanecem ao carregar mais obras. A busca cobre as obras já carregadas. O estado vazio e falhas de carregamento têm mensagens próprias.
 
-Submissions remain closed; this adds discovery for approved editorial entries.
-Tests cover normalization, limits, combined search, filter controls, empty results,
-reset, localization and failed-image removal counts.
+A interface traduz os rótulos PT/EN. A chave de banco `Óete` é exibida como `Oeté` e ambas as grafias são reconhecidas na busca, para preservar obras antigas e as restrições existentes do banco. Malware é a grafia oficial.
+
+Os testes em tests/fanarts-tags.test.mjs cobrem a grafia, traduções, paginação, filtros combinados, estados vazios e falhas. Nunca inventar artistas ou obras para preencher a galeria.

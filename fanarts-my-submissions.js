@@ -23,7 +23,7 @@
     node.dataset.pt=br; node.dataset.en=en; node.textContent=t(br,en);
   };
   copy(heading,'Meus envios','My submissions');
-  copy(info,'Acompanhe apenas as suas obras. “Solicitar retirada” avisa a moderação; a exclusão do arquivo e de possíveis cópias publicadas é feita manualmente.','Only you can see your submissions. “Request withdrawal” alerts moderation; the file and any published copies must be removed manually.');
+  copy(info,'Acompanhe apenas as suas obras. “Solicitar retirada” avisa a moderação. Após a revisão, a equipe conclui a remoção da obra e dos arquivos; eventuais falhas exigem limpeza manual.','Only you can see your submissions. “Request withdrawal” alerts moderation. After review, staff complete removal of the artwork and files; cleanup failures require manual action.');
   let sequence=0;
   const states={
     pending:['Aguardando análise','Awaiting review'],

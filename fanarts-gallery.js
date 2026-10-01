@@ -6,7 +6,7 @@
   if (!gallery || !empty || !window.supabase?.createClient) return;
   const pt=()=>document.documentElement.lang.startsWith('pt');
   const t=(br,en)=>pt()?br:en;
-  const db=window.supabase.createClient('https://znenamrszhjsiztllcit.supabase.co',
+  const db=window.CyberUsGetClient?.() || window.supabase.createClient('https://znenamrszhjsiztllcit.supabase.co',
     'sb_publishable_3VRFxwtDuYq4ETHs4xof8g_Fp3GRl6c',
     {auth:{flowType:'pkce',detectSessionInUrl:false,persistSession:true,autoRefreshToken:true}});
   const status=document.createElement('p');
@@ -19,16 +19,24 @@
   const searchInput=document.createElement('input');searchInput.id='fanarts-search-query';searchInput.type='search';
   searchInput.maxLength=100;searchInput.disabled=true;
   const filterHint=document.createElement('p');filterHint.className='fanarts-search-hint';
-  filterHint.dataset.pt='Selecione tags para combinar os filtros.';
-  filterHint.dataset.en='Select tags to combine filters.';
+  filterHint.dataset.pt='Selecione tags para combinar os filtros. A busca considera as obras carregadas; use Carregar mais para incluir obras anteriores.';
+  filterHint.dataset.en='Select tags to combine filters. Search covers loaded artwork; use Load more to include older work.';
   const tagFilters=document.createElement('div');tagFilters.className='fanarts-tag-filters';
   searchLabel.textContent=t(searchLabel.dataset.pt,searchLabel.dataset.en);
   filterHint.textContent=t(filterHint.dataset.pt,filterHint.dataset.en);
   search.append(searchLabel,searchInput,filterHint,tagFilters);status.before(search);
-  let works=[],grid=null;
+  let works=[],grid=null,offset=0,loading=false;
+  const more=document.createElement('button');more.type='button';more.className='fanarts-view-work';more.hidden=true;
+  more.textContent=t('Carregar mais obras','Load more artwork');
+  gallery.append(more);
+  more.addEventListener('click',()=>load(true));
   const selectedTags=new Set();
   const normalize=value=>String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
   const tagVocabulary=new Set(['Auará','Kaubi','Óete','Sistema','Trojan','Malware','OC','Ships','Crossover','Grupo','Swap','E se...','Fofo','Sério','Chibi','AU','Humor','Colaboração','WIP','Spoiler']);
+  const tagLabel=tag=>({'Óete':'Oeté','Grupo':t('Grupo','Group'),'E se...':t('E se...','What if...'),
+    'Fofo':t('Fofo','Cute'),'Sério':t('Sério','Serious'),'Ships':t('Ships / casais','Ships / pairings'),
+    'OC':t('Personagem original','Original character'),'AU':t('Universo alternativo (AU)','Alternate universe (AU)'),
+    'WIP':t('Em progresso (WIP)','Work in progress (WIP)'), 'Colaboração':t('Colaboração','Collaboration')}[tag]||tag);
   function accent(work) {
     if (work.accent!=='random') return work.accent;
     const colors=['blue','red','green'];
@@ -42,7 +50,7 @@
     grid.querySelectorAll('.fanarts-gallery-work').forEach(figure=>{
       const work=works.find(item=>item.submission_id===figure.dataset.submissionId);
       if (!work) return;
-      const text=normalize([work.title,work.artist_name,...work.tags].join(' '));
+      const text=normalize([work.title,work.artist_name,...work.tags,...work.tags.map(tagLabel)].join(' '));
       const match=(!query||text.includes(query)) && [...selectedTags].every(tag=>work.tags.includes(tag));
       figure.hidden=!match;if(match)shown++;
     });
@@ -51,14 +59,11 @@
   }
   searchInput.addEventListener('input',applyFilters);
   function rebuildTags() {
-    selectedTags.clear();tagFilters.replaceChildren();
+    tagFilters.replaceChildren();
     const tags=[...new Set(works.flatMap(work=>work.tags))].sort((a,b)=>a.localeCompare(b));
-    const tagLabel=tag=>({'AU':t('Universo alternativo (AU)','Alternate universe (AU)'),
-      'WIP':t('Em progresso (WIP)','Work in progress (WIP)'),
-      'Colaboração':t('Colaboração','Collaboration')}[tag]||tag);
     for(const tag of tags){
       const button=document.createElement('button');button.type='button';button.className='fanarts-tag';
-      button.textContent=tagLabel(tag);button.dataset.tag=tag;button.setAttribute('aria-pressed','false');
+      button.textContent=tagLabel(tag);button.dataset.tag=tag;button.setAttribute('aria-pressed',String(selectedTags.has(tag)));
       button.addEventListener('click',()=>{
         if(selectedTags.has(tag))selectedTags.delete(tag);else selectedTags.add(tag);
         button.setAttribute('aria-pressed',String(selectedTags.has(tag)));applyFilters();
@@ -66,6 +71,7 @@
     }
   }
   function copy() {
+    more.textContent=t('Carregar mais obras','Load more artwork');
     const title=gallery.querySelector('#gallery-title');
     const intro=gallery.querySelector('.fanarts-section-heading > p');
     if(works.length){
@@ -81,26 +87,32 @@
       if(image)image.alt=t(`Fanart “${work.title}”, de ${work.artist_name}`,`Fanart “${work.title}” by ${work.artist_name}`);
       if(by)by.firstChild.textContent=t('Por ','By ');
     });
-    tagFilters.querySelectorAll('button[data-tag]').forEach(button=>{
+    gallery.querySelectorAll('[data-tag]').forEach(button=>{
       const tag=button.dataset.tag;
-      button.textContent=({'AU':t('Universo alternativo (AU)','Alternate universe (AU)'),
-        'WIP':t('Em progresso (WIP)','Work in progress (WIP)'),
-        'Colaboração':t('Colaboração','Collaboration')}[tag]||tag);
+      button.textContent=tagLabel(tag);
     });
   }
-  async function load() {
+  async function load(append=false) {
+    if(loading)return;
+    loading=true;more.disabled=true;
     status.textContent=t('Carregando galeria…','Loading gallery…');
-    const result=await db.from('fanart_gallery')
+    let result;
+    try {result=await db.from('fanart_gallery')
       .select('submission_id,title,artist_name,artist_link,region,accent,image_path,published_at,tags')
-      .order('published_at',{ascending:false}).limit(100);
-    if(result.error){status.textContent=t('Não foi possível carregar a galeria.','Could not load the gallery.');status.classList.add('error');return;}
+      .order('published_at',{ascending:false}).order('submission_id',{ascending:false}).range(append?offset:0,(append?offset:0)+99);
+    }catch(error){result={error};}
+    loading=false;more.disabled=false;
+    if(result.error){status.textContent=t('Não foi possível carregar a galeria. Tente novamente.','Could not load the gallery. Please retry.');status.classList.add('error');more.hidden=false;return;}
+    offset=(append?offset:0)+(result.data||[]).length;
+    more.hidden=(result.data||[]).length<100;
     status.classList.remove('error');
-    works=(result.data||[]).filter(work=>
+    const incoming=(result.data||[]).filter(work=>
       /^[0-9a-f-]{36}\.(?:jpg|png|webp)$/i.test(work.image_path) &&
       typeof work.title==='string' && typeof work.artist_name==='string'
     ).map(work=>({...work,tags:Array.isArray(work.tags)?work.tags.filter(tag=>tagVocabulary.has(tag)).slice(0,8):[]}));
+    works=append?[...new Map([...works,...incoming].map(work=>[work.submission_id,work])).values()]:incoming;
     grid?.remove();grid=null;empty.hidden=Boolean(works.length);searchInput.disabled=!works.length;
-    searchInput.value='';rebuildTags();
+    if(!append){searchInput.value='';selectedTags.clear();}rebuildTags();
     if(!works.length){copy();return;}
     grid=document.createElement('div');grid.className='fanarts-approved-gallery';
     for(const work of works){
@@ -124,11 +136,11 @@
       if(work.region){const region=document.createElement('span');region.textContent=work.region;caption.append(region);}
       if(work.tags.length){const tags=document.createElement('div');tags.className='fanarts-work-tags';
         for(const tag of work.tags){const badge=document.createElement('span');badge.className='fanarts-tag';
-          badge.textContent=tag;tags.append(badge);}caption.append(tags);
+          badge.dataset.tag=tag;badge.textContent=tagLabel(tag);tags.append(badge);}caption.append(tags);
       }
       figure.append(image,caption);grid.append(figure);
     }
-    gallery.append(grid);copy();
+    more.before(grid);copy();
   }
   new MutationObserver(()=>{
     searchLabel.textContent=t(searchLabel.dataset.pt,searchLabel.dataset.en);

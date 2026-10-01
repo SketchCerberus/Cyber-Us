@@ -101,7 +101,7 @@
     }
     const newsletterSignal = document.querySelector('.newsletter-signal');
     if (newsletterSignal) {
-      newsletterSignal.querySelector('small').textContent = lang === 'pt' ? 'TRANSMISSÃO PENDENTE' : 'TRANSMISSION PENDING';
+      newsletterSignal.querySelector('small').textContent = lang === 'pt' ? 'TRANSMISSÃO ONLINE' : 'TRANSMISSION ONLINE';
     }
     const aboutHero = document.querySelector('.about-us-hero');
     if (aboutHero) {
@@ -144,7 +144,7 @@
     if(document.querySelector('script[src="fanarts-detail.js"]'))modules.push('community-mentions.js');
   }
   if(document.querySelector('.fanarts-signal'))modules.push('fanarts-showcase.js');
-  if(document.body.dataset.communityPage==='account')
+  if(document.body?.dataset.communityPage==='account')
     modules.push('community-notifications.js','community-staff-appeals.js');
   if(document.getElementById('moderationWorkspace')){
     modules.push('moderation-edit-history.js','moderation-featured-fanarts.js','moderation-hierarchy.js');

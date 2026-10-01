@@ -4,7 +4,7 @@
   const panel = document.querySelector('.fanarts-teaser-art');
   if (!panel || !window.supabase?.createClient) return;
 
-  const db = window.supabase.createClient('https://znenamrszhjsiztllcit.supabase.co',
+  const db = window.CyberUsGetClient?.() || window.supabase.createClient('https://znenamrszhjsiztllcit.supabase.co',
     'sb_publishable_3VRFxwtDuYq4ETHs4xof8g_Fp3GRl6c',
     { auth: { flowType: 'pkce', detectSessionInUrl: false, persistSession: true, autoRefreshToken: true } });
   const validPath = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\.(?:jpg|png|webp)$/i;
