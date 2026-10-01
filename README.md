@@ -8,7 +8,7 @@ Site estático bilíngue publicado em https://sketchcerberus.github.io/Cyber-Us/
 - Leitor com descrição visual e transcrição da página em ambos os idiomas.
 - Fanarts: galeria pública, filtros, envio por conta verificada, revisão, comentários e votos.
 - Comunidade e moderação dependem do Supabase e das políticas documentadas em COMMUNITY_SETUP.md e FANARTS_SETUP.md.
-- Newsletter usa formulário incorporado do Brevo; o formulário atual é português. A página inglesa explica como assinar.
+- Newsletter usa formulários incorporados do Brevo em português e inglês, com listas separadas e confirmação dupla no idioma escolhido.
 - Apoio pelo Ko-fi e leitura externa no Tapas/WEBTOON. Os links apontam para as publicações oficiais.
 
 ## Verificação local
