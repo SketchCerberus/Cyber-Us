@@ -1,27 +1,17 @@
-> Estado atual (30/09/2026): newsletter e publicação de fanarts têm páginas e fluxos disponíveis. Referências abaixo a inscrição/envio fechado descrevem etapas históricas. Consulte SITE_STATUS.md para limitações verificadas; a newsletter incorporada permanece em português.
+# Newsletter — PT/EN
 
-# Cyber-Us — newsletter: estrutura e próximos passos
+A página newsletter.html usa dois formulários oficiais do Brevo e acompanha o seletor de idioma do site. newsletter-embed.js atualiza o iframe e o link de abertura externa somente quando o idioma muda.
 
-Esta ramificação foi criada da `main` para **trabalhar só no esqueleto do site**. Ela é independente do PR #3 (comunidade e CAPTCHA), que continua em espera. Não integrar à `main` sem aprovação do autor.
+## Configuração existente
 
-## Entregue
+- PT: formulário Transmissão de Cyber-Us; lista Transmissão de Cyber-Us; confirmação dupla original.
+- EN: formulário Cyber-Us Transmission — English (6abdc37e1967dbb27a6a405c); lista exclusiva Cyber-Us Transmission — English; modelo ativo #5, Cyber-Us — Confirm subscription (English).
+- Formulário, ajuda, botão, validação, erros, sucesso e e-mail de confirmação traduzidos. O link de confirmação mantém a variável oficial `{{ doubleoptin }}`.
+- Inscritos só entram na lista após confirmar o e-mail. Novos envios em inglês devem usar a lista inglesa; nenhuma campanha é enviada pelo código do site.
+- Trocar de idioma carrega o outro formulário; dados digitados no formulário anterior não são transferidos. Com JavaScript desativado permanece o formulário português com link externo.
 
-- `index.html` e `style.css`: seção e chamada para a newsletter na página inicial, com link na navegação e no rodapé.
-- `newsletter.html` e `newsletter.css`: página bilíngue PT/EN, responsiva, apresentando episódios, bastidores e notícias do projeto.
-- Formulário de e-mail é **apenas uma prévia visual**, com campo e botão desativados e aviso explícito. Não há `action`, endpoint, gravação local, lista de inscritos, envio de e-mail nem confirmação falsa de cadastro.
-- Nenhuma chave secreta, token, e-mail de leitor ou dado pessoal é armazenado neste código.
+## Verificação
 
-## Decisões antes de ativar inscrições
+Conferir o iframe e o link externo em ambos os idiomas, teclado, largura móvel, mensagens do formulário e vínculo da confirmação no painel. Não cadastrar e-mails reais sem autorização. A entrega e o clique de confirmação ainda dependem de um teste com destinatário autorizado.
 
-1. Escolher um provedor de newsletter com lista de contatos, ferramenta de envio e cancelamento de inscrição (por exemplo, Resend, Brevo ou outro após avaliação de limites e custos atuais). O projeto Supabase da comunidade não é, por si só, um serviço de entrega de newsletters.
-2. Configurar um endereço/remetente autorizado e validar a entrega. Não inserir chave de API privada no HTML, JavaScript público ou repositório; usar integração segura no provedor ou endpoint server-side com validação e limites.
-3. Implementar consentimento **específico e não pré-marcado** para a newsletter, política de privacidade antes da coleta, data/origem/versão do consentimento conforme necessário, confirmação do e-mail (double opt-in) e mecanismo funcional de cancelamento em cada mensagem. Não inscrever automaticamente contas da comunidade.
-4. Permitir preferência de idioma PT ou EN no momento da inscrição e enviar apenas o conteúdo selecionado. Decidir frequência e conteúdo editorial antes de anunciá-los.
-5. Aplicar proteção contra spam e abuso de cadastro; testar e-mails de confirmação, ausência de duplicidade, descadastro, erros, acessibilidade e mobile.
-6. Só depois de conectar o serviço e concluir os testes substituir a prévia desativada por formulário funcional e solicitar aprovação explícita para publicar.
-
-## Aceite da estrutura atual
-
-- O link `#newsletter` aponta à seção da página inicial; a chamada abre `newsletter.html` por caminho relativo compatível com GitHub Pages em `/Cyber-Us/`.
-- Página dedicada oferece troca PT/EN com `reader.js`, incluindo título, descrição, conteúdo, aviso e rótulos. O input desabilitado não coleta endereços.
-- Layout responsivo sem dependência de backend ou bibliotecas externas; não interfere no leitor vertical das tiras nem no PR #3.
+O remetente existente foi mantido. Não houve alteração de domínio, credenciais, CAPTCHA, lista portuguesa, assinaturas existentes ou plano. Não inserir chaves de API no site ou repositório.

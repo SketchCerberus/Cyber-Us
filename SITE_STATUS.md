@@ -13,7 +13,7 @@
 
 ## Prioridade 1 — configuração ou revisão editorial
 
-- Newsletter: criar formulário nativo inglês no Brevo, definir preferência de idioma e validar entrega/confirmação com conta de teste autorizada. A interface atual informa que o formulário incorporado é português.
+- Newsletter: formulários PT/EN e lista inglesa foram configurados; o formulário inglês usa o modelo de confirmação #5. Validar entrega/confirmação com conta de teste autorizada. Nenhum e-mail real foi enviado nesta revisão.
 - Revisar redação/ortografia dos balões originais: o episódio 2 usa Malwer; a grafia aprovada é Malware. A página inglesa do episódio 4 tem uma fala sobreposta. Esta revisão não redesenhou as imagens.
 - Validar publicação, comentários, votos e confirmação de conta em ambiente de teste. A inspeção pública não enviou fanart, comentários, votos ou inscrições reais.
 
