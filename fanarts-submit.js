@@ -50,7 +50,7 @@
   tagGroup.append(tagLegend);
   const tagInputs=[];
   for (const [value,br,en] of [
-    ['Auará','Auará','Auará'],['Kaubi','Kaubi','Kaubi'],['Óete','Óete','Óete'],
+    ['Auará','Auará','Auará'],['Kaubi','Kaubi','Kaubi'],['Óete','Oeté','Oeté'],
     ['Sistema','Sistema','Sistema'],['Trojan','Trojan','Trojan'],['Malware','Malware','Malware'],
     ['OC','OC (personagem original)','OC (original character)'],
     ['Ships','Ships / casais','Ships / pairings'],
@@ -167,7 +167,7 @@
   if (!window.supabase?.createClient || !window.crypto?.randomUUID) {
     say('O serviço de envio não está disponível.','Submission service is unavailable.',true); return;
   }
-  const db=window.supabase.createClient('https://znenamrszhjsiztllcit.supabase.co',
+  const db=window.CyberUsGetClient?.() || window.supabase.createClient('https://znenamrszhjsiztllcit.supabase.co',
     'sb_publishable_3VRFxwtDuYq4ETHs4xof8g_Fp3GRl6c',
     {auth:{flowType:'pkce',detectSessionInUrl:false,persistSession:true,autoRefreshToken:true}});
   window.CyberUsFanartsDb=db;

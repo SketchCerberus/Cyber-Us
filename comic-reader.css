@@ -5,3 +5,12 @@
 .reader-status a{color:var(--cyan);text-decoration:underline;text-underline-offset:.2em}
 .episode-navigation .pending{align-self:center}
 @media(max-width:650px){.reader-page{padding-left:0;padding-right:0}.reader-header,.reader-status,.episode-navigation{margin-left:4vw;margin-right:4vw}.reader-page .comic-strip{width:100%}}
+
+.episode-transcript{max-width:800px;margin:1.5rem auto;padding:1rem;border:1px solid var(--line);border-radius:12px;background:var(--panel);font-size:1rem;line-height:1.65;overflow-wrap:anywhere}
+.episode-transcript summary{cursor:pointer;font-weight:700;min-height:44px;display:list-item}
+.episode-transcript summary:focus-visible{outline:3px solid var(--cyan);outline-offset:4px}
+.episode-transcript p{margin:1rem 0}
+.transcript-note{color:var(--muted)}
+html[lang="en"] .transcript-pt{display:none}
+html:not([lang="en"]) .transcript-en{display:none}
+@media(max-width:650px){.episode-transcript{margin-left:4vw;margin-right:4vw}}

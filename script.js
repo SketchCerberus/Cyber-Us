@@ -3,7 +3,9 @@ const translations = {
   pt: document.querySelectorAll("[data-pt]")
 };
 
-let language = localStorage.getItem("cyber-us-language") || "en";
+let language;
+try { language = new URLSearchParams(location.search).get('lang') || localStorage.getItem("cyber-us-language") || "en"; }
+catch (_) { language = "en"; }
 if (language !== 'pt' && language !== 'en') language = 'en';
 
 // Keep the menu labels bilingual without changing navigation destinations.
@@ -97,17 +99,24 @@ function applyLanguage() {
   if (fanartsArt) {
     fanartsArt.querySelector('span:first-child').textContent = language === 'pt' ? 'CYBER / US · COMUNIDADE' : 'CYBER / US · COMMUNITY';
     fanartsArt.querySelector('strong').innerHTML = language === 'pt' ? 'ARTE<br>SEM<br>FRONTEIRAS' : 'ART<br>WITHOUT<br>BORDERS';
-    fanartsArt.querySelector('span:last-child').textContent = language === 'pt' ? 'TRANSMISSÃO // PENDENTE' : 'TRANSMISSION // PENDING';
+    fanartsArt.querySelector('span:last-child').textContent = language === 'pt' ? 'SINAL CRIATIVO // ABERTO' : 'CREATIVE SIGNAL // OPEN';
   }
   const newsletterArt = document.querySelector('.newsletter-teaser-art');
   if (newsletterArt) {
     newsletterArt.querySelector('strong').innerHTML = language === 'pt' ? 'SINAL<br>A CAMINHO' : 'INCOMING<br>SIGNAL';
-    newsletterArt.querySelector('span:last-child').textContent = language === 'pt' ? 'TRANSMISSÃO PENDENTE · · ·' : 'TRANSMISSION PENDING · · ·';
+    newsletterArt.querySelector('span:last-child').textContent = language === 'pt' ? 'TRANSMISSÃO ONLINE · · ·' : 'TRANSMISSION ONLINE · · ·';
   }
 
   document.documentElement.lang = language === "pt" ? "pt-BR" : "en";
   picker.sync(language);
-  localStorage.setItem("cyber-us-language", language);
+  try { localStorage.setItem("cyber-us-language", language); } catch (_) { /* Reading remains available without storage. */ }
+  const art = document.querySelector('.hero-art img');
+  if (art) art.src = art.getAttribute('data-src-' + language);
+  const url = new URL(location.href);
+  if (url.searchParams.has('lang')) {
+    url.searchParams.set('lang', language);
+    history.replaceState(history.state, '', url.pathname + url.search + url.hash);
+  }
 }
 
 document.getElementById("year").textContent = new Date().getFullYear();

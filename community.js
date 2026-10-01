@@ -29,7 +29,7 @@
     notice(account ? 'accountStatus' : 'communityStatus', t('Não foi possível carregar o serviço de comunidade. Tente novamente mais tarde.', 'Community service failed to load. Try again later.'), true);
     return;
   }
-  const db = window.supabase.createClient(PROJECT_URL, PUBLISHABLE_KEY, {
+  const db = window.CyberUsGetClient?.() || window.supabase.createClient(PROJECT_URL, PUBLISHABLE_KEY, {
     auth: { flowType: 'pkce', detectSessionInUrl: true, persistSession: true, autoRefreshToken: true }
   });
   const avatars = window.CyberUsAvatars?.create({db,projectUrl:PROJECT_URL,state,t});

@@ -1,16 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script defer src="supabase-client.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Cyber Us — A webcomic about a new world, lost memories, and the mystery behind it all.">
-  <title>Cyber Us — Webcomic</title>
+  <meta name="description" content="Cyber-Us: an independent webcomic about memory, identity and a new world. Read in Portuguese or English." data-description-pt="Cyber-Us: um quadrinho independente sobre memória, identidade e um novo mundo. Leia em português ou inglês." data-description-en="Cyber-Us: an independent webcomic about memory, identity and a new world. Read in Portuguese or English.">
+  <title data-title-pt="Cyber-Us — Quadrinho independente" data-title-en="Cyber-Us — Independent webcomic">Cyber-Us — Independent webcomic</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="header-scroll.css">
   <script defer src="script.js"></script>
   <script defer src="header-scroll.js"></script>
+  <script defer src="site-meta.js"></script>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://sketchcerberus.github.io/Cyber-Us/index.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Cyber-Us">
+  <meta property="og:url" content="https://sketchcerberus.github.io/Cyber-Us/index.html">
+  <meta property="og:title" content="Cyber-Us — Independent webcomic">
+  <meta property="og:description" content="Cyber-Us: an independent webcomic about memory, identity and a new world. Read in Portuguese or English." data-description-pt="Cyber-Us: um quadrinho independente sobre memória, identidade e um novo mundo. Leia em português ou inglês." data-description-en="Cyber-Us: an independent webcomic about memory, identity and a new world. Read in Portuguese or English.">
+  <meta property="og:image" content="https://sketchcerberus.github.io/Cyber-Us/assets/episodes/ep01/en/001.jpg">
+  <meta property="og:image:alt" content="Cyber-Us — official comic artwork">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
+  <a class="skip" href="#main" data-pt="Pular para o conteúdo" data-en="Skip to content">Skip to content</a>
   <header class="site-header">
     <a class="logo" href="#home">CYBER <span>US</span></a>
     <nav>
@@ -25,7 +39,7 @@
     </nav>
   </header>
 
-  <main>
+  <main id="main">
     <section id="home" class="hero">
       <div class="hero-content">
         <p class="eyebrow" data-en="A webcomic by an independent creator" data-pt="Um webcomic de um criador independente">
@@ -42,9 +56,9 @@
           <a class="button secondary" href="#support" data-en="Support Cyber Us" data-pt="Apoiar Cyber Us">Support Cyber Us</a>
         </div>
       </div>
-      <div class="hero-art" aria-label="Cyber Us artwork placeholder">
-        <div class="mirror">CYBER<br>US</div>
-      </div>
+      <a class="hero-art" href="episodios/episodio-01.html" data-label-pt="Começar a ler Cyber-Us" data-label-en="Start reading Cyber-Us" aria-label="Start reading Cyber-Us">
+        <img src="assets/episodes/ep01/en/001.jpg" data-src-pt="assets/episodes/ep01/pt/001.jpg" data-src-en="assets/episodes/ep01/en/001.jpg" width="1280" height="2048" alt="" decoding="async" fetchpriority="high">
+      </a>
     </section>
 
     <section id="comic" class="section">
@@ -61,7 +75,7 @@
         <article class="platform-card">
           <span class="language-tag">PT-BR</span>
           <h3>Cyber Us (Br)</h3>
-          <p>Capítulo 1 — Episódios 1–5 + Marco Zero.</p>
+          <p lang="pt-BR">Capítulo 1 — Episódios 1–5 + Marco Zero.</p>
           <a href="https://tapas.io/episode/3872110" target="_blank" rel="noopener">Tapas →</a>
           <a href="https://www.webtoons.com/en/canvas/cyber-us-br/list?title_no=1139489" target="_blank" rel="noopener">WEBTOON →</a>
         </article>
@@ -69,7 +83,7 @@
         <article class="platform-card">
           <span class="language-tag">EN</span>
           <h3>Cyber Us (Eng)</h3>
-          <p>Chapter 1 — Episodes 1–5 + Ground Zero.</p>
+          <p lang="en">Chapter 1 — Episodes 1–5 + Ground Zero.</p>
           <a href="https://tapas.io/episode/3872115" target="_blank" rel="noopener">Tapas →</a>
           <a href="https://www.webtoons.com/en/canvas/cyber-us-eng/list?title_no=1139493" target="_blank" rel="noopener">WEBTOON →</a>
         </article>
@@ -99,22 +113,23 @@
       <div class="fanarts-teaser-copy">
         <p class="eyebrow" data-en="CREATIVE SIGNAL // FANARTS" data-pt="SINAL CRIATIVO // FANARTS">CREATIVE SIGNAL // FANARTS</p>
         <h2 id="fanarts-heading" data-en="Many places. One universe." data-pt="Muitos lugares. Um só universo.">Many places. One universe.</h2>
-        <p data-en="A new home for readers' art. The future gallery will credit each artist and display their self-reported country or region only if they choose." data-pt="Um novo espaço para a arte dos leitores. A futura galeria dará crédito a cada artista e só exibirá seu país ou região se ele escolher.">A new home for readers' art. The future gallery will credit each artist and display their self-reported country or region only if they choose.</p>
+        <p data-en="Share your Cyber-Us fanart. Approved artwork is credited to its artist; country or region appears only with permission." data-pt="Compartilhe sua fanart de Cyber-Us. Obras aprovadas recebem crédito; país ou região só aparece com autorização do artista.">Share your Cyber-Us fanart. Approved artwork is credited to its artist; country or region appears only with permission.</p>
         <a class="button primary" href="fanarts.html" data-en="Explore the fanart gallery →" data-pt="Conhecer a galeria de fanarts →">Explore the fanart gallery →</a>
-        <p class="fanarts-teaser-status" data-en="Gallery in development. Submissions are not open yet." data-pt="Galeria em preparação. Os envios ainda não estão abertos.">Gallery in development. Submissions are not open yet.</p>
+        <a class="button secondary" href="fanarts-publicar.html" data-en="Submit fanart →" data-pt="Publicar fanart →">Submit fanart →</a>
+        <p class="fanarts-teaser-status" data-en="Submissions are open to verified accounts. Artwork is published after moderation." data-pt="Envios abertos para contas verificadas. Publicação após revisão da moderação.">Submissions are open to verified accounts. Artwork is published after moderation.</p>
       </div>
-      <div class="fanarts-teaser-art" aria-hidden="true"><span>CYBER / US · COMMUNITY</span><strong>ART<br>WITHOUT<br>BORDERS</strong><span>TRANSMISSION // PENDING</span></div>
+      <div class="fanarts-teaser-art" aria-hidden="true"><span>CYBER / US · COMMUNITY</span><strong>ART<br>WITHOUT<br>BORDERS</strong><span>CREATIVE SIGNAL // OPEN</span></div>
     </section>
 
     <section id="newsletter" class="section newsletter-teaser" aria-labelledby="newsletter-heading">
       <div>
         <p class="eyebrow" data-en="THE CYBER-US NEWSLETTER" data-pt="A NEWSLETTER DA CYBER-US">THE CYBER-US NEWSLETTER</p>
         <h2 id="newsletter-heading" data-en="Keep an eye on the signal." data-pt="Fique de olho no sinal.">Keep an eye on the signal.</h2>
-        <p data-en="Episode announcements, project news and behind-the-scenes notes, delivered by email once subscriptions open." data-pt="Avisos de episódios, novidades do projeto e bastidores por e-mail quando as inscrições abrirem.">Episode announcements, project news and behind-the-scenes notes, delivered by email once subscriptions open.</p>
-        <a class="button primary" href="newsletter.html" data-en="Explore the newsletter →" data-pt="Conhecer a newsletter →">Explore the newsletter →</a>
-        <p class="newsletter-teaser-status" data-en="Signups are not open yet. We aren't collecting email addresses." data-pt="Inscrições ainda não abertas. Não estamos coletando endereços de e-mail.">Signups are not open yet. We aren't collecting email addresses.</p>
+        <p data-en="Subscribe for episode announcements, project news and behind-the-scenes notes by email." data-pt="Assine para receber avisos de episódios, novidades do projeto e bastidores por e-mail.">Subscribe for episode announcements, project news and behind-the-scenes notes by email.</p>
+        <a class="button primary" href="newsletter.html#newsletter-signup-title" data-en="Subscribe to the newsletter →" data-pt="Assinar newsletter →">Subscribe to the newsletter →</a>
+        <p class="newsletter-teaser-status" data-en="Free subscription with email confirmation. Unsubscribe at any time." data-pt="Inscrição gratuita com confirmação por e-mail. Cancele quando quiser.">Free subscription with email confirmation. Unsubscribe at any time.</p>
       </div>
-      <div class="newsletter-teaser-art" aria-hidden="true"><span>CYBER / US</span><strong>INCOMING<br>SIGNAL</strong><span>TRANSMISSION PENDING · · ·</span></div>
+      <div class="newsletter-teaser-art" aria-hidden="true"><span>CYBER / US</span><strong>INCOMING<br>SIGNAL</strong><span>TRANSMISSION ONLINE · · ·</span></div>
     </section>
 
     <section id="support" class="section support-section">
@@ -146,15 +161,16 @@
   <footer>
     <div>
       <strong>CYBER US</strong>
-      <span>© <span id="year"></span> — Independent webcomic</span>
+      <span>© <span id="year"></span> — <span data-pt="Quadrinho independente" data-en="Independent webcomic">Independent webcomic</span></span>
     </div>
     <div class="footer-links">
       <a href="about-us.html" data-en="About us" data-pt="Sobre nós">About us</a>
       <a href="fanarts.html" data-en="Fanarts" data-pt="Fanarts">Fanarts</a>
       <a href="newsletter.html">Newsletter</a>
       <a href="https://ko-fi.com/sketchcerberus" target="_blank" rel="noopener noreferrer" data-en="Support on Ko-fi" data-pt="Apoiar no Ko-fi">Support on Ko-fi</a>
-      <a href="https://tapas.io/" target="_blank" rel="noopener">Tapas</a>
-      <a href="https://www.webtoons.com/" target="_blank" rel="noopener">WEBTOON</a>
+      <a href="https://tapas.io/series/Cyber-Us-English/info" data-platform-pt="https://tapas.io/series/Cyber-Us-Portugus/info" data-platform-en="https://tapas.io/series/Cyber-Us-English/info" target="_blank" rel="noopener">Tapas</a>
+      <a href="https://www.webtoons.com/en/canvas/cyber-us-english/list?title_no=1139493" data-platform-pt="https://www.webtoons.com/en/canvas/cyber-us-portugu%C3%AAs/list?title_no=1139489" data-platform-en="https://www.webtoons.com/en/canvas/cyber-us-english/list?title_no=1139493" target="_blank" rel="noopener">WEBTOON</a>
+      <a href="mailto:sketchthecerberus@gmail.com" data-pt="Contato" data-en="Contact">Contact</a>
     </div>
   </footer>
 

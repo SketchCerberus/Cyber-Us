@@ -1,16 +1,29 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
+  <script defer src="supabase-client.js"></script>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Regras da galeria de fanarts Cyber-Us e aviso de privacidade dos envios.">
-<title>Cyber-Us — Regras e privacidade das fanarts</title>
+<meta name="description" content="Regras das fanarts de Cyber-Us: direitos autorais, privacidade e retirada de obras." data-description-pt="Regras das fanarts de Cyber-Us: direitos autorais, privacidade e retirada de obras." data-description-en="Cyber-Us fanart rules: artist rights, privacy and withdrawal requests.">
+<title data-title-pt="Cyber-Us — Regras e privacidade das fanarts" data-title-en="Cyber-Us — Fanart rules and privacy">Cyber-Us — Regras e privacidade das fanarts</title>
 <link rel="stylesheet" href="reader.css"><link rel="stylesheet" href="fanarts.css"><link rel="stylesheet" href="header-scroll.css">
 <script defer src="reader.js"></script>
 <script defer src="header-scroll.js"></script>
+  <script defer src="site-meta.js"></script>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://sketchcerberus.github.io/Cyber-Us/fanarts-regras.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Cyber-Us">
+  <meta property="og:url" content="https://sketchcerberus.github.io/Cyber-Us/fanarts-regras.html">
+  <meta property="og:title" content="Cyber-Us — Regras e privacidade das fanarts">
+  <meta property="og:description" content="Regras das fanarts de Cyber-Us: direitos autorais, privacidade e retirada de obras." data-description-pt="Regras das fanarts de Cyber-Us: direitos autorais, privacidade e retirada de obras." data-description-en="Cyber-Us fanart rules: artist rights, privacy and withdrawal requests.">
+  <meta property="og:image" content="https://sketchcerberus.github.io/Cyber-Us/assets/episodes/ep01/en/001.jpg">
+  <meta property="og:image:alt" content="Cyber-Us — official comic artwork">
+  <meta property="og:locale" content="pt_BR">
+  <meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
 <a class="skip" href="#main" data-pt="Pular para o conteúdo" data-en="Skip to content">Pular para o conteúdo</a>
-<header class="site-header"><a class="logo" href="index.html">CYBER <span>US</span></a><nav aria-label="Navegação principal"><a href="fanarts.html">Fanarts</a><a href="comunidade.html" data-pt="Minha conta" data-en="My account">Minha conta</a><button id="languageBtn" class="lang-btn" type="button" aria-label="Switch to English">EN</button></nav></header>
+<header class="site-header"><a class="logo" href="index.html">CYBER <span>US</span></a><nav aria-label="Navegação principal" data-label-pt="Navegação principal" data-label-en="Main navigation"><a href="fanarts.html">Fanarts</a><a href="comunidade.html" data-pt="Minha conta" data-en="My account">Minha conta</a><button id="languageBtn" class="lang-btn" type="button" aria-label="Switch to English">EN</button></nav></header>
 <main id="main" class="fanarts-page">
 <section class="fanarts-guidelines" aria-labelledby="rules-title">
 <p class="eyebrow">CYBER-US // FANARTS</p>
@@ -26,9 +39,9 @@
 <h2 data-pt="Processamento, guarda e exclusão" data-en="Processing, retention and deletion">Processamento, guarda e exclusão</h2>
 <p data-pt="O navegador reexporta a imagem com a sua autorização para remover metadados incorporados; a compactação pode mudar. A obra é limitada a 5 MB e 4096 × 4096 pixels. Os envios e registros são mantidos enquanto necessários à análise e administração da galeria. Ao rejeitar ou concluir uma retirada, o painel tenta excluir os arquivos automaticamente; falhas de limpeza exigem ação manual da moderação. Não envie material que você não queira confiar à equipe de moderação." data-en="With your consent, the browser re-encodes images to remove embedded metadata; compression may change. Images are limited to 5 MB and 4096 × 4096 pixels. Submissions and records are retained as needed for review and gallery administration. When rejecting or completing a withdrawal, the panel attempts to delete the files automatically; cleanup failures require manual moderation. Do not submit content you are unwilling to entrust to moderators.">O navegador reexporta a imagem com a sua autorização para remover metadados incorporados; a compactação pode mudar. A obra é limitada a 5 MB e 4096 × 4096 pixels. Os envios e registros são mantidos enquanto necessários à análise e administração da galeria. Ao rejeitar ou concluir uma retirada, o painel tenta excluir os arquivos automaticamente; falhas de limpeza exigem ação manual da moderação. Não envie material que você não queira confiar à equipe de moderação.</p>
 <h2 data-pt="Retirada e denúncias" data-en="Withdrawal and reports">Retirada e denúncias</h2>
-<p data-pt="Para retirar a própria arte pendente ou aprovada, entre na conta que fez o envio, abra a página Fanarts e clique em Solicitar retirada em Meus envios. O pedido entra na fila; quando a moderação conclui a retirada, a entrada pública e os arquivos são removidos automaticamente sempre que o serviço responder corretamente. Se você é terceiro e precisa denunciar uso indevido de sua arte, abra uma solicitação no repositório público abaixo; não inclua endereço, e-mail ou outros dados sensíveis em uma issue pública." data-en="To withdraw your own pending or approved artwork, sign in with the submitting account, open Fanarts and choose Request withdrawal under My submissions. The request enters the queue; once moderation completes it, the public entry and files are removed automatically whenever the service responds correctly. Third parties reporting misuse of their work may open a request in the public repository below; do not include an address, email or other sensitive details in a public issue.">Para retirar a própria arte pendente ou aprovada, entre na conta que fez o envio, abra a página Fanarts e clique em Solicitar retirada em Meus envios. O pedido entra na fila; quando a moderação conclui a retirada, a entrada pública e os arquivos são removidos automaticamente sempre que o serviço responder corretamente. Se você é terceiro e precisa denunciar uso indevido de sua arte, abra uma solicitação no repositório público abaixo; não inclua endereço, e-mail ou outros dados sensíveis em uma issue pública.</p>
+<p data-pt="Para retirar a própria arte pendente ou aprovada, entre na conta que fez o envio, abra a página Publicar e clique em Solicitar retirada em Meus envios. O pedido entra na fila; quando a moderação conclui a retirada, a entrada pública e os arquivos são removidos automaticamente sempre que o serviço responder corretamente. Se você é terceiro e precisa denunciar uso indevido de sua arte, abra uma solicitação no repositório público abaixo; não inclua endereço, e-mail ou outros dados sensíveis em uma issue pública." data-en="To withdraw your own pending or approved artwork, sign in with the submitting account, open Submit and choose Request withdrawal under My submissions. The request enters the queue; once moderation completes it, the public entry and files are removed automatically whenever the service responds correctly. Third parties reporting misuse of their work may open a request in the public repository below; do not include an address, email or other sensitive details in a public issue.">Para retirar a própria arte pendente ou aprovada, entre na conta que fez o envio, abra a página Publicar e clique em Solicitar retirada em Meus envios. O pedido entra na fila; quando a moderação conclui a retirada, a entrada pública e os arquivos são removidos automaticamente sempre que o serviço responder corretamente. Se você é terceiro e precisa denunciar uso indevido de sua arte, abra uma solicitação no repositório público abaixo; não inclua endereço, e-mail ou outros dados sensíveis em uma issue pública.</p>
 <p><a href="https://github.com/SketchCerberus/Cyber-Us/issues/new" data-pt="Abrir denúncia no GitHub →" data-en="Open a report on GitHub →">Abrir denúncia no GitHub →</a></p>
-<p><a href="fanarts.html#my-fanarts" data-pt="Voltar aos meus envios →" data-en="Back to my submissions →">Voltar aos meus envios →</a></p>
+<p><a href="fanarts-publicar.html#my-fanarts" data-pt="Voltar aos meus envios →" data-en="Back to my submissions →">Voltar aos meus envios →</a></p>
 </section>
 </main>
 <footer class="site-footer">CYBER-US · <a href="fanarts.html">Fanarts</a></footer>

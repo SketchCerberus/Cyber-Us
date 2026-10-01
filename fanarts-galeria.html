@@ -1,10 +1,11 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
+  <script defer src="supabase-client.js"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Galeria de fanarts aprovadas da comunidade Cyber-Us.">
-  <title>Cyber-Us — Galeria de fanarts</title>
+  <meta name="description" content="Explore fanarts aprovadas de Cyber-Us, com créditos e tags." data-description-pt="Explore fanarts aprovadas de Cyber-Us, com créditos e tags." data-description-en="Explore approved Cyber-Us fanart, artist credits and tags.">
+  <title data-title-pt="Cyber-Us — Galeria de fanarts" data-title-en="Cyber-Us — Fanart gallery">Cyber-Us — Galeria de fanarts</title>
   <link rel="stylesheet" href="reader.css">
   <link rel="stylesheet" href="fanarts.css">
   <link rel="stylesheet" href="fanarts-showcase.css">
@@ -20,12 +21,24 @@
   <script defer src="fanarts-spoilers.js"></script>
   <script defer src="fanarts-reports.js"></script>
   <link rel="stylesheet" href="community-reports.css">
+  <script defer src="site-meta.js"></script>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://sketchcerberus.github.io/Cyber-Us/fanarts-galeria.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Cyber-Us">
+  <meta property="og:url" content="https://sketchcerberus.github.io/Cyber-Us/fanarts-galeria.html">
+  <meta property="og:title" content="Cyber-Us — Galeria de fanarts">
+  <meta property="og:description" content="Explore fanarts aprovadas de Cyber-Us, com créditos e tags." data-description-pt="Explore fanarts aprovadas de Cyber-Us, com créditos e tags." data-description-en="Explore approved Cyber-Us fanart, artist credits and tags.">
+  <meta property="og:image" content="https://sketchcerberus.github.io/Cyber-Us/assets/episodes/ep01/en/001.jpg">
+  <meta property="og:image:alt" content="Cyber-Us — official comic artwork">
+  <meta property="og:locale" content="pt_BR">
+  <meta name="twitter:card" content="summary_large_image">
 </head>
 <body>
   <a class="skip" href="#main" data-pt="Pular para o conteúdo" data-en="Skip to content">Pular para o conteúdo</a>
   <header class="site-header">
-    <a class="logo" href="index.html" aria-label="Cyber-Us — início">CYBER <span>US</span></a>
-    <nav aria-label="Navegação principal">
+    <a class="logo" href="index.html" aria-label="Cyber-Us — início" data-label-pt="Cyber-Us — início" data-label-en="Cyber-Us — home">CYBER <span>US</span></a>
+    <nav aria-label="Navegação principal" data-label-pt="Navegação principal" data-label-en="Main navigation">
       <a href="fanarts.html">Fanarts</a>
       <a class="account-access" href="comunidade.html" data-pt="Entrar / Cadastre-se" data-en="Sign in / Sign up">Entrar / Cadastre-se</a>
       <button id="languageBtn" class="lang-btn" type="button" aria-label="Switch to English">EN</button>

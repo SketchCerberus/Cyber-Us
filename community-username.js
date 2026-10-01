@@ -17,7 +17,7 @@
   input.setAttribute('aria-describedby',[input.getAttribute('aria-describedby'),hint.id,status.id].filter(Boolean).join(' '));
   const say=(br,en,kind='pending')=>{status.dataset.pt=br;status.dataset.en=en;status.dataset.state=kind;status.textContent=t(br,en);};
   hint.textContent=t(hint.dataset.pt,hint.dataset.en);
-  const db=window.supabase?.createClient?.('https://znenamrszhjsiztllcit.supabase.co',
+  const db=window.CyberUsGetClient?.() || window.supabase?.createClient?.('https://znenamrszhjsiztllcit.supabase.co',
     'sb_publishable_3VRFxwtDuYq4ETHs4xof8g_Fp3GRl6c',
     {auth:{flowType:'pkce',detectSessionInUrl:false,persistSession:true,autoRefreshToken:true}});
   let sequence=0,timer=0,allowOnce='';

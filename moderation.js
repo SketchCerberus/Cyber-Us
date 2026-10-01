@@ -25,7 +25,7 @@
     return;
   }
   const project = 'https://znenamrszhjsiztllcit.supabase.co';
-  const db = window.supabase.createClient(project, 'sb_publishable_3VRFxwtDuYq4ETHs4xof8g_Fp3GRl6c', {
+  const db = window.CyberUsGetClient?.() || window.supabase.createClient(project, 'sb_publishable_3VRFxwtDuYq4ETHs4xof8g_Fp3GRl6c', {
     auth: { flowType:'pkce', detectSessionInUrl:false, persistSession:true, autoRefreshToken:true }
   });
   const avatars = window.CyberUsAvatars?.create({db,projectUrl:project,state,t});

@@ -4,7 +4,7 @@
   const root=document.getElementById('moderationWorkspace');
   const tabs=document.querySelector('.moderation-tabs');
   if(!root||!tabs||!window.supabase?.createClient)return;
-  const db=window.supabase.createClient('https://znenamrszhjsiztllcit.supabase.co','sb_publishable_3VRFxwtDuYq4ETHs4xof8g_Fp3GRl6c', {auth:{flowType:'pkce',detectSessionInUrl:false,persistSession:true,autoRefreshToken:true}});
+  const db=window.CyberUsGetClient?.() || window.supabase.createClient('https://znenamrszhjsiztllcit.supabase.co','sb_publishable_3VRFxwtDuYq4ETHs4xof8g_Fp3GRl6c', {auth:{flowType:'pkce',detectSessionInUrl:false,persistSession:true,autoRefreshToken:true}});
   const t=(pt,en)=>document.documentElement.lang.startsWith('pt')?pt:en;
   const element=(tag,className,text)=>{const node=document.createElement(tag);if(className)node.className=className;if(text!==undefined)node.textContent=text;return node;};
   const tab=element('button','community-action');tab.type='button';tab.id='moderationTrashTab';tab.setAttribute('aria-pressed','false');

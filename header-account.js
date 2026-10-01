@@ -82,7 +82,7 @@
 
   function start(sdk) {
     // Shared header client: do not process auth callbacks or sign users in/out here.
-    const db = sdk.createClient(project, publishableKey, {
+    const db = window.CyberUsGetClient?.() || sdk.createClient(project, publishableKey, {
       auth: { persistSession: true, autoRefreshToken: false, detectSessionInUrl: false }
     });
     resolveHeaderClient(db);

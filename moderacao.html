@@ -1,10 +1,11 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
+  <script defer src="supabase-client.js"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Área de moderação da comunidade Cyber-Us, restrita à equipe autorizada.">
-  <title>Cyber-Us — Moderação</title>
+  <meta name="description" content="Cyber-Us — Moderação — Leitor oficial em português e inglês." data-description-pt="Cyber-Us — Moderação — Leitor oficial em português e inglês." data-description-en="Cyber-Us — Moderation — Official reader in Portuguese and English.">
+  <title data-title-pt="Cyber-Us — Moderação" data-title-en="Cyber-Us — Moderation">Cyber-Us — Moderação</title>
   <link rel="stylesheet" href="reader.css">
   <link rel="stylesheet" href="community.css">
   <link rel="stylesheet" href="moderation.css">
@@ -26,10 +27,13 @@
   <script defer src="moderation-fanart-reports.js"></script>
   <script defer src="moderation-hierarchy-link.js"></script>
   <link rel="stylesheet" href="community-reports.css">
+  <script defer src="site-meta.js"></script>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta name="robots" content="noindex, follow">
 </head>
 <body>
   <a class="skip" href="#main" data-pt="Pular para o conteúdo" data-en="Skip to content">Pular para o conteúdo</a>
-  <header class="site-header"><a class="logo" href="index.html" aria-label="Cyber-Us — início">CYBER <span>US</span></a><nav aria-label="Navegação principal"><a href="catalogo.html" data-pt="Episódios" data-en="Episodes">Episódios</a><a class="account-access" href="comunidade.html" data-pt="Entrar / Cadastre-se" data-en="Sign in / Sign up">Entrar / Cadastre-se</a><button id="languageBtn" class="lang-btn" type="button" aria-label="Switch to English">EN</button></nav></header>
+  <header class="site-header"><a class="logo" href="index.html" aria-label="Cyber-Us — início" data-label-pt="Cyber-Us — início" data-label-en="Cyber-Us — home">CYBER <span>US</span></a><nav aria-label="Navegação principal" data-label-pt="Navegação principal" data-label-en="Main navigation"><a href="catalogo.html" data-pt="Episódios" data-en="Episodes">Episódios</a><a class="account-access" href="comunidade.html" data-pt="Entrar / Cadastre-se" data-en="Sign in / Sign up">Entrar / Cadastre-se</a><button id="languageBtn" class="lang-btn" type="button" aria-label="Switch to English">EN</button></nav></header>
   <main id="main" class="wrap community-account moderation-page">
     <a class="moderation-back" href="comunidade.html" data-pt="← Voltar ao perfil" data-en="← Back to profile">← Voltar ao perfil</a>
     <p class="eyebrow" data-pt="ÁREA RESTRITA" data-en="RESTRICTED AREA">ÁREA RESTRITA</p>

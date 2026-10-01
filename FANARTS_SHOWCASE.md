@@ -1,3 +1,5 @@
+> Estado atual (30/09/2026): newsletter e publicação de fanarts têm páginas e fluxos disponíveis. Referências abaixo a inscrição/envio fechado descrevem etapas históricas. Consulte SITE_STATUS.md para limitações verificadas; a newsletter incorporada permanece em português.
+
 # Cyber-Us — vitrine de fanarts (PR de preparação)
 
 Esta implementação é uma **vitrine editorial estática**, não um sistema de envio. Nenhum upload, cadastro, moderação automática, API, serviço pago ou integração com o PR #3 foi criado. O formulário de envio continua integralmente desativado.
