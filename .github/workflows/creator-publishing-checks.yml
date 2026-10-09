@@ -1,0 +1,30 @@
+name: Creator publishing checks
+on:
+  pull_request:
+    paths:
+      - 'creator-panel.js'
+      - 'comic-dynamic.js'
+      - 'community.js'
+      - 'leitor-dinamico.html'
+      - 'sql/creator-*.sql'
+      - 'tests/creator-publishing.test.mjs'
+      - '.github/workflows/creator-publishing-checks.yml'
+  push:
+    branches: [feature/creator-publishing-panel]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check JavaScript syntax
+        run: |
+          node --check creator-panel.js
+          node --check comic-dynamic.js
+          node --check community.js
+      - name: Run creator publishing tests
+        run: node --test tests/creator-publishing.test.mjs

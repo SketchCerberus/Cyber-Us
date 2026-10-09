@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cyber-Us · Leitor</title>
+<link rel="stylesheet" href="reader.css"><link rel="stylesheet" href="comic-reader.css"><link rel="stylesheet" href="community.css"><link rel="stylesheet" href="creator-panel.css">
+<script defer src="supabase-client.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
+<script defer src="community-panel.js"></script>
+<script defer src="community-avatar.js"></script>
+<script defer src="comic-dynamic.js"></script>
+<script defer src="community.js"></script>
+<script defer src="fanarts-reports.js"></script>
+<link rel="stylesheet" href="community-reports.css"></head>
+<body><main class="creator-shell" id="dynamicComicReader" aria-live="polite"><a href="catalogo.html">← Catálogo</a><section id="comicDynamicContent"><p>Carregando episódio…</p></section></main>
+<script>
+(function(){
+ const p=new URLSearchParams(location.search),chapter=Number(p.get('chapter')),episode=Number(p.get('episode'));
+ const valid=Number.isSafeInteger(chapter)&&chapter>=0&&Number.isSafeInteger(episode)&&episode>=0&&p.has('chapter')&&p.has('episode');
+ if(valid)document.getElementById('dynamicComicReader').dataset.communityEpisode='cp-'+chapter+'-ep-'+episode;
+})();
+</script>
+</body></html>
