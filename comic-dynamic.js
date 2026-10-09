@@ -1,6 +1,6 @@
 /* Cyber-Us dynamic reader: published episodes only. */
 (()=>{'use strict';
-const target=document.querySelector('#dynamicComicCatalog, #dynamicComicReader');if(!target)return;
+const target=document.querySelector('#dynamicComicCatalog, #comicDynamicContent');if(!target)return;
 const db=window.CyberUsGetClient?.();
 const add=(tag,value,parent)=>{const el=document.createElement(tag);if(value!==null)el.textContent=value;parent.append(el);return el};
 const params=new URLSearchParams(location.search);
