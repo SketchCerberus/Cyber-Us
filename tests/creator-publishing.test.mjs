@@ -13,3 +13,5 @@ test('scheduled discussions are gated by release in existing episodes RLS',()=>{
 test('SQL function bodies use matching dollar quotes',()=>{for(const name of ['sql/creator-publishing.sql','sql/creator-episode-community.sql','sql/creator-discussion-extensions.sql']){const sql=read(name);assert.equal((sql.match(/\$\$/g)||[]).length%2,0,name+' has unmatched $$ delimiters')}});
 
 test('pin policy verifies comment belongs to the same episode',()=>{const sql=read('sql/creator-discussion-extensions.sql');assert.match(sql,/c\.id=creator_pinned_comments\.comment_id and c\.episode_slug=creator_pinned_comments\.episode_slug/)});
+
+test('existing comic bucket is forced to stay private',()=>{const sql=read('sql/creator-storage.sql');assert.match(sql,/on conflict\(id\) do update set public=false/)});
