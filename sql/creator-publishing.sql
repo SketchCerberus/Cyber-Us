@@ -14,7 +14,8 @@ create table if not exists public.comic_publications (
  created_at timestamptz not null default now(),
  updated_at timestamptz not null default now(),
  unique(chapter_number,episode_number,language_code),
- check(status <> 'scheduled' or publish_at is not null)
+ check(status <> 'scheduled' or publish_at is not null),
+ check(status = 'draft' or cardinality(page_paths) > 0)
 );
 create index if not exists comic_publications_release_idx on public.comic_publications(status,publish_at);
 alter table public.comic_publications enable row level security;
