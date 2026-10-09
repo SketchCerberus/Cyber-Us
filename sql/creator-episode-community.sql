@@ -30,10 +30,13 @@ on public.comic_publications for each row execute function public.cyberus_sync_c
 create or replace function public.cyberus_episode_is_released(p_slug text)
 returns boolean language sql stable security definer set search_path='' as $
  select not exists (
-  select 1 from public.comic_publications p
-  where ('cp-' || p.chapter_number || '-ep-' || p.episode_number) = p_slug
-    and not ((p.status='published' or (p.status='scheduled' and p.publish_at<=now()))
-             and cardinality(p.page_paths)>0)
+   select 1 from public.comic_publications p
+   where ('cp-' || p.chapter_number || '-ep-' || p.episode_number) = p_slug
+ ) or exists (
+   select 1 from public.comic_publications p
+   where ('cp-' || p.chapter_number || '-ep-' || p.episode_number) = p_slug
+     and (p.status='published' or (p.status='scheduled' and p.publish_at<=now()))
+     and cardinality(p.page_paths)>0
  );
 $;
 revoke all on function public.cyberus_episode_is_released(text) from public;
