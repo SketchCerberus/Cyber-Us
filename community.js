@@ -404,7 +404,7 @@
       time.dateTime = comment.created_at;
       header.append(node('strong', '', comment.deleted_by_author ? t('Comentário removido', 'Comment removed') : person?.display_name || t('Leitor', 'Reader')));
       if (!comment.deleted_by_author && creatorId && comment.author_id === creatorId) header.append(node('span', 'creator-official-badge', t('✦ Criador', '✦ Creator')));
-      if (state.pinned === comment.id) header.append(node('span', 'creator-pinned-badge', t('📌 Fixado', '📌 Pinned'));
+      if (state.pinned === comment.id) header.append(node('span', 'creator-pinned-badge', t('📌 Fixado', '📌 Pinned')));
       header.append(time);
       item.append(header, node('p', 'comment-body', comment.deleted_by_author ? t('Este comentário foi removido pelo autor.', 'This comment was removed by its author.') : comment.body));
       const actions = node('div', 'community-actions');
