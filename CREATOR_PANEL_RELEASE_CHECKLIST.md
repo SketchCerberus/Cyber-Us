@@ -15,7 +15,7 @@
 - Depois de publish_at, catálogo e leitor mostram o conteúdo sem login.
 - Testar mudança de fuso horário (Brasília), horário de verão histórico, upload interrompido, duplicatas e erro de rede.
 - Confirmar que notas e comentários são tratados como texto e nunca executam HTML.
-- Integrar comentários destacados/fixados ao community.js existente e notificações à infraestrutura de notificações existente, sem duplicar a caixa de entrada.
+- O código de badge/fixação foi integrado ao community.js; validar RLS, comportamento em paginação e moderação. A infraestrutura de notificações existente já cobre respostas, sem segunda caixa de entrada.
 - Testar segurança do Storage, lint e testes Node do repositório.
 - Fazer revisão visual PT/EN em celular e desktop.
 
