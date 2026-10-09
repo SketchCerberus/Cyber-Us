@@ -19,6 +19,7 @@
 - Testar cenário de uma versão publicada e outra ainda em rascunho.
 - O código de badge/fixação foi integrado ao community.js; validar RLS, comportamento em paginação e moderação. A infraestrutura de notificações existente já cobre respostas, sem segunda caixa de entrada.
 - Testar segurança do Storage, lint e testes Node do repositório.
+- GitHub Actions: workflow creator-publishing-checks.yml criado; verificar execução e resultado no PR (nenhuma execução confirmada ainda).
 - Fazer revisão visual PT/EN em celular e desktop.
 
 ## Limitações atuais
