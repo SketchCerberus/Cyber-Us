@@ -18,9 +18,9 @@
 <label>Nota do autor<textarea name="note" maxlength="5000" rows="5" placeholder="Mensagem exibida após a última página"></textarea></label>
 <label>Publicação<select name="status"><option value="draft">Rascunho</option><option value="scheduled">Agendar</option><option value="published">Publicar agora</option></select></label>
 <label id="scheduleWrap" hidden>Data e horário (Brasília)<input name="schedule" type="datetime-local"></label>
-<label>Imagens da página (ordem de seleção)<input name="pages" type="file" accept="image/jpeg,image/png,image/webp" multiple></label><p class="creator-warning">Imagens ficam privadas até a publicação. Para publicar ou agendar, selecione ao menos uma imagem. Configure antes as migrações SQL de armazenamento.</p>
-<button type="submit">Salvar metadados</button>
+<label>Imagens das páginas (ordenadas pelo nome do arquivo)<input name="pages" type="file" accept="image/jpeg,image/png,image/webp" multiple></label><p class="creator-warning">Imagens ficam privadas até a publicação. Para publicar ou agendar, selecione ao menos uma imagem. Configure antes as migrações SQL de armazenamento.</p>
+<button type="submit">Salvar publicação</button>
 </form>
 <section class="creator-card"><h2>Publicações</h2><button id="refreshPublications" type="button">Atualizar lista</button><div id="publicationList"></div>
-<h2>Comentários oficiais</h2><p>As notas do autor são editadas nesta tela. Respostas destacadas, fixação e notificações serão integradas à comunidade existente em uma etapa separada.</p></section>
+<h2>Comentários oficiais</h2><p>As notas do autor são editadas nesta tela. A fixação de comentários fica disponível diretamente no leitor para a conta de criador, após a instalação das migrações. As respostas continuam usando as notificações existentes.</p></section>
 </div></section></main></body></html>
