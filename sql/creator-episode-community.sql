@@ -8,7 +8,7 @@ begin
  v_slug := 'cp-' || new.chapter_number || '-ep-' || new.episode_number;
  select coalesce(max(title) filter(where language_code='pt'), 'Cyber-Us'),
         coalesce(max(title) filter(where language_code='en'), 'Cyber-Us'),
-        bool_or((status='published' or (status='scheduled' and publish_at<=now()))
+        bool_or((status='published' or (status='scheduled' and publish_at is not null))
                 and cardinality(page_paths)>0)
  into v_pt,v_en,v_ready
  from public.comic_publications
@@ -24,7 +24,22 @@ revoke all on function public.cyberus_sync_comic_episode() from public;
 drop trigger if exists cyberus_sync_comic_episode on public.comic_publications;
 create trigger cyberus_sync_comic_episode after insert or update of title,status,publish_at,page_paths
 on public.comic_publications for each row execute function public.cyberus_sync_comic_episode();
--- The discussion registry is enabled for scheduled episodes at scheduling time.
--- Their existence/slugs may be discoverable early, but comic metadata and
--- image access remain gated by publication/Storage RLS until publish_at.
--- Do not place spoilers or unreleased images in the episode registry.
+-- Protect the existing comments/reactions via the episodes SELECT policy.
+-- Existing comments and reactions INSERT policies require an enabled episode,
+-- and RLS on episodes also controls whether that episode is visible.
+create or replace function public.cyberus_episode_is_released(p_slug text)
+returns boolean language sql stable security definer set search_path='' as $
+ select not exists (
+  select 1 from public.comic_publications p
+  where ('cp-' || p.chapter_number || '-ep-' || p.episode_number) = p_slug
+    and not ((p.status='published' or (p.status='scheduled' and p.publish_at<=now()))
+             and cardinality(p.page_paths)>0)
+ );
+$;
+revoke all on function public.cyberus_episode_is_released(text) from public;
+grant execute on function public.cyberus_episode_is_released(text) to anon,authenticated;
+alter policy episodes_read_enabled on public.episodes
+ using (community_enabled and public.cyberus_episode_is_released(slug));
+-- Do not expose unreleased episode titles through the episode registry.
+-- This guard applies to all consumers of episodes, including comment and vote RLS.
+
