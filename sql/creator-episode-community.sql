@@ -24,6 +24,7 @@ revoke all on function public.cyberus_sync_comic_episode() from public;
 drop trigger if exists cyberus_sync_comic_episode on public.comic_publications;
 create trigger cyberus_sync_comic_episode after insert or update of title,status,publish_at,page_paths
 on public.comic_publications for each row execute function public.cyberus_sync_comic_episode();
--- Scheduled releases become readable through RLS at publish_at without cron.
--- Existing community_enabled may need scheduled refresh; do not rely on it
--- for visibility control: comic publication and Storage RLS are authoritative.
+-- The discussion registry is enabled for scheduled episodes at scheduling time.
+-- Their existence/slugs may be discoverable early, but comic metadata and
+-- image access remain gated by publication/Storage RLS until publish_at.
+-- Do not place spoilers or unreleased images in the episode registry.
