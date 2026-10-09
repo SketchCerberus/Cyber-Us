@@ -24,7 +24,7 @@
     item.textContent = text;
     item.classList.toggle('error', error);
   };
-  const state = { user: null, banned: false, moderator: false, vote: null, offset: 0 };
+  const state = { user: null, banned: false, moderator: false, creator: false, pinned: null, vote: null, offset: 0 };
   if (!window.supabase || !window.supabase.createClient) {
     notice(account ? 'accountStatus' : 'communityStatus', t('Não foi possível carregar o serviço de comunidade. Tente novamente mais tarde.', 'Community service failed to load. Try again later.'), true);
     return;
@@ -52,7 +52,10 @@
     state.user = !error && data?.user ? data.user : null;
     state.banned = false;
     state.moderator = false;
+    state.creator = false;
     if (state.user) {
+      const creatorCheck = await db.rpc('cyberus_is_creator');
+      state.creator = !creatorCheck.error && creatorCheck.data === true;
       const [ban, staff] = await Promise.all([db.rpc('is_banned'), db.rpc('is_moderator')]);
       if (index !== refreshIndex) return;
       if (ban.error || staff.error) {
@@ -383,6 +386,8 @@
   }
 
   const commentFields = 'id,author_id,body,created_at,parent_id,deleted_by_author';
+  let creatorId = null;
+  async function loadCreatorIdentity(){ const {data,error}=await db.rpc('cyberus_creator_public_id');if(!error)creatorId=data || null; }
   let commentsLoading = false;
 
   async function appendComments(data, list) {
@@ -397,7 +402,10 @@
       if (!comment.deleted_by_author && avatars) header.append(avatars.image(person));
       const time = node('time', '', dateText(comment.created_at));
       time.dateTime = comment.created_at;
-      header.append(node('strong', '', comment.deleted_by_author ? t('Comentário removido', 'Comment removed') : person?.display_name || t('Leitor', 'Reader')), time);
+      header.append(node('strong', '', comment.deleted_by_author ? t('Comentário removido', 'Comment removed') : person?.display_name || t('Leitor', 'Reader')));
+      if (!comment.deleted_by_author && creatorId && comment.author_id === creatorId) header.append(node('span', 'creator-official-badge', t('✦ Criador', '✦ Creator')));
+      if (state.pinned === comment.id) header.append(node('span', 'creator-pinned-badge', t('📌 Fixado', '📌 Pinned'));
+      header.append(time);
       item.append(header, node('p', 'comment-body', comment.deleted_by_author ? t('Este comentário foi removido pelo autor.', 'This comment was removed by its author.') : comment.body));
       const actions = node('div', 'community-actions');
       if (state.user?.id === comment.author_id && !comment.deleted_by_author) {
@@ -417,6 +425,18 @@
           finally { remove.disabled = false; }
         });
         actions.append(remove);
+      }
+      if (state.creator && !comment.parent_id && !comment.deleted_by_author) {
+        const pin = node('button', 'community-action', state.pinned === comment.id ? t('Desafixar', 'Unpin') : t('Fixar', 'Pin'));
+        pin.type='button'; pin.addEventListener('click', async()=>{
+          pin.disabled=true;
+          const result=state.pinned===comment.id
+            ? await db.from('creator_pinned_comments').delete().eq('episode_slug',episodeRoot.dataset.communityEpisode)
+            : await db.from('creator_pinned_comments').upsert({episode_slug:episodeRoot.dataset.communityEpisode,comment_id:comment.id,pinned_by:state.user.id},{onConflict:'episode_slug'});
+          if(result.error) notice('communityStatus',errorText(result.error),true);
+          else await loadComments(false);
+          pin.disabled=false;
+        }); actions.append(pin);
       }
       item.append(actions);
       if (!comment.parent_id) {
@@ -482,11 +502,17 @@
     commentsLoading = true;
     byId('moreComments').disabled = true;
     try {
+      if(!more){
+        await loadCreatorIdentity();
+        const pinResult=await db.from('creator_pinned_comments').select('comment_id').eq('episode_slug',episodeRoot.dataset.communityEpisode).maybeSingle();
+        state.pinned=pinResult.error?null:pinResult.data?.comment_id || null;
+      }
       const start = more ? state.offset : 0;
       const {data, error} = await db.from('comments').select(commentFields).eq('episode_slug', episodeRoot.dataset.communityEpisode).is('parent_id', null).eq('status', 'visible').order('created_at', {ascending:false}).order('id', {ascending:false}).range(start, start + 19);
       if (error) throw error;
       if (!more) byId('commentList').replaceChildren();
-      await appendComments(data || [], byId('commentList'));
+      const ordered=(data||[]).slice().sort((a,b)=>Number(b.id===state.pinned)-Number(a.id===state.pinned));
+      await appendComments(ordered, byId('commentList'));
       if (!more && !data.length) byId('commentList').append(node('li', 'community-hint', t('Ainda não há comentários. Comece a conversa!', 'No comments yet. Start the conversation!')));
       state.offset = start + data.length;
       byId('moreComments').hidden = data.length < 20;
