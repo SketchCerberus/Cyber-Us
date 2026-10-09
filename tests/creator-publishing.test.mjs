@@ -5,7 +5,7 @@ test('scheduled publication requires pages and a date',()=>{const sql=read('sql/
 test('dynamic reader uses signed URLs, not public URLs',()=>{const js=read('comic-dynamic.js');assert.match(js,/createSignedUrl\(path,300\)/);assert.doesNotMatch(js,/getPublicUrl/)});
 test('creator panel blocks duplicate submissions',()=>{const js=read('creator-panel.js');assert.match(js,/submit.disabled=true/);assert.match(js,/finally\{submit.disabled=false\}/)});
 
-test('dynamic reader preserves community panel container',()=>{const html=read('leitor-dinamico.html');const js=read('comic-dynamic.js');assert.match(html,/data\.communityEpisode/);assert.match(html,/id="comicDynamicContent"/);assert.match(js,/#comicDynamicContent/)});
+test('dynamic reader preserves community panel container',()=>{const html=read('leitor-dinamico.html');const js=read('comic-dynamic.js');assert.match(html,/dataset\.communityEpisode/);assert.match(html,/id="comicDynamicContent"/);assert.match(js,/#comicDynamicContent/)});
 test('creator episodes register into existing discussions',()=>{const sql=read('sql/creator-episode-community.sql');assert.match(sql,/insert into public\.episodes/);assert.match(sql,/cyberus_sync_comic_episode/)});
 
 test('scheduled discussions are gated by release in existing episodes RLS',()=>{const sql=read('sql/creator-episode-community.sql');assert.match(sql,/alter policy episodes_read_enabled/);assert.match(sql,/cyberus_episode_is_released\(slug\)/);assert.match(sql,/publish_at<=now\(\)/)});
