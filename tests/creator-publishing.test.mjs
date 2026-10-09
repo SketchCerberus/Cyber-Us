@@ -15,3 +15,5 @@ test('SQL function bodies use matching dollar quotes',()=>{for(const name of ['s
 test('pin policy verifies comment belongs to the same episode',()=>{const sql=read('sql/creator-discussion-extensions.sql');assert.match(sql,/c\.id=creator_pinned_comments\.comment_id and c\.episode_slug=creator_pinned_comments\.episode_slug/)});
 
 test('existing comic bucket is forced to stay private',()=>{const sql=read('sql/creator-storage.sql');assert.match(sql,/on conflict\(id\) do update set public=false/)});
+
+test('partial uploads are checkpointed while the episode remains a draft',()=>{const js=read('creator-panel.js');assert.match(js,/page_paths:\[\.\.\.uploaded\]/);assert.match(js,/checkpoint\.error/);assert.match(js,/catch\(error\)\{message\('Falha inesperada/)});
