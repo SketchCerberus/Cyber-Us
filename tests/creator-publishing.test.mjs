@@ -11,3 +11,5 @@ test('creator episodes register into existing discussions',()=>{const sql=read('
 test('scheduled discussions are gated by release in existing episodes RLS',()=>{const sql=read('sql/creator-episode-community.sql');assert.match(sql,/alter policy episodes_read_enabled/);assert.match(sql,/cyberus_episode_is_released\(slug\)/);assert.match(sql,/publish_at<=now\(\)/)});
 
 test('SQL function bodies use matching dollar quotes',()=>{for(const name of ['sql/creator-publishing.sql','sql/creator-episode-community.sql','sql/creator-discussion-extensions.sql']){const sql=read(name);assert.equal((sql.match(/\$\$/g)||[]).length%2,0,name+' has unmatched $$ delimiters')}});
+
+test('pin policy verifies comment belongs to the same episode',()=>{const sql=read('sql/creator-discussion-extensions.sql');assert.match(sql,/c\.id=creator_pinned_comments\.comment_id and c\.episode_slug=creator_pinned_comments\.episode_slug/)});
