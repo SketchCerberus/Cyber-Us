@@ -1,7 +1,10 @@
 -- Apply AFTER sql/creator-publishing.sql. Private Storage; access is gated by RLS.
 insert into storage.buckets(id,name,public,file_size_limit,allowed_mime_types)
 values('comic-pages','comic-pages',false,10485760,array['image/jpeg','image/png','image/webp'])
-on conflict(id) do nothing;
+on conflict(id) do update set public=false,
+ file_size_limit=excluded.file_size_limit,
+ allowed_mime_types=excluded.allowed_mime_types;
+-- Fail closed: an existing bucket with this ID must also be private.
 -- Path format: publication UUID / 001.webp; publication UUID is the first folder.
 create policy "Creator uploads comic pages" on storage.objects for insert to authenticated
 with check(bucket_id='comic-pages' and public.cyberus_is_creator()
