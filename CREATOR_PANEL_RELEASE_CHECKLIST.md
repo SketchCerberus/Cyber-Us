@@ -15,13 +15,15 @@
 - Depois de publish_at, catálogo e leitor mostram o conteúdo sem login.
 - Testar mudança de fuso horário (Brasília), horário de verão histórico, upload interrompido, duplicatas e erro de rede.
 - Confirmar que notas e comentários são tratados como texto e nunca executam HTML.
+- Testar que comentários e votos de episódio agendado falham antes de publish_at e funcionam depois.
+- Testar cenário de uma versão publicada e outra ainda em rascunho.
 - O código de badge/fixação foi integrado ao community.js; validar RLS, comportamento em paginação e moderação. A infraestrutura de notificações existente já cobre respostas, sem segunda caixa de entrada.
 - Testar segurança do Storage, lint e testes Node do repositório.
 - Fazer revisão visual PT/EN em celular e desktop.
 
 ## Limitações atuais
-- Comentários fixados e notificações têm somente estrutura SQL proposta.
-- A página dinâmica não integra ainda o painel de discussão/votos existente.
+- Fixação tem SQL e interface propostos, mas ainda sem migração aplicada ou testes reais.
+- A página dinâmica agora inclui o painel de discussão/votos existente; falta teste real e validação das permissões.
 - A edição de publicações está limitada à nota do autor.
 - As migrações não foram executadas no Supabase de produção.
 - Não foi feito teste de ponta a ponta em produção.
