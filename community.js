@@ -511,7 +511,15 @@
       const {data, error} = await db.from('comments').select(commentFields).eq('episode_slug', episodeRoot.dataset.communityEpisode).is('parent_id', null).eq('status', 'visible').order('created_at', {ascending:false}).order('id', {ascending:false}).range(start, start + 19);
       if (error) throw error;
       if (!more) byId('commentList').replaceChildren();
-      const ordered=(data||[]).slice().sort((a,b)=>Number(b.id===state.pinned)-Number(a.id===state.pinned));
+      let ordered=(data||[]).slice();
+      // A pinned comment must remain visible even when it falls outside page 1.
+      if(!more && state.pinned && !ordered.some(c=>c.id===state.pinned)){
+        const pinned=await db.from('comments').select(commentFields)
+          .eq('id',state.pinned).eq('episode_slug',episodeRoot.dataset.communityEpisode)
+          .is('parent_id',null).eq('status','visible').maybeSingle();
+        if(!pinned.error && pinned.data)ordered.unshift(pinned.data);
+      }
+      ordered.sort((a,b)=>Number(b.id===state.pinned)-Number(a.id===state.pinned));
       await appendComments(ordered, byId('commentList'));
       if (!more && !data.length) byId('commentList').append(node('li', 'community-hint', t('Ainda não há comentários. Comece a conversa!', 'No comments yet. Start the conversation!')));
       state.offset = start + data.length;
