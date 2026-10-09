@@ -35,9 +35,9 @@ begin
  from (values
  (1,1,'episodio-01','ep01','jpg','Inicializando','Initializing'),
  (1,2,'episodio-02','ep02','jpg','Processando','Processing'),
- (1,3,'episodio-03','ep03','jpg','Procurando','Searching'),
- (1,4,'episodio-04','ep04','jpg','Prosseguindo','Proceeding'),
- (1,5,'episodio-05','ep05','jpg','Reiniciando','Rebooting'),
+ (1,3,'episodio-03','ep03','webp','Procurando','Searching'),
+ (1,4,'episodio-04','ep04','webp','Prosseguindo','Proceeding'),
+ (1,5,'episodio-05','ep05','webp','Reiniciando','Rebooting'),
  (0,0,'marco-zero','marco-zero','webp','Memória — Marco Zero','Memory — Ground Zero')
  ) as v(chapter,episode,slug,folder,ext,title_pt,title_en)
  cross join (values ('pt'),('en')) as l(lang)
