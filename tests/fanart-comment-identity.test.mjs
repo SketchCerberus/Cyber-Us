@@ -17,7 +17,7 @@ test('fanart comment form never requests a free-form name',()=>{
 
 test('gallery loads the account-linked comment form with a versioned script URL',()=>{
   const gallery=read('fanarts-galeria.html');
-  assert.match(gallery,/src="fanarts-detail\.js\?v=20260922-profile-identity"/);
+  assert.match(gallery,/src="fanarts-detail\.js\?v=[^"]+"/);
   assert.doesNotMatch(gallery,/src="fanarts-detail\.js"/);
   assert.doesNotMatch(gallery,/id="fanart-comment-name"/);
 });

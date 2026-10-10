@@ -1,0 +1,6 @@
+.comment-edit-form { display:grid; gap:.65rem; width:100%; min-width:0; margin-top:.75rem; }
+.comment-edit-form[hidden] { display:none; }
+.comment-edit-form textarea { box-sizing:border-box; width:100%; max-width:100%; min-height:7rem; padding:.7rem; color:var(--text,#eee); background:var(--surface,#171b23); border:1px solid currentColor; border-radius:.5rem; font:inherit; }
+.comment-edit-form label { display:block; }
+.comment-edit-form button { width:fit-content; }
+.comment-edit-form p { overflow-wrap:anywhere; }

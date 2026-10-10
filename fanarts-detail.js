@@ -111,13 +111,19 @@
     const start=append?commentOffset:0;
     let result;
     try {result=await db.from('fanart_comments')
-      .select('id,display_name,body,created_at').eq('submission_id',id)
+      .select('id,display_name,body,created_at,updated_at,edited_at').eq('submission_id',id)
       .order('created_at',{ascending:false}).order('id',{ascending:false}).range(start,start+29);
     }catch(error){result={error};}
     if(token!==request)return;
     const {data,error}=result;
     moreComments.disabled=false;
     if(error){moreComments.hidden=false;setStatus('Comentários indisponíveis. Tente novamente.','Comments are unavailable. Please retry.',true);return;}
+    let owned=new Set();
+    if(window.CyberUsCommentEditor){
+      const user=await access();
+      if(user){const own=await db.rpc('own_fanart_comment_ids',{p_submission:id});if(!own.error)owned=new Set((own.data||[]).map(c=>String(c.id)));}
+      if(token!==request)return;
+    }
     if(!append)comments.replaceChildren();
     commentOffset=start+(data?.length||0);moreComments.hidden=(data?.length||0)<30;
     form.hidden=false;
@@ -138,6 +144,9 @@
       date.textContent=new Intl.DateTimeFormat(pt()?'pt-BR':'en',{dateStyle:'medium'}).format(new Date(item.created_at));
       const text=document.createElement('p');text.textContent=item.body;
       article.append(author,date,text);comments.append(article);
+      window.CyberUsCommentEditor?.mount({container:article,comment:item,kind:'fanart',db,
+        eligible:()=>token===request && owned.has(String(item.id)),
+        onSaved:async()=>{if(token===request){await loadComments(id,token);setStatus('Comentário atualizado.','Comment updated.');}}});
     }
   }
   async function loadInteractions() {

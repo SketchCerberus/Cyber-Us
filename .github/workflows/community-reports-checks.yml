@@ -3,6 +3,14 @@ on:
   pull_request:
     paths:
       - 'community.js'
+      - 'comment-editor.*'
+      - 'account-closure.js'
+      - 'comunidade.html'
+      - 'supabase/functions/close-account/**'
+      - 'supabase/migrations/*owner_comment*'
+      - 'supabase/migrations/*account_closure*'
+      - 'tests/comment-editor*'
+      - 'tests/account-closure*'
       - 'community-reports.css'
       - 'fanarts-reports.js'
       - 'fanarts-detail.js'
@@ -28,13 +36,15 @@ jobs:
       - name: Syntax and integration contracts
         run: |
           node --check community.js
+          node --check comment-editor.js
+          node --check account-closure.js
           node --check fanarts-detail.js
           node --check fanarts-reports.js
           node --check moderation-fanart-reports.js
-          node --test tests/community-reports.test.mjs tests/replies.test.mjs tests/fanarts-enhancements.test.mjs tests/fanart-comment-identity.test.mjs
+          node --test tests/community-reports.test.mjs tests/comment-editor.test.mjs tests/account-closure.test.mjs tests/replies.test.mjs tests/fanarts-enhancements.test.mjs tests/fanart-comment-identity.test.mjs
       - name: Install pinned browser test dependency
         run: npm install --no-save --ignore-scripts playwright@1.62.1
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
       - name: Reporting browser flows and responsive layouts
-        run: node --test tests/community-reports.browser.mjs
+        run: node --test tests/community-reports.browser.mjs tests/comment-editor.browser.mjs tests/account-closure.browser.mjs
