@@ -1,0 +1,10 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {handleClosure} from '../supabase/functions/close-account/handler.mjs';
+const now=Date.now();
+async function run({origin='https://sketchcerberus.github.io',token=true,confirmed=true,age=0,staff=null,permissionError=null,avatarError=null,deleteError=null,confirmation='delete-account'}={}){
+ const calls=[];const createClient=(_url,key)=>key==='service'?{storage:{from:()=>({remove:async paths=>{calls.push({paths});return {error:avatarError};}})},auth:{admin:{deleteUser:async(id,soft)=>{calls.push({id,soft});return {error:deleteError};}}}}:{auth:{getUser:async()=>({data:{user:token?{id:'own-user',email_confirmed_at:confirmed?'yes':null,last_sign_in_at:new Date(now-age).toISOString()}:null}})},rpc:async()=>({data:staff,error:permissionError})};
+ const req=new Request('https://test.invalid',{method:'POST',headers:{origin,...(token?{authorization:'Bearer test'}:{})},body:JSON.stringify({confirmation,id:'other-user'})});
+ const response=await handleClosure(req,{createClient,url:'url',anonKey:'anon',serviceKey:'service',now:()=>now});return {response,calls,body:await response.json()};
+}
+test('verified recent owner closes only own account and requests Auth soft deletion',async()=>{const r=await run();assert.equal(r.response.status,200);assert.deepEqual(r.calls,[{paths:['own-user/avatar.jpg']},{id:'own-user',soft:true}]);});
+test('guest, wrong origin, unconfirmed, stale sign-in, staff and failed permissions never delete',async()=>{for(const args of [{token:false},{origin:'https://evil.invalid'},{confirmed:false},{age:11*60*1000},{staff:'creator'},{staff:'moderator'},{permissionError:{message:'fail'}},{confirmation:'wrong'}]){const r=await run(args);assert.notEqual(r.response.status,200);assert.equal(r.calls.length,0);}});
+test('avatar and Auth failure never claim successful closure',async()=>{for(const args of [{avatarError:{}},{deleteError:{}}]){const r=await run(args);assert.equal(r.response.status,503);if(args.avatarError)assert.equal(r.calls.length,1);}});

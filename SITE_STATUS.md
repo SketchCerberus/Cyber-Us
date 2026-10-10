@@ -1,4 +1,12 @@
-# Revisão do site — 30/09/2026
+# Revisão do site — 09/10/2026
+
+## Pendências concluídas após a revisão inicial
+
+- Newsletter inglesa: inscrição e recebimento confirmados pelo autor. Não permanece pendente.
+- Comentários de episódios e fanarts: edição pelo próprio autor, sinalização de edição, preservação de spoiler e proteção contra alterações simultâneas.
+- Exclusão da conta: opção PT/EN na comunidade, exige confirmação digitada e login recente; conteúdo permanece com crédito anonimizado, conforme decisão do autor. A newsletter tem descadastro separado. Integrantes da equipe precisam transferir responsabilidades primeiro.
+- Permissões de edição e anonimização verificadas com dados temporários e reversão integral; nenhuma conta real foi excluída. Testes automatizados de interface e servidor complementam a validação, sem substituir uma exclusão real pelo titular.
+- Identidades humanas dos personagens continuam privadas. Oeté e Malware são as grafias aprovadas.
 
 ## Corrigido nesta revisão
 
@@ -13,9 +21,9 @@
 
 ## Prioridade 1 — configuração ou revisão editorial
 
-- Newsletter: formulários PT/EN e lista inglesa foram configurados; o formulário inglês usa o modelo de confirmação #5. Validar entrega/confirmação com conta de teste autorizada. Nenhum e-mail real foi enviado nesta revisão.
+- Newsletter: formulários PT/EN e lista inglesa configurados, com recebimento inglês confirmado pelo autor.
 - Revisar redação/ortografia dos balões originais: o episódio 2 usa Malwer; a grafia aprovada é Malware. A página inglesa do episódio 4 tem uma fala sobreposta. Esta revisão não redesenhou as imagens.
-- Validar publicação, comentários, votos e confirmação de conta em ambiente de teste. A inspeção pública não enviou fanart, comentários, votos ou inscrições reais.
+- Fluxos de comunidade têm testes de interface e permissões. A galeria ainda não contém fanarts aprovadas: publicar somente obras reais autorizadas. Recuperação de senha por e-mail e exclusão real da conta continuam sujeitas à validação pelo titular, sem disparar mensagens ou apagar contas reais nesta revisão.
 
 ## Prioridade 2 — conteúdo fornecido pelo autor
 
@@ -32,4 +40,4 @@
 
 ## Já disponível
 
-Catálogo, leitura PT/EN, navegação entre episódios, progresso de leitura, temas, comunidade, regras e fluxo de fanarts, moderação, Ko-fi e publicações externas. Sua existência foi verificada; entregas de e-mail e gravações no banco não foram simuladas como concluídas.
+Catálogo, leitura PT/EN, navegação entre episódios, progresso de leitura, temas, comunidade, regras e fluxo de fanarts, moderação, Ko-fi e publicações externas. Newsletter inglesa confirmada pelo autor; edição e anonimização verificadas com dados temporários. O novo painel de publicação do criador e o leitor dinâmico foram preservados.

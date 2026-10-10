@@ -385,7 +385,7 @@
     await loadComments(false);
   }
 
-  const commentFields = 'id,author_id,body,created_at,parent_id,deleted_by_author';
+  const commentFields = 'id,author_id,body,created_at,updated_at,edited_at,parent_id,deleted_by_author';
   let creatorId = null;
   async function loadCreatorIdentity(){ const {data,error}=await db.rpc('cyberus_creator_public_id');if(!error)creatorId=data || null; }
   let commentsLoading = false;
@@ -408,6 +408,9 @@
       header.append(time);
       item.append(header, node('p', 'comment-body', comment.deleted_by_author ? t('Este comentário foi removido pelo autor.', 'This comment was removed by its author.') : comment.body));
       const actions = node('div', 'community-actions');
+      window.CyberUsCommentEditor?.mount({container:actions,comment,kind:'episode',db,
+        eligible:()=>state.user?.id===comment.author_id && !state.banned && !comment.deleted_by_author,
+        onSaved:async()=>{state.offset=0;await loadComments(false);notice('communityStatus',t('Comentário atualizado.','Comment updated.'));}});
       if (state.user?.id === comment.author_id && !comment.deleted_by_author) {
         const remove = node('button', 'community-action danger', t('Remover meu comentário', 'Remove my comment'));
         remove.type = 'button';

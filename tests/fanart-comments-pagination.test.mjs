@@ -9,7 +9,7 @@ function setup() {
   const element=()=>({dataset:{},children:[],append(...nodes){this.children.push(...nodes);},replaceChildren(){this.children=[];}});
   const comments=element(),moreComments={},form={},votes={};
   const db={from(){return {select(){return this;},eq(key,id){this.id=id;return this;},order(){return this;},async range(a,b){ranges.push([this.id,a,b]);return results.shift()||{data:[]};}};}};
-  const context=vm.createContext({db,comments,moreComments,form,votes,document:{createElement:element},Intl,Date,
+  const context=vm.createContext({window:{},db,comments,moreComments,form,votes,document:{createElement:element},Intl,Date,
     pt:()=>true,t:(pt)=>pt,setStatus:()=>{},loadVotes:async()=>{},interactionStatus:{classList:{contains:()=>false}},
     selected:{dataset:{submissionId:'first'}},request:0,commentOffset:0});
   vm.runInContext(functions,context);
