@@ -8,7 +8,7 @@ test('gallery and publication routes have bilingual navigation and shared header
   const submit=read('fanarts-publicar.html');
   for(const page of [gallery,submit]) {
     assert.match(page,/src="reader\.js"/);
-    assert.match(page,/src="header-scroll\.js"/);
+    assert.match(page,/src="header-scroll\.js(?:\?[^"\s]+)?"/);
     assert.match(page,/fanarts-subnav/);
     assert.match(page,/data-pt=/);
     assert.match(page,/data-en=/);

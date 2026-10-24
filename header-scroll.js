@@ -143,7 +143,7 @@
 
   // Update the guest account entry to a verified public name/avatar after login.
   const accountScript = document.createElement('script');
-  accountScript.src = new URL('header-account.js', base).href;
+  accountScript.src = new URL('header-account.js?v=20261024-avatars-2', base).href;
   document.head.appendChild(accountScript);
 
   const themeStyles = document.createElement('link');

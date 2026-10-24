@@ -8,6 +8,7 @@
   const project = 'https://znenamrszhjsiztllcit.supabase.co';
   const publishableKey = 'sb_publishable_3VRFxwtDuYq4ETHs4xof8g_Fp3GRl6c';
   const presets = { robot: '🤖', fox: '🦊', cat: '🐱', rocket: '🚀', star: '⭐', moon: '🌙' };
+  const characters = {kaubi:'assets/avatars/kaubi.png',auara:'assets/avatars/auara.png',oete:'assets/avatars/oete.png'};
   const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
   const guestPT = link.getAttribute('data-pt') || 'Entrar / Cadastre-se';
   const guestEN = link.getAttribute('data-en') || 'Sign in / Sign up';
@@ -50,9 +51,10 @@
     const value = member.profile?.avatar;
     avatar.textContent = Object.prototype.hasOwnProperty.call(presets, value) ? presets[value] : '👤';
     const version = typeof value === 'string' && value.startsWith('upload:') ? value.slice(7) : '';
-    if (uuid.test(member.id) && uuid.test(version)) {
+    const character = Object.hasOwn(characters,value) ? characters[value] : null;
+    if (character || (uuid.test(member.id) && uuid.test(version))) {
       const image = document.createElement('img');
-      image.src = `${project}/storage/v1/object/public/community-avatars/${member.id}/avatar.jpg?v=${version}`;
+      image.src = character ? new URL(character,scriptBase).href : `${project}/storage/v1/object/public/community-avatars/${member.id}/avatar.jpg?v=${version}`;
       image.alt = '';
       image.width = image.height = 32;
       image.addEventListener('error', () => image.remove(), { once: true });

@@ -11,7 +11,7 @@ function setup(){
  const state={user:{id:user},banned:false},calls=[];let rejectUpload=false,rejectUpdate=false;
  const bucket={async upload(path,blob,options){calls.push({op:'upload',path,blob,options});return{error:rejectUpload?new Error('upload failed'):null};},async remove(paths){calls.push({op:'remove',paths});return{error:null};}};
  const db={storage:{from(name){assert.equal(name,'community-avatars');return bucket;}},from(table){assert.equal(table,'profiles');return{update(values){return{eq(key,id){assert.equal(id,user);return{select(){return{async single(){calls.push({op:'update',values});return{data:values,error:rejectUpdate?new Error('update failed'):null};}};}};}};}};}};
- const context={window:{},document:{createElement:make,getElementById:id=>elements.find(e=>e.id===id)||null},URL:{createObjectURL:()=> 'blob:preview',revokeObjectURL(){}},crypto:{randomUUID:()=>version},createImageBitmap:async()=>({width:1000,height:600,close(){}})};
+ const context={window:{},document:{currentScript:{src:'https://example.test/Cyber-Us/community-avatar.js'},createElement:make,getElementById:id=>elements.find(e=>e.id===id)||null},URL:Object.assign(URL,{createObjectURL:()=> 'blob:preview',revokeObjectURL(){}}),crypto:{randomUUID:()=>version},createImageBitmap:async()=>({width:1000,height:600,close(){}})};
  vm.runInNewContext(source,context);
  const api=context.window.CyberUsAvatars,editor=api.create({db,projectUrl:'https://example.supabase.co',state,t:a=>a});
  const click=async el=>{el.events.click();await settle();};
@@ -53,7 +53,7 @@ test('Character presets save stable IDs and render the same local image after re
   assert.equal(button.attributes['aria-label'],'Escolher avatar: '+name);
   await s.click(button);await s.submit();assert.equal(s.calls[0].values.avatar,key);
   s.editor.render({avatar:key});assert.equal(button.attributes['aria-pressed'],'true');
-  const img=s.editor.image({avatar:key}).children[0];assert.equal(img.src,'assets/avatars/'+key+'.png');
-  assert.ok(readFileSync(new URL('../'+img.src,import.meta.url)).length>0);
+  const img=s.editor.image({avatar:key}).children[0];assert.equal(img.src,'https://example.test/Cyber-Us/assets/avatars/'+key+'.png');
+  assert.ok(readFileSync(new URL('../assets/avatars/'+key+'.png',import.meta.url)).length>0);
  }
 });
