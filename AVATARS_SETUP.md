@@ -25,6 +25,6 @@ Security Advisor returned only previously recorded notices: [private tables with
 
 ## Character presets and expressions
 
-The profile picker offers two expressions each for Kaubi, Auará and Óete using the six supplied PNGs in `assets/avatars/`. Stable profile IDs are `kaubi-2`, `kaubi-3`, `auara-2`, `auara-3`, `oete-2`, and `oete-3`. Users preview a choice and confirm it; the existing `profiles.avatar` field persists the selection. The shared renderer shows it in the account header, comments and moderation. Previously saved character IDs, emoji avatars and uploaded photos remain supported.
+The profile picker offers each character's original avatar plus the two new expressions, using all nine PNGs in `assets/avatars/`. Stable profile IDs are `kaubi`, `kaubi-2`, `kaubi-3`, `auara`, `auara-2`, `auara-3`, `oete`, `oete-2`, and `oete-3`. Users preview a choice and confirm it; the existing `profiles.avatar` field persists the selection. The shared renderer shows it in the account header, comments and moderation. Emoji avatars and uploaded photos remain supported.
 
 Before releasing the frontend, apply `supabase/migrations/20261024120000_avatar_expressions.sql` after `20261024043047_character_avatar_presets.sql` to allow the expression IDs. The migration preserves existing choices and the upload format check. Do not rerun `avatar-setup.sql` on an existing database.
