@@ -25,8 +25,8 @@ test('Avatar URLs accept only owned fixed paths and reject arbitrary URLs',()=>{
  for(const avatar of ['https://tracker.test/photo','javascript:alert(1)','upload:../../other','robot',null])assert.equal(api.photoURL('https://example.supabase.co',{id:user,avatar}),null);
 });
 test('Preset selection saves only the own avatar field and removes obsolete uploads',async()=>{
- const s=setup();await s.click(s.elements.find(e=>e.attributes['data-avatar']==='fox'));await s.submit();
- assert.equal(s.calls[0].op,'update');assert.equal(s.calls[0].values.avatar,'fox');assert.equal(Object.keys(s.calls[0].values).length,1);
+ const s=setup();await s.click(s.elements.find(e=>e.attributes['data-avatar']==='kaubi'));await s.submit();
+ assert.equal(s.calls[0].op,'update');assert.equal(s.calls[0].values.avatar,'kaubi');assert.equal(Object.keys(s.calls[0].values).length,1);
  assert.equal(s.calls[1].op,'remove');assert.equal(s.calls[1].paths[0],user+'/avatar.jpg');
 });
 test('Photos are converted to small JPEGs before upload, then saved to profile',async()=>{
@@ -56,4 +56,9 @@ test('Character presets save stable IDs and render the same local image after re
   const img=s.editor.image({avatar:key}).children[0];assert.equal(img.src,'https://example.test/Cyber-Us/assets/avatars/'+key+'.png');
   assert.ok(readFileSync(new URL('../assets/avatars/'+key+'.png',import.meta.url)).length>0);
  }
+});
+
+test('Picker offers only the three characters while existing emoji profiles still render',()=>{
+ const s=setup();assert.deepEqual(s.elements.filter(e=>e.attributes['data-avatar']).map(e=>e.attributes['data-avatar']),['kaubi','auara','oete']);
+ assert.equal(s.editor.image({avatar:'fox'}).textContent,'🦊');
 });

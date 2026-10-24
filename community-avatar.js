@@ -4,7 +4,6 @@
   const presets = {robot:'🤖',fox:'🦊',cat:'🐱',rocket:'🚀',star:'⭐',moon:'🌙'};
   const assetBase = document.currentScript?.src || document.baseURI;
   const characters = {kaubi:{name:'Kaubi',src:'assets/avatars/kaubi.png'},auara:{name:'Auará',src:'assets/avatars/auara.png'},oete:{name:'Óete',src:'assets/avatars/oete.png'}};
-  const presetLabels = {robot:['Robô','Robot'],fox:['Raposa','Fox'],cat:['Gato','Cat'],rocket:['Foguete','Rocket'],star:['Estrela','Star'],moon:['Lua','Moon']};
   const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
   function photoURL(projectUrl, profile) {
     const version = profile?.avatar?.startsWith('upload:') ? profile.avatar.slice(7) : '';
@@ -48,13 +47,12 @@
     const buttons=[];
     function clearPreviewURL(){if(previewURL){URL.revokeObjectURL(previewURL);previewURL=null;}}
     function showSelection(){clearPreviewURL();preview.replaceChildren(image({id:state.user?.id,avatar:chosen}));buttons.forEach(([key,button])=>button.setAttribute('aria-pressed',String(key===chosen)));}
-    for(const key of [...Object.keys(characters),...Object.keys(presets)]){
-      const emoji=presets[key] || '';
-      const button=make('button','avatar-choice',emoji);button.type='button';button.setAttribute('data-avatar',key);
+    for(const key of Object.keys(characters)){
+      const button=make('button','avatar-choice');button.type='button';button.setAttribute('data-avatar',key);
       if(Object.hasOwn(characters,key))button.append(image({avatar:key}));
       button.addEventListener('click',()=>{chosen=key;file.value='';showSelection();});choices.append(button);buttons.push([key,button]);
     }
-    const text=()=>{buttons.forEach(([key,button])=>{const name=Object.hasOwn(characters,key)?characters[key].name:t(...presetLabels[key]);button.setAttribute('aria-label',t('Escolher avatar: ','Choose avatar: ')+name);button.title=name;});heading.textContent=t('Foto de perfil','Profile picture');label.textContent=t('Ou envie uma foto','Or upload a photo');save.textContent=t('Salvar imagem','Save picture');remove.textContent=t('Remover imagem','Remove picture');hint.textContent=t('Sua imagem será pública nos comentários. JPG, PNG ou WebP até 5 MB; recorte quadrado central.','Your picture will be public in comments. JPG, PNG or WebP up to 5 MB; centered square crop.');};
+    const text=()=>{buttons.forEach(([key,button])=>{const name=characters[key].name;button.setAttribute('aria-label',t('Escolher avatar: ','Choose avatar: ')+name);button.title=name;});heading.textContent=t('Foto de perfil','Profile picture');label.textContent=t('Ou envie uma foto','Or upload a photo');save.textContent=t('Salvar imagem','Save picture');remove.textContent=t('Remover imagem','Remove picture');hint.textContent=t('Sua imagem será pública nos comentários. JPG, PNG ou WebP até 5 MB; recorte quadrado central.','Your picture will be public in comments. JPG, PNG or WebP up to 5 MB; centered square crop.');};
     text();document.getElementById('languageChoices')?.addEventListener('click',text);
     form.append(heading,preview,choices,label,file,hint,save,remove,status);host.insertBefore(form,document.getElementById('profileForm'));
     function controls(){form.querySelectorAll('input,button').forEach(el=>{el.disabled=locked||state.banned||!state.user;});}
