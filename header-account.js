@@ -8,7 +8,12 @@
   const project = 'https://znenamrszhjsiztllcit.supabase.co';
   const publishableKey = 'sb_publishable_3VRFxwtDuYq4ETHs4xof8g_Fp3GRl6c';
   const presets = { robot: '🤖', fox: '🦊', cat: '🐱', rocket: '🚀', star: '⭐', moon: '🌙' };
-  const characters = {kaubi:'assets/avatars/kaubi.png',auara:'assets/avatars/auara.png',oete:'assets/avatars/oete.png'};
+  const characters = {
+    'kaubi-2':'assets/avatars/kaubi-2.png','kaubi-3':'assets/avatars/kaubi-3.png',
+    'auara-2':'assets/avatars/auara-2.png','auara-3':'assets/avatars/auara-3.png',
+    'oete-2':'assets/avatars/oete-2.png','oete-3':'assets/avatars/oete-3.png',
+    kaubi:'assets/avatars/kaubi.png',auara:'assets/avatars/auara.png',oete:'assets/avatars/oete.png'
+  };
   const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
   const guestPT = link.getAttribute('data-pt') || 'Entrar / Cadastre-se';
   const guestEN = link.getAttribute('data-en') || 'Sign in / Sign up';

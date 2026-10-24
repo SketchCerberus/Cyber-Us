@@ -3,7 +3,11 @@
   'use strict';
   const presets = {robot:'🤖',fox:'🦊',cat:'🐱',rocket:'🚀',star:'⭐',moon:'🌙'};
   const assetBase = document.currentScript?.src || document.baseURI;
-  const characters = {kaubi:{name:'Kaubi',src:'assets/avatars/kaubi.png'},auara:{name:'Auará',src:'assets/avatars/auara.png'},oete:{name:'Óete',src:'assets/avatars/oete.png'}};
+  const characters = {
+    'auara-2':{name:'Auará',expression:2,src:'assets/avatars/auara-2.png'},'auara-3':{name:'Auará',expression:3,src:'assets/avatars/auara-3.png'},
+    'kaubi-2':{name:'Kaubi',expression:2,src:'assets/avatars/kaubi-2.png'},'kaubi-3':{name:'Kaubi',expression:3,src:'assets/avatars/kaubi-3.png'},
+    'oete-2':{name:'Óete',expression:2,src:'assets/avatars/oete-2.png'},'oete-3':{name:'Óete',expression:3,src:'assets/avatars/oete-3.png'}
+  };
   const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
   function photoURL(projectUrl, profile) {
     const version = profile?.avatar?.startsWith('upload:') ? profile.avatar.slice(7) : '';
@@ -47,12 +51,12 @@
     const buttons=[];
     function clearPreviewURL(){if(previewURL){URL.revokeObjectURL(previewURL);previewURL=null;}}
     function showSelection(){clearPreviewURL();preview.replaceChildren(image({id:state.user?.id,avatar:chosen}));buttons.forEach(([key,button])=>button.setAttribute('aria-pressed',String(key===chosen)));}
-    for(const key of Object.keys(characters)){
+    for(const [key,character] of Object.entries(characters)){
       const button=make('button','avatar-choice');button.type='button';button.setAttribute('data-avatar',key);
-      if(Object.hasOwn(characters,key))button.append(image({avatar:key}));
+      button.append(image({avatar:key}),make('span','avatar-choice-label',`${character.name} · ${t('Expressão ','Expression ')}${character.expression}`));
       button.addEventListener('click',()=>{chosen=key;file.value='';showSelection();});choices.append(button);buttons.push([key,button]);
     }
-    const text=()=>{buttons.forEach(([key,button])=>{const name=characters[key].name;button.setAttribute('aria-label',t('Escolher avatar: ','Choose avatar: ')+name);button.title=name;});heading.textContent=t('Foto de perfil','Profile picture');label.textContent=t('Ou envie uma foto','Or upload a photo');save.textContent=t('Salvar imagem','Save picture');remove.textContent=t('Remover imagem','Remove picture');hint.textContent=t('Sua imagem será pública nos comentários. JPG, PNG ou WebP até 5 MB; recorte quadrado central.','Your picture will be public in comments. JPG, PNG or WebP up to 5 MB; centered square crop.');};
+    const text=()=>{buttons.forEach(([key,button])=>{const character=characters[key],name=`${character.name} · ${t('Expressão ','Expression ')}${character.expression}`;button.setAttribute('aria-label',t('Escolher avatar: ','Choose avatar: ')+name);button.title=name;button.querySelector?.('.avatar-choice-label')&&(button.querySelector('.avatar-choice-label').textContent=name);});heading.textContent=t('Escolha seu avatar','Choose your avatar');label.textContent=t('Ou envie uma foto','Or upload a photo');save.textContent=t('Confirmar avatar','Confirm avatar');remove.textContent=t('Remover imagem','Remove picture');hint.textContent=t('Prévia do avatar selecionado. Sua imagem será pública nos comentários.','Preview your selected avatar. Your image will be public in comments.');};
     text();document.getElementById('languageChoices')?.addEventListener('click',text);
     form.append(heading,preview,choices,label,file,hint,save,remove,status);host.insertBefore(form,document.getElementById('profileForm'));
     function controls(){form.querySelectorAll('input,button').forEach(el=>{el.disabled=locked||state.banned||!state.user;});}
@@ -84,7 +88,7 @@
           const {error:cleanup}=await db.storage.from('community-avatars').remove([`${userId}/avatar.jpg`]);
           if(cleanup){message(t('Avatar salvo. Não foi possível apagar a foto antiga; tente Remover imagem novamente.','Avatar saved. Could not delete the old photo; try Remove picture again.'),true);return;}
         }
-        message(t('Imagem atualizada.','Picture updated.'));
+        message(t('Avatar atualizado.','Avatar updated.'));
       }catch(error){message(error.message==='PHOTO_FORMAT'?t('Use uma imagem válida JPG, PNG ou WebP de até 5 MB e 40 megapixels.','Use a valid JPG, PNG or WebP image up to 5 MB and 40 megapixels.'):t('Não foi possível salvar a imagem. Tente novamente.','Could not save the picture. Please try again.'),true);}
       finally{locked=false;controls();}
     }
