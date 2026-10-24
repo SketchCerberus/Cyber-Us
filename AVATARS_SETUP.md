@@ -23,8 +23,8 @@ Automated checks cover safe avatar URLs, format/size rejection, preset save, JPE
 
 Security Advisor returned only previously recorded notices: [private tables with no policies](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy), [moderation SECURITY DEFINER wrapper](https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable), and [leaked-password protection](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection). No new avatar finding was returned. Moderation of inappropriate profile photos is not provided by the existing comment-moderation controls; bans prevent further profile edits.
 
-## Character presets
+## Character presets and expressions
 
-Kaubi (green), Auará (red) and Óete (blue) use the supplied original PNGs in `assets/avatars/`. Stable profile IDs are `kaubi`, `auara`, and `oete` in both languages. The shared renderer displays these assets in the editor, comments and moderation. Emoji and uploaded avatars remain supported.
+The profile picker offers two expressions each for Kaubi, Auará and Óete using the six supplied PNGs in `assets/avatars/`. Stable profile IDs are `kaubi-2`, `kaubi-3`, `auara-2`, `auara-3`, `oete-2`, and `oete-3`. Users preview a choice and confirm it; the existing `profiles.avatar` field persists the selection. The shared renderer shows it in the account header, comments and moderation. Previously saved character IDs, emoji avatars and uploaded photos remain supported.
 
-Before releasing the frontend, apply `supabase/migrations/20261024043047_character_avatar_presets.sql` to allow the new IDs. This migration preserves the upload format check, existing choices, policies and grants. Do not rerun `avatar-setup.sql` on an existing database.
+Before releasing the frontend, apply `supabase/migrations/20261024120000_avatar_expressions.sql` after `20261024043047_character_avatar_presets.sql` to allow the expression IDs. The migration preserves existing choices and the upload format check. Do not rerun `avatar-setup.sql` on an existing database.

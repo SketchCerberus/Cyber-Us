@@ -102,7 +102,7 @@ test('Image URLs require two UUIDs; arbitrary URLs and names are never HTML', as
 });
 
 test('Character avatars display in the header and survive language changes',async()=>{
- for(const avatar of ['kaubi','auara','oete']){
+ for(const avatar of ['kaubi-2','kaubi-3','auara-2','auara-3','oete-2','oete-3']){
   const s=setup({user:{id},profile:{display_name:'Leitor',avatar}});await settle();await settle();
   assert.equal(s.link.children[0].children[0].src,'https://example.test/assets/avatars/'+avatar+'.png');
   s.changeLanguage('en');assert.equal(s.link.children[0].children[0].src,'https://example.test/assets/avatars/'+avatar+'.png');

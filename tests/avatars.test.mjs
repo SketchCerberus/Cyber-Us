@@ -25,8 +25,8 @@ test('Avatar URLs accept only owned fixed paths and reject arbitrary URLs',()=>{
  for(const avatar of ['https://tracker.test/photo','javascript:alert(1)','upload:../../other','robot',null])assert.equal(api.photoURL('https://example.supabase.co',{id:user,avatar}),null);
 });
 test('Preset selection saves only the own avatar field and removes obsolete uploads',async()=>{
- const s=setup();await s.click(s.elements.find(e=>e.attributes['data-avatar']==='kaubi'));await s.submit();
- assert.equal(s.calls[0].op,'update');assert.equal(s.calls[0].values.avatar,'kaubi');assert.equal(Object.keys(s.calls[0].values).length,1);
+ const s=setup();await s.click(s.elements.find(e=>e.attributes['data-avatar']==='kaubi-2'));await s.submit();
+ assert.equal(s.calls[0].op,'update');assert.equal(s.calls[0].values.avatar,'kaubi-2');assert.equal(Object.keys(s.calls[0].values).length,1);
  assert.equal(s.calls[1].op,'remove');assert.equal(s.calls[1].paths[0],user+'/avatar.jpg');
 });
 test('Photos are converted to small JPEGs before upload, then saved to profile',async()=>{
@@ -47,10 +47,10 @@ test('Remove clears the avatar then deletes only the own fixed object',async()=>
  assert.equal(s.calls[0].values.avatar,null);assert.equal(s.calls[1].paths[0],user+'/avatar.jpg');
 });
 
-test('Character presets save stable IDs and render the same local image after reload',async()=>{
- for(const [key,name] of [['kaubi','Kaubi'],['auara','Auará'],['oete','Óete']]){
+test('Character expressions save stable IDs and render the chosen local image after reload',async()=>{
+ for(const [key,name,expression] of [['kaubi-2','Kaubi',2],['kaubi-3','Kaubi',3],['auara-2','Auará',2],['auara-3','Auará',3],['oete-2','Óete',2],['oete-3','Óete',3]]){
   const s=setup();const button=s.elements.find(e=>e.attributes['data-avatar']===key);
-  assert.equal(button.attributes['aria-label'],'Escolher avatar: '+name);
+  assert.equal(button.attributes['aria-label'],`Escolher avatar: ${name} · Expressão ${expression}`);
   await s.click(button);await s.submit();assert.equal(s.calls[0].values.avatar,key);
   s.editor.render({avatar:key});assert.equal(button.attributes['aria-pressed'],'true');
   const img=s.editor.image({avatar:key}).children[0];assert.equal(img.src,'https://example.test/Cyber-Us/assets/avatars/'+key+'.png');
@@ -58,7 +58,7 @@ test('Character presets save stable IDs and render the same local image after re
  }
 });
 
-test('Picker offers only the three characters while existing emoji profiles still render',()=>{
- const s=setup();assert.deepEqual(s.elements.filter(e=>e.attributes['data-avatar']).map(e=>e.attributes['data-avatar']),['kaubi','auara','oete']);
+test('Picker offers both expressions for each character while existing emoji profiles still render',()=>{
+ const s=setup();assert.deepEqual(s.elements.filter(e=>e.attributes['data-avatar']).map(e=>e.attributes['data-avatar']),['auara-2','auara-3','kaubi-2','kaubi-3','oete-2','oete-3']);
  assert.equal(s.editor.image({avatar:'fox'}).textContent,'🦊');
 });
