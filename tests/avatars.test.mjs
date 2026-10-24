@@ -25,7 +25,7 @@ test('Avatar URLs accept only owned fixed paths and reject arbitrary URLs',()=>{
  for(const avatar of ['https://tracker.test/photo','javascript:alert(1)','upload:../../other','robot',null])assert.equal(api.photoURL('https://example.supabase.co',{id:user,avatar}),null);
 });
 test('Preset selection saves only the own avatar field and removes obsolete uploads',async()=>{
- const s=setup();await s.click(s.elements.find(e=>e.attributes['aria-label']==='fox'));await s.submit();
+ const s=setup();await s.click(s.elements.find(e=>e.attributes['data-avatar']==='fox'));await s.submit();
  assert.equal(s.calls[0].op,'update');assert.equal(s.calls[0].values.avatar,'fox');assert.equal(Object.keys(s.calls[0].values).length,1);
  assert.equal(s.calls[1].op,'remove');assert.equal(s.calls[1].paths[0],user+'/avatar.jpg');
 });
@@ -45,4 +45,15 @@ test('Failed upload never updates the profile; failed profile update never delet
 test('Remove clears the avatar then deletes only the own fixed object',async()=>{
  const s=setup();s.editor.render({avatar:'upload:'+version});await s.click(s.elements.find(e=>e.textContent==='Remover imagem'));
  assert.equal(s.calls[0].values.avatar,null);assert.equal(s.calls[1].paths[0],user+'/avatar.jpg');
+});
+
+test('Character presets save stable IDs and render the same local image after reload',async()=>{
+ for(const [key,name] of [['kaubi','Kaubi'],['auara','Auará'],['oete','Óete']]){
+  const s=setup();const button=s.elements.find(e=>e.attributes['data-avatar']===key);
+  assert.equal(button.attributes['aria-label'],'Escolher avatar: '+name);
+  await s.click(button);await s.submit();assert.equal(s.calls[0].values.avatar,key);
+  s.editor.render({avatar:key});assert.equal(button.attributes['aria-pressed'],'true');
+  const img=s.editor.image({avatar:key}).children[0];assert.equal(img.src,'assets/avatars/'+key+'.png');
+  assert.ok(readFileSync(new URL('../'+img.src,import.meta.url)).length>0);
+ }
 });
