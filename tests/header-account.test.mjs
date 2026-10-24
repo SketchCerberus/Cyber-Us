@@ -100,3 +100,11 @@ test('Image URLs require two UUIDs; arbitrary URLs and names are never HTML', as
   assert.equal(s.link.children[0].children[0].src, `https://znenamrszhjsiztllcit.supabase.co/storage/v1/object/public/community-avatars/${id}/avatar.jpg?v=${version}`);
   assert.ok(s.profileQueries >= 2);
 });
+
+test('Character avatars display in the header and survive language changes',async()=>{
+ for(const avatar of ['kaubi','auara','oete']){
+  const s=setup({user:{id},profile:{display_name:'Leitor',avatar}});await settle();await settle();
+  assert.equal(s.link.children[0].children[0].src,'https://example.test/assets/avatars/'+avatar+'.png');
+  s.changeLanguage('en');assert.equal(s.link.children[0].children[0].src,'https://example.test/assets/avatars/'+avatar+'.png');
+ }
+});

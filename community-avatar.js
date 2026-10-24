@@ -2,6 +2,7 @@
 (() => {
   'use strict';
   const presets = {robot:'🤖',fox:'🦊',cat:'🐱',rocket:'🚀',star:'⭐',moon:'🌙'};
+  const assetBase = document.currentScript?.src || document.baseURI;
   const characters = {kaubi:{name:'Kaubi',src:'assets/avatars/kaubi.png'},auara:{name:'Auará',src:'assets/avatars/auara.png'},oete:{name:'Óete',src:'assets/avatars/oete.png'}};
   const presetLabels = {robot:['Robô','Robot'],fox:['Raposa','Fox'],cat:['Gato','Cat'],rocket:['Foguete','Rocket'],star:['Estrela','Star'],moon:['Lua','Moon']};
   const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
@@ -32,7 +33,7 @@
       const wrapper=make('span','profile-avatar',presets[profile?.avatar] || '👤');
       wrapper.setAttribute('aria-hidden','true');
       const character=Object.hasOwn(characters,profile?.avatar) ? characters[profile.avatar] : null;
-      const url=character?.src || photoURL(projectUrl,profile);
+      const url=character ? new URL(character.src,assetBase).href : photoURL(projectUrl,profile);
       if(url){const img=make('img');img.alt='';img.width=img.height=48;img.loading='lazy';img.src=url;img.addEventListener('error',()=>img.remove(),{once:true});wrapper.append(img);}
       return wrapper;
     }
