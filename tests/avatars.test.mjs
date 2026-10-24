@@ -48,9 +48,9 @@ test('Remove clears the avatar then deletes only the own fixed object',async()=>
 });
 
 test('Character expressions save stable IDs and render the chosen local image after reload',async()=>{
- for(const [key,name,expression] of [['kaubi-2','Kaubi',2],['kaubi-3','Kaubi',3],['auara-2','Auará',2],['auara-3','Auará',3],['oete-2','Óete',2],['oete-3','Óete',3]]){
+ for(const [key,name,label] of [['kaubi','Kaubi','Original'],['kaubi-2','Kaubi','Expressão 2'],['kaubi-3','Kaubi','Expressão 3'],['auara','Auará','Original'],['auara-2','Auará','Expressão 2'],['auara-3','Auará','Expressão 3'],['oete','Óete','Original'],['oete-2','Óete','Expressão 2'],['oete-3','Óete','Expressão 3']]){
   const s=setup();const button=s.elements.find(e=>e.attributes['data-avatar']===key);
-  assert.equal(button.attributes['aria-label'],`Escolher avatar: ${name} · Expressão ${expression}`);
+  assert.equal(button.attributes['aria-label'],`Escolher avatar: ${name} · ${label}`);
   await s.click(button);await s.submit();assert.equal(s.calls[0].values.avatar,key);
   s.editor.render({avatar:key});assert.equal(button.attributes['aria-pressed'],'true');
   const img=s.editor.image({avatar:key}).children[0];assert.equal(img.src,'https://example.test/Cyber-Us/assets/avatars/'+key+'.png');
@@ -58,7 +58,7 @@ test('Character expressions save stable IDs and render the chosen local image af
  }
 });
 
-test('Picker offers both expressions for each character while existing emoji profiles still render',()=>{
- const s=setup();assert.deepEqual(s.elements.filter(e=>e.attributes['data-avatar']).map(e=>e.attributes['data-avatar']),['auara-2','auara-3','kaubi-2','kaubi-3','oete-2','oete-3']);
+test('Picker offers the original and both new expressions for every character',()=>{
+ const s=setup();assert.deepEqual(s.elements.filter(e=>e.attributes['data-avatar']).map(e=>e.attributes['data-avatar']),['kaubi','kaubi-2','kaubi-3','auara','auara-2','auara-3','oete','oete-2','oete-3']);
  assert.equal(s.editor.image({avatar:'fox'}).textContent,'🦊');
 });
