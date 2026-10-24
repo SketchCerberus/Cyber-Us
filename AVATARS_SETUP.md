@@ -22,3 +22,9 @@ Applied migration: `community_profile_avatars` in project `znenamrszhjsiztllcit`
 Automated checks cover safe avatar URLs, format/size rejection, preset save, JPEG upload preparation, removal, banned users and failure ordering with mocked Storage/Auth. Profile RLS was additionally exercised inside a rolled-back database transaction: own update succeeds, other-account updates affect zero rows. Bucket constraints, four storage policies and column grants were inspected after migration. Mobile navigation and editor layout were checked at 390 px. No real user photo was uploaded during verification; manually verify upload/replace/remove from a normal browser while signed in.
 
 Security Advisor returned only previously recorded notices: [private tables with no policies](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy), [moderation SECURITY DEFINER wrapper](https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable), and [leaked-password protection](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection). No new avatar finding was returned. Moderation of inappropriate profile photos is not provided by the existing comment-moderation controls; bans prevent further profile edits.
+
+## Character presets
+
+Kaubi (green), Auará (red) and Óete (blue) use the supplied original PNGs in `assets/avatars/`. Stable profile IDs are `kaubi`, `auara`, and `oete` in both languages. The shared renderer displays these assets in the editor, comments and moderation. Emoji and uploaded avatars remain supported.
+
+Before releasing the frontend, apply `supabase/migrations/20261024043047_character_avatar_presets.sql` to allow the new IDs. This migration preserves the upload format check, existing choices, policies and grants. Do not rerun `avatar-setup.sql` on an existing database.

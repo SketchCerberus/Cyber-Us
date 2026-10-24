@@ -50,3 +50,5 @@
 /* Creator identification and pinned discussions */
 .creator-official-badge,.creator-pinned-badge{display:inline-flex;align-items:center;margin-inline:6px;padding:2px 8px;border:1px solid currentColor;border-radius:999px;font-size:.78rem;font-weight:700;color:#c8a7ff}
 .creator-pinned-badge{color:#f0d493}
+
+.avatar-choice{width:52px;height:52px;padding:0;display:inline-flex;align-items:center;justify-content:center;flex:0 0 52px;overflow:hidden}.avatar-choice .profile-avatar{width:48px;height:48px}.avatar-choice:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}.avatar-choices{max-width:100%}
