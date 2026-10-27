@@ -8,9 +8,11 @@ html{scroll-padding-top:5rem}
   -webkit-backdrop-filter:blur(12px);
   transition:transform .24s ease;
 }
-.site-header.scroll-header .logo{flex:0 0 auto;font-size:1.15rem;font-weight:900;letter-spacing:.08em}
-.site-header.scroll-header > nav{display:flex;align-items:center;gap:1.1rem}
-.site-header.scroll-header > nav > a:not(.account-access){color:var(--muted,#a8adb8);font-size:.92rem}
+.site-header.scroll-header .logo{flex:0 0 auto;font-size:1.65rem;font-weight:900;letter-spacing:.08em}
+.site-header.scroll-header > nav{display:flex;align-items:center;gap:clamp(.8rem,1.2vw,1.5rem)}
+.site-header.scroll-header > nav > a:not(.account-access){color:var(--muted,#a8adb8);font-size:1.2rem}
+.site-header.scroll-header > nav > a.account-access{font-size:1.05rem;min-height:48px}
+.site-header.scroll-header .lang-btn{font-size:1rem;min-height:42px}
 .site-header.scroll-header > nav > a:hover{color:var(--text,#f4f5f7)}
 .site-header.scroll-header.is-hidden{transform:translateY(calc(-100% - 2px));pointer-events:none}
 .site-header.scroll-header .mobile-nav-toggle{display:none}
