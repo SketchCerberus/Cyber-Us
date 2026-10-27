@@ -253,9 +253,9 @@ footer strong { color: var(--text); margin-right: 14px; }
 .site-banner {
   display: block;
   width: 100%;
-  height: clamp(260px, 26vw, 420px);
+  height: clamp(300px, 28vw, 460px);
   object-fit: cover;
-  object-position: center 75%;
+  object-position: center bottom;
 }
 @media (max-width: 650px) {
   .site-banner { height: clamp(130px, 35vw, 180px); }
