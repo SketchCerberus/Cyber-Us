@@ -253,11 +253,10 @@ footer strong { color: var(--text); margin-right: 14px; }
 .site-banner {
   display: block;
   width: 100%;
-  height: auto;
-  max-height: min(38vw, 480px);
+  height: clamp(180px, 22vw, 300px);
   object-fit: cover;
   object-position: center;
 }
 @media (max-width: 650px) {
-  .site-banner { max-height: 42vw; }
+  .site-banner { height: clamp(110px, 31vw, 160px); }
 }
