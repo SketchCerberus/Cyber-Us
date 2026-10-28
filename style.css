@@ -254,12 +254,7 @@ footer strong { color: var(--text); margin-right: 14px; }
 .site-banner {
   display: block;
   width: 100%;
-  height: clamp(300px, 28vw, 460px);
-  object-fit: cover;
-  object-position: center bottom;
+  height: auto;
   -webkit-mask-image: linear-gradient(to bottom, #000 78%, transparent 100%);
   mask-image: linear-gradient(to bottom, #000 78%, transparent 100%);
-}
-@media (max-width: 650px) {
-  .site-banner { height: clamp(130px, 35vw, 180px); }
 }
