@@ -1,4 +1,7 @@
+@import url("https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700;800&display=swap");
+
 :root {
+  --font-ui: "Oxanium", "Arial Narrow", sans-serif;
   --bg: #090b10;
   --panel: #11151d;
   --panel-2: #171c26;
@@ -19,6 +22,12 @@ body {
   color: var(--text);
   line-height: 1.6;
 }
+h1, h2, h3, h4, h5, h6, nav, button, input, select, textarea,
+.logo, .eyebrow, .button, .language-tag, .site-header .account-access,
+.newsletter-teaser-art, .fanarts-teaser-art, footer strong {
+  font-family: var(--font-ui);
+}
+h1, h2, h3 { text-shadow: 0 0 14px rgba(125, 211, 252, .16); }
 a { color: inherit; text-decoration: none; }
 .site-header {
   position: sticky;
@@ -92,6 +101,7 @@ nav a:hover { color: var(--text); }
   transition: transform .2s, opacity .2s;
 }
 .button:hover { transform: translateY(-2px); }
+.button:hover, nav a:hover, .site-header .account-access:hover { text-shadow: 0 0 10px rgba(125, 211, 252, .28); }
 .primary { background: var(--accent); color: white; }
 .secondary { border: 1px solid var(--line); background: var(--panel); }
 .big { padding: 0 28px; min-height: 56px; }
