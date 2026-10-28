@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700;800&display=swap");
+@font-face{font-family:"Oxanium";src:url("assets/fonts/oxanium/Oxanium-Variable.ttf") format("truetype");font-style:normal;font-weight:200 800;font-display:swap}
 :root{color-scheme:dark;--font-ui:"Oxanium","Arial Narrow",sans-serif;--bg:#090b10;--panel:#11151d;--panel2:#171c26;--text:#f4f5f7;--muted:#b6beca;--accent:#e63946;--cyan:#7dd3fc;--line:rgba(255,255,255,.15)}
  h1,h2,h3,h4,h5,h6,nav,button,input,select,textarea,.logo,.eyebrow,.action,.lang-btn,.episode-number,.reader-links,.episode-navigation,.site-header .account-access{font-family:var(--font-ui)}
  h1,h2,h3{text-shadow:0 0 14px rgba(125,211,252,.16)}

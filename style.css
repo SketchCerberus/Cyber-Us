@@ -1,4 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700;800&display=swap");
+@font-face {
+  font-family: "Oxanium";
+  src: url("assets/fonts/oxanium/Oxanium-Variable.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+}
 
 :root {
   --font-ui: "Oxanium", "Arial Narrow", sans-serif;
