@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Cyber-Us · Leitor</title>
-<link rel="stylesheet" href="reader.css"><link rel="stylesheet" href="comic-reader.css"><link rel="stylesheet" href="community.css?v=20261024-avatars-3"><link rel="stylesheet" href="creator-panel.css">
+<link rel="stylesheet" href="reader.css?v=20261027-sitewide-layout-11"><link rel="stylesheet" href="comic-reader.css?v=20261027-sitewide-layout-11"><link rel="stylesheet" href="community.css?v=20261024-avatars-3"><link rel="stylesheet" href="creator-panel.css?v=20261027-sitewide-layout-11">
 <script defer src="supabase-client.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
 <script defer src="community-panel.js"></script>
@@ -11,8 +11,10 @@
   <script defer src="comment-editor.js"></script>
   <script defer src="community.js?v=owner-edit-1"></script>
 <script defer src="fanarts-reports.js"></script>
-<link rel="stylesheet" href="community-reports.css"></head>
-<body><main class="creator-shell" id="dynamicComicReader" aria-live="polite"><a href="catalogo.html">← Catálogo</a><section id="comicDynamicContent"><p>Carregando episódio…</p></section></main>
+<link rel="stylesheet" href="community-reports.css"><link rel="stylesheet" href="header-scroll.css?v=20261027-sitewide-banner-11">
+</head>
+<body>
+<img class="site-banner" src="assets/banner-topo.png" width="2560" height="960" alt="Ilustração de uma sala de Cyber-Us" fetchpriority="high"><main class="creator-shell" id="dynamicComicReader" aria-live="polite"><a href="catalogo.html">← Catálogo</a><section id="comicDynamicContent"><p>Carregando episódio…</p></section></main>
 <script>
 (function(){
  const p=new URLSearchParams(location.search),chapter=Number(p.get('chapter')),episode=Number(p.get('episode'));

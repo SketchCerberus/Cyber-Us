@@ -1,7 +1,7 @@
 /* A small invitation between episode navigation and community, never over the comic. */
 .episode-newsletter-cta {
   box-sizing: border-box;
-  max-width: 800px;
+  max-width: 920px;
   margin: 1.75rem auto 0;
   padding: 1.25rem 1.4rem;
   border: 1px solid var(--line);

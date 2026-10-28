@@ -70,3 +70,13 @@ html{scroll-padding-top:5rem}
   animation:account-badge-fallback 0s 5s forwards;
 }
 @keyframes account-badge-fallback{to{visibility:visible}}
+
+/* Shared comic banner for every page using the site shell. */
+.site-banner{
+  display:block;width:100%;height:auto;
+  -webkit-mask-image:linear-gradient(to bottom,#000 78%,transparent 100%);
+  mask-image:linear-gradient(to bottom,#000 78%,transparent 100%);
+}
+@media(max-width:650px){
+  .site-banner{height:min(100vw,420px);object-fit:cover;object-position:center}
+}

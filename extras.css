@@ -1,5 +1,5 @@
 /* Editorial extras archive: responsive, bilingual and aligned with reader/theme tokens. */
-.extras-page{max-width:1100px;margin:0 auto;padding:3.5rem 5vw 5rem}
+.extras-page{max-width:1540px;margin:0 auto;padding:3.5rem 5vw 5rem}
 .extras-page a:not(.action){color:var(--cyan)}
 .extras-hero{padding:1rem 0 3.25rem;border-bottom:1px solid var(--line)}
 .extras-hero h1{font-size:clamp(2.5rem,7vw,5rem);line-height:1.05;letter-spacing:-.035em;margin:.3rem 0 1.25rem}

@@ -1,5 +1,5 @@
 /* Submission page only: balanced editorial header, two-column form, clear sections. */
-.fanarts-submission.fanarts-submit-refined{display:block;max-width:1180px;margin:1.5rem auto 3rem;padding:clamp(1rem,3vw,2rem);background:linear-gradient(145deg,var(--panel2),var(--panel));box-sizing:border-box}
+.fanarts-submission.fanarts-submit-refined{display:block;max-width:1540px;margin:1.5rem auto 3rem;padding:clamp(1rem,3vw,2rem);background:linear-gradient(145deg,var(--panel2),var(--panel));box-sizing:border-box}
 .fanarts-submit-intro{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem clamp(1rem,3vw,2.5rem);padding:0 0 1.5rem;margin-bottom:1.5rem;border-bottom:1px solid var(--line)}
 .fanarts-submit-intro .eyebrow{flex-basis:100%;margin:0}
 .fanarts-submit-intro h1{flex:1 1 320px;font-size:clamp(2rem,4vw,3.25rem);letter-spacing:-.04em;line-height:1.12;margin:.25rem 0}

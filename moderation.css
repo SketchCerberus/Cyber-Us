@@ -10,7 +10,7 @@
 .community-account a.moderation-launch[hidden],.moderation-languages[hidden] { display:none!important; }
 .community-account a.moderation-launch:hover { background:var(--panel2,var(--panel));filter:brightness(1.12); }
 .community-account a.moderation-launch:focus-visible,.moderation-page button:focus-visible,.moderation-back:focus-visible { outline:3px solid var(--cyan);outline-offset:3px; }
-.moderation-page { max-width:1060px; }
+.moderation-page { max-width:1400px; }
 .moderation-back { display:inline-block;margin:1.2rem 0;text-decoration:none;font-weight:700; }
 .moderation-tabs { display:flex;gap:.65rem;flex-wrap:wrap;margin:1.4rem 0; }
 .moderation-tabs button { min-height:44px;font-weight:750; }

@@ -250,18 +250,3 @@ footer strong { color: var(--text); margin-right: 14px; }
 .hero-art img{display:block;width:100%;height:100%;object-fit:cover;object-position:top}
 .hero-art:focus-visible,.skip:focus-visible{outline:3px solid var(--accent-2);outline-offset:4px}
 @media(max-width:800px){.hero-art{max-width:440px;width:100%;margin:auto;min-height:0}}
-
-.site-banner {
-  display: block;
-  width: 100%;
-  height: auto;
-  -webkit-mask-image: linear-gradient(to bottom, #000 78%, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 78%, transparent 100%);
-}
-@media (max-width: 650px) {
-  .site-banner {
-    height: min(100vw, 420px);
-    object-fit: cover;
-    object-position: center;
-  }
-}

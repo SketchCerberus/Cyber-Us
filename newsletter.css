@@ -1,5 +1,5 @@
 /* Newsletter landing page. Reuses the official reader's color tokens without affecting comic strips. */
-.newsletter-page{max-width:1180px;margin:0 auto;padding:0 5vw 5rem}
+.newsletter-page{max-width:1540px;margin:0 auto;padding:0 5vw 5rem}
 .newsletter-hero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(230px,.75fr);gap:clamp(1.5rem,6vw,5rem);align-items:center;padding:clamp(3rem,8vw,6.5rem) 0}
 .newsletter-hero h1{font-size:clamp(2.5rem,6.5vw,5rem);line-height:1.05;letter-spacing:-.045em;max-width:730px;margin:.3rem 0 1.2rem}
 .newsletter-lead{max-width:670px;font-size:clamp(1.05rem,2vw,1.25rem);color:var(--muted)}
