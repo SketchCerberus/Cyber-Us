@@ -260,7 +260,7 @@ footer strong { color: var(--text); margin-right: 14px; }
 }
 @media (max-width: 650px) {
   .site-banner {
-    height: clamp(200px, 58vw, 300px);
+    height: min(100vw, 420px);
     object-fit: cover;
     object-position: center;
   }
