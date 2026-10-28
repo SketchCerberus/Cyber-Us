@@ -80,3 +80,23 @@ html{scroll-padding-top:5rem}
 @media(max-width:650px){
   .site-banner{height:min(100vw,420px);object-fit:cover;object-position:center}
 }
+
+/* Cyber-Us display typeface: headings and interface labels, with Inter retained for body copy. */
+@font-face{
+  font-family:"Chakra Petch";
+  font-style:normal;
+  font-weight:400;
+  font-display:swap;
+  src:url("assets/fonts/chakra-petch/ChakraPetch-Regular-Latin.woff2") format("woff2");
+}
+@font-face{
+  font-family:"Chakra Petch";
+  font-style:normal;
+  font-weight:700;
+  font-display:swap;
+  src:url("assets/fonts/chakra-petch/ChakraPetch-Bold-Latin.woff2") format("woff2");
+}
+body h1,body h2,body h3,body h4,.logo,.site-header .logo,.site-header nav a,
+.site-header button,.button,.action,.eyebrow{
+  font-family:"Chakra Petch",Inter,system-ui,sans-serif;
+}
